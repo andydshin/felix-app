@@ -69,8 +69,12 @@ node --test test/census.test.js
 
 This product uses the Census Bureau Data API but is not endorsed or certified by the Census Bureau.
 
-## 일본 e-Stat (진행 중)
+## 일본 e-Stat
 
 - 환경변수 `ESTAT_APP_ID` (Vercel → Settings → Environments → Production → Environment Variables).
 - `GET /api/jp-probe`: 재무성 무역통계 品別国別表 표 목록과 최신 수출·수입 표의 구조(차원, 코드 예시, 열연 코일 샘플 값)를 보여주는 진단용 주소. 결과는 1시간 캐시. 앱 ID는 응답·로그에 넣지 않습니다.
+- `GET /api/jp-trade`: 일본 품목별 수출·수입 단가(엔/t). 최신 연도 品別国別表(수출·수입)를 자동으로 찾아, 표 이름의 마지막 월과 전월을 계산합니다.
+  - 단가 = 금액(千円) × 1,000 ÷ 수량(t). 수량 단위가 MT·KG가 아닌 세부 품목은 제외. 100t 미만은 lowVolume.
+  - 철강 제품·스크랩·정련동은 수출, 원료·나머지 비철은 수입. 수입 최신 월은 9자리 속보일 수 있음(preliminary).
+  - 캐시: 표 구조 6시간, 데이터 12시간. e-Stat 동시 호출 3개.
 - 서비스에 표시할 크레딧: このサービスは、政府統計総合窓口(e-Stat)のAPI機能を使用していますが、サービスの内容は国によって保証されたものではありません。

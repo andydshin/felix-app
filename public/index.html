@@ -232,6 +232,45 @@ a{color:#1570EF}a:hover{color:#0B4FB3}
           </div>
         </sc-if>
 
+        <sc-if value="{{ isJpGroup }}" hint-placeholder-val="{{ false }}">
+          <div style="margin: 8px 20px 0; border-radius: 12px; padding: 10px 12px; font-size: 12px; {{ jpBannerStyle }}">
+            <div>{{ jpBanner }}</div>
+            <sc-if value="{{ jpShowRetry }}" hint-placeholder-val="{{ false }}">
+              <button onClick="{{ jpRetry }}" style="margin-top: 6px; min-height: 44px; padding: 0 14px; border-radius: 22px; border: 1px solid #7A4B00; font-size: 13px; font-weight: 600">다시 불러오기</button>
+            </sc-if>
+          </div>
+          <div style="margin: 12px 20px 0">
+            <div style="font-size: 15px; font-weight: 700">일본 수출·수입 단가</div>
+            <div style="font-size: 12px; color: #55657A">기준 월: {{ jpMonthLabel }} · 단위: 엔/t · 출처: 일본 재무성 무역통계</div>
+          </div>
+          <sc-for list="{{ jpSections }}" as="sec" hint-placeholder-count="3">
+            <div style="margin: 10px 20px 0; background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 4px 16px 6px">
+              <div style="padding: 10px 0 4px; font-size: 13px; font-weight: 700; color: #55657A">{{ sec.label }}</div>
+              <sc-for list="{{ sec.rows }}" as="jr" hint-placeholder-count="4">
+                <div style="display: flex; min-height: 60px; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid #EEF2F7; padding: 6px 0">
+                  <div>
+                    <div style="font-size: 15px; font-weight: 600">{{ jr.name }} <span style="font-size: 11px; font-weight: 700; color: #175CD3; background: #EAF2FF; border-radius: 6px; padding: 1px 6px">{{ jr.flow }}</span></div>
+                    <div style="font-size: 12px; color: #55657A">HS {{ jr.hs }} · <span style="font-weight: 700; {{ jr.tagStyle }}">{{ jr.tag }}</span></div>
+                    <div style="font-size: 11.5px; color: #55657A">{{ jr.partners }}</div>
+                  </div>
+                  <div style="text-align: right">
+                    <div style="font-size: 16px; font-weight: 700; {{ jr.valStyle }}">{{ jr.valText }}</div>
+                    <div style="font-size: 12px; font-weight: 600; {{ jr.chgStyle }}">{{ jr.chgText }}</div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-for>
+          <div style="margin: 10px 20px 0; display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #33445A">
+            <div>단가(엔/t) = 해당 월 금액 ÷ 수량. 수출은 본선인도(FOB), 수입은 운임·보험료 포함(CIF) 금액입니다.</div>
+            <div>일본은 철강 순수출국이라 철강 제품·스크랩·정련동은 수출 단가, 원료와 나머지 비철은 수입 단가를 보여 줍니다. 품목 아래 국가는 물량 기준 주요 상대국입니다.</div>
+            <div>수량 단위가 톤·킬로그램이 아닌 세부 품목은 계산에서 뺍니다. 한 달 물량이 100t 미만이면 회색으로 표시하고 ‘물량 적음’을 붙입니다.</div>
+            <div>1월 값의 전월비는 전년도 표가 달라 아직 계산하지 않습니다. 달러 환산은 준비 중입니다.</div>
+            <div>출처: 財務省 貿易統計 (政府統計の総合窓口 e-Stat, 品別国別表).</div>
+            <div style="font-style: italic">このサービスは、政府統計総合窓口(e-Stat)のAPI機能を使用していますが、サービスの内容は国によって保証されたものではありません。</div>
+          </div>
+        </sc-if>
+
         <sc-if value="{{ isDomGroup }}" hint-placeholder-val="{{ false }}">
           <div style="margin: 8px 20px 0; background: #FFFFFF; border: 1px dashed #9DB7D9; border-radius: 14px; padding: 16px">
             <div style="font-size: 15px; font-weight: 700">제보로 채워지는 칸</div>
@@ -664,7 +703,7 @@ class Component extends DCLogic {
       fx:  { label: '환율', src: '한국은행 ECOS', cycle: '매일', date: '2026년 10월 2일 (10월 5일은 대체공휴일)', grade: '약관 확인 전', real: true, note: '매매기준율입니다. 10월 1일 대비 변동입니다.' },
       sd:  { label: '수급', src: '관세청 · 세계철강협회 · 국토부', cycle: '월 1회', date: '2026년 8월', grade: '일부 확인 전', real: false, note: '조강 생산량만 실제 발표값입니다.' }
     };
-    var ORDER = ['cmp', 'us', 'cn', 'imp', 'kr', 'raw', 'nf', 'gl', 'fx', 'sd', 'dom'];
+    var ORDER = ['cmp', 'us', 'jp', 'cn', 'imp', 'kr', 'raw', 'nf', 'gl', 'fx', 'sd', 'dom'];
 
     var D = [
       ['kr1','kr','철근',118.4,0.6,1,'지수 2020=100'],['kr2','kr','형강',121.0,-0.3,1,'지수 2020=100'],['kr3','kr','열연강판',124.7,0.4,1,'지수 2020=100'],['kr4','kr','냉연강판',119.2,0,1,'지수 2020=100'],
@@ -702,10 +741,10 @@ class Component extends DCLogic {
     var byId = {};
     items.forEach(function (it) { byId[it.id] = it; });
 
-    var isDom = s.group === 'dom', isCmp = s.group === 'cmp', isUs = s.group === 'us';
+    var isDom = s.group === 'dom', isCmp = s.group === 'cmp', isUs = s.group === 'us', isJp = s.group === 'jp';
     var g = G[s.group] || G.cn;
     var groups = ORDER.map(function (k) {
-      return { label: k === 'dom' ? '국내 유통가' : (k === 'cmp' ? '국가 비교' : (k === 'us' ? '미국 주별' : G[k].label)), style: chip(s.group === k), pick: function () { set({ group: k }); } };
+      return { label: k === 'dom' ? '국내 유통가' : (k === 'cmp' ? '국가 비교' : (k === 'us' ? '미국 주별' : (k === 'jp' ? '일본 수출입' : G[k].label))), style: chip(s.group === k), pick: function () { set({ group: k }); } };
     });
     var rows = items.filter(function (it) { return it.group === s.group; });
     var movers = items.slice().sort(function (a, b) { return b.rank - a.rank; }).slice(0, 3);
@@ -789,7 +828,7 @@ class Component extends DCLogic {
     });
     var planMsg = s.plan === 'beta' ? '현재 등급: 무료 베타.' : '유료 등급은 제보 데이터로 평가가를 발행한 뒤에 엽니다. 지금은 관심 등록만 됩니다.';
 
-    var sources = ORDER.filter(function (k) { return k !== 'dom' && k !== 'cmp' && k !== 'us'; }).map(function (k) {
+    var sources = ORDER.filter(function (k) { return k !== 'dom' && k !== 'cmp' && k !== 'us' && k !== 'jp'; }).map(function (k) {
       return { label: G[k].label, src: G[k].src, cycle: G[k].cycle, grade: G[k].grade, count: items.filter(function (x) { return x.group === k; }).length };
     });
 
@@ -903,6 +942,70 @@ class Component extends DCLogic {
     var usBannerStyle = usStatus === 'ok' ? 'background:#E3F4EA;color:#0B4F2B' : 'background:#FFF3D6;color:#5C3A00';
     var usRetry = function () { var st2 = usState; delete self._usReq[st2]; var o = Object.assign({}, self.state && self.state.usData); delete o[st2]; self.setState({ usData: o }); };
 
+
+    // 일본: 재무성 무역통계(e-Stat) 품목별 수출·수입 단가 (엔/t). 서버 /api/jp-trade 경유.
+    var jd = s.jpData;
+    if (isJp && !jd && !self._jpReq) {
+      self._jpReq = true;
+      var putJ = function (v) { self.setState({ jpData: v }); };
+      setTimeout(function () {
+        putJ({ status: 'loading' });
+        if (typeof fetch !== 'function') { putJ({ status: 'error' }); return; }
+        fetch('/api/jp-trade')
+          .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+          .then(function (x) {
+            if (!x.ok || !x.j || !x.j.items) throw new Error('bad response');
+            var m = {};
+            x.j.items.forEach(function (it) { m[it.id] = it; });
+            putJ({ status: 'ok', items: m, source: x.j.source });
+          })
+          .catch(function () { putJ({ status: 'error' }); });
+      }, 0);
+    }
+    var jpStatus = jd ? jd.status : 'loading';
+    var JP_ITEMS = [
+      ['철 원료', [['iron_ore', '철광석', '2601', 15000], ['coal', '원료탄 (역청탄)', '2701.12', 26000], ['scrap', '철스크랩 (탄소강)', '7204.41·7204.49 합산', 52000]]],
+      ['철강 제품', [['hr', '열연 (후판 포함)', '7208', 105000], ['cr', '냉연', '7209', 125000], ['coated', '도금강판', '7210', 145000], ['plate', '후판', '7208.51', 125000], ['wire_rod', '선재', '7213', 115000], ['rebar', '철근', '7214.20', 95000], ['pipe', '강관', '7304·7305·7306 합산', 260000]]],
+      ['비철', [['al', '알루미늄 괴', '7601', 460000], ['cu', '정련동', '7403', 1550000], ['ni', '니켈 (순니켈)', '7502.10', 2700000], ['zn', '아연 괴', '7901', 470000]]]
+    ];
+    var FLOW_KO = { 'export': '수출', 'import': '수입' };
+    var jj = 0;
+    var jpSections = JP_ITEMS.map(function (sec) {
+      return { label: sec[0], rows: sec[1].map(function (it) {
+        jj++;
+        var d = jpStatus === 'ok' ? (jd.items && jd.items[it[0]]) : null;
+        var flow = d ? FLOW_KO[d.flow] : (it[0] === 'scrap' || sec[0] === '철강 제품' || it[0] === 'cu' ? '수출' : '수입');
+        var row = { name: it[1], hs: it[2], flow: flow, valStyle: '', chgText: '', chgStyle: FLAT, partners: '' };
+        if (jpStatus === 'ok') {
+          if (d && d.status === 'ok') {
+            row.valText = fmt(d.unitPriceJpy, 0); row.tag = d.preliminary ? '실제 값 · 속보' : '실제 값'; row.tagStyle = REAL;
+            if (d.lowVolume) { row.valStyle = MUTED; row.tag = '실제 값 · 물량 적음 ' + fmt(d.tons, 0) + 't'; row.tagStyle = EX; }
+            row.partners = (d.topPartners || []).slice(0, 2).map(function (p) { return p.name + ' ' + fmt(p.share, 0) + '%'; }).join(' · ');
+            if (d.prev && d.prev.status === 'ok' && d.prev.lowVolume) { row.chgText = '전월 물량 적음'; }
+            else if (d.prev && d.prev.status === 'ok' && d.prev.unitPriceJpy > 0) {
+              var c = (d.unitPriceJpy - d.prev.unitPriceJpy) / d.prev.unitPriceJpy * 100;
+              row.chgText = (c > 0 ? '▲' : (c < 0 ? '▼' : '')) + fmt(Math.abs(c), 1) + '% 전월비';
+              row.chgStyle = c > 0 ? UP : (c < 0 ? DOWN : FLAT);
+            } else { row.chgText = '전월 자료 없음'; }
+          } else { row.valText = '자료 없음'; row.valStyle = MUTED; row.tag = '자료 없음'; row.tagStyle = MUTED; }
+        } else if (jpStatus === 'error') {
+          var f = (((jj * 3) % 13) - 6) / 100, c2 = (((jj * 11) % 9) - 4) / 2;
+          row.valText = fmt(Math.round(it[3] * (1 + f) / 100) * 100, 0); row.tag = '예시 값'; row.tagStyle = EX;
+          row.chgText = c2 === 0 ? '변동 없음' : (c2 > 0 ? '▲' : '▼') + fmt(Math.abs(c2), 1) + '% 전월비 (예시)';
+          row.chgStyle = c2 > 0 ? UP : (c2 < 0 ? DOWN : FLAT);
+        } else { row.valText = '불러오는 중'; row.valStyle = MUTED; row.tag = '조회 중'; row.tagStyle = MUTED; }
+        return row;
+      }) };
+    });
+    var jpSrc = jpStatus === 'ok' && jd.source ? jd.source : {};
+    var jpMonth = jpSrc['export'] ? jpSrc['export'].month : (jpSrc['import'] ? jpSrc['import'].month : null);
+    var jpMonthLabel = jpStatus === 'ok' ? (jpMonth ? monthLabel(jpMonth) : '확인 불가') : (jpStatus === 'error' ? '예시' : '확인 중');
+    var jpBanner = jpStatus === 'ok' ? '실제 값: ' + jpMonthLabel + ' 기준, 일본 재무성 무역통계.' + (jpSrc['import'] && jpSrc['import'].preliminary ? ' 수입 품목은 9자리 속보치라 확정 때 바뀔 수 있습니다.' : '')
+      : (jpStatus === 'error' ? '데이터 서버에 연결하지 못해 예시 값을 보여 줍니다. 실제 값은 Felix 서버를 통해서만 표시됩니다.'
+      : '일본 재무성 무역통계를 불러오는 중입니다. 처음 조회는 30초쯤 걸릴 수 있습니다.');
+    var jpBannerStyle = jpStatus === 'ok' ? 'background:#E3F4EA;color:#0B4F2B' : 'background:#FFF3D6;color:#5C3A00';
+    var jpRetry = function () { self._jpReq = false; self.setState({ jpData: null }); };
+
     var tabOn = 'color:#1570EF', tabOff = 'color:#55657A';
     var go = function (t) { return function () { set({ tab: t, sub: null }); }; };
     var top = !s.sub;
@@ -917,7 +1020,7 @@ class Component extends DCLogic {
       tabHome: s.tab === 'home' ? tabOn : tabOff, tabBoard: s.tab === 'board' ? tabOn : tabOff, tabReports: s.tab === 'reports' ? tabOn : tabOff,
       tabTips: s.tab === 'tips' ? tabOn : tabOff, tabMe: s.tab === 'me' ? tabOn : tabOff,
       movers: movers, watchItems: watchItems, noWatch: watchItems.length === 0,
-      groups: groups, rows: rows, isDataGroup: !isDom && !isCmp && !isUs, isDomGroup: isDom, isCmpGroup: isCmp, cmpRows: cmpRows, cmpTabs: cmpTabs, cmpTitle: ct.title, isUsGroup: isUs, usStates: usStates, usSections: usSections, usStateName: STATES.at(si)[1], usBanner: usBanner, usBannerStyle: usBannerStyle, usShowRetry: usStatus === 'error', usRetry: usRetry, usMonthLabel: usStatus === 'ok' ? monthLabel(ud.month) : (usStatus === 'error' ? '예시' : '확인 중'),
+      groups: groups, rows: rows, isDataGroup: !isDom && !isCmp && !isUs && !isJp, isJpGroup: isJp, jpSections: jpSections, jpBanner: jpBanner, jpBannerStyle: jpBannerStyle, jpShowRetry: jpStatus === 'error', jpRetry: jpRetry, jpMonthLabel: jpMonthLabel, isDomGroup: isDom, isCmpGroup: isCmp, cmpRows: cmpRows, cmpTabs: cmpTabs, cmpTitle: ct.title, isUsGroup: isUs, usStates: usStates, usSections: usSections, usStateName: STATES.at(si)[1], usBanner: usBanner, usBannerStyle: usBannerStyle, usShowRetry: usStatus === 'error', usRetry: usRetry, usMonthLabel: usStatus === 'ok' ? monthLabel(ud.month) : (usStatus === 'error' ? '예시' : '확인 중'),
       groupSrc: g.src, groupCycle: g.cycle, groupDate: g.date, groupNote: g.note,
       groupTag: s.group === 'sd' ? '일부 실제 값' : (g.real ? '실제 발표값' : '예시 값'), groupTagStyle: g.real ? 'color:#0B6B3A' : 'color:#7A4B00',
       domRows: [{ name: '열연 유통가', status: '제보 대기' }, { name: '냉연 유통가', status: '제보 대기' }, { name: '도금강판 유통가', status: '제보 대기' }, { name: '철근 유통가', status: '제보 대기' }],
