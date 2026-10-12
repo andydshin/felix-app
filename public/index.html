@@ -224,6 +224,7 @@ a{color:#1570EF}a:hover{color:#0B4FB3}
           <div style="margin: 10px 20px 0; display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #33445A">
             <div>해상·항공 수입 단가 = (해상 수입액 + 항공 수입액) ÷ (해상 + 항공 운송 중량) × 1,000. 전체 수입액은 분자에 쓰지 않습니다.</div>
             <div>중량은 순중량이 아니라 포장 등을 포함한 운송 중량(shipping weight) 기준입니다.</div>
+            <div>운송 중량이 100t 미만인 달은 소수 거래가 단가를 좌우하므로 값을 회색으로 표시하고 ‘물량 적음’을 붙입니다. 전월이 이 경우면 변동률을 계산하지 않습니다.</div>
             <div>트럭·철도로 들어온 수입분(주로 캐나다·멕시코산)은 계산에 포함되지 않습니다.</div>
             <div>주는 생산지가 아니라 수입품이 도착한 주입니다.</div>
             <div>출처: U.S. Census Bureau, International Trade, State Imports by HS. 중량이 0이거나 자료가 없으면 ‘자료 없음’으로 표시합니다.</div>
@@ -864,9 +865,9 @@ class Component extends DCLogic {
     var usStatus = ud ? ud.status : 'loading';
     var monthLabel = function (ym) { return ym ? ym.slice(0, 4) + '년 ' + Number(ym.slice(5, 7)) + '월' : ''; };
     var US_ITEMS = [
-      ['철 원료', [['iron_ore', '철광석', '2601', 120], ['scrap', '철스크랩', '7204', 420], ['coal', '원료탄 (역청탄)', '2701.12', 230]]],
+      ['철 원료', [['iron_ore', '철광석', '2601', 120], ['scrap', '철스크랩 (탄소강)', '7204.41·7204.49 합산', 420], ['coal', '원료탄 (역청탄)', '2701.12', 230]]],
       ['철강 제품', [['hr', '열연', '7208', 950], ['cr', '냉연', '7209', 1150], ['coated', '도금강판', '7210', 1250], ['plate', '후판', '7208.51', 1100], ['wire_rod', '선재', '7213', 900], ['rebar', '철근', '7214.20', 820], ['pipe', '강관', '7304·7305·7306 합산', 1600]]],
-      ['비철', [['al', '알루미늄 괴', '7601', 4600], ['cu', '정련동', '7403', 14900], ['ni', '니켈', '7502', 17200], ['zn', '아연 괴', '7901', 4100]]]
+      ['비철', [['al', '알루미늄 괴', '7601', 4600], ['cu', '정련동', '7403', 14900], ['ni', '니켈 (순니켈)', '7502.10', 17200], ['zn', '아연 괴', '7901', 4100]]]
     ];
     var REAL = 'color:#0B6B3A', EX = 'color:#7A4B00', MUTED = 'color:#55657A';
     var ii = 0;
@@ -878,7 +879,9 @@ class Component extends DCLogic {
           var d = ud.items && ud.items[it[0]];
           if (d && d.status === 'ok') {
             row.valText = fmt(d.unitPrice, 2); row.tag = '실제 값'; row.tagStyle = REAL;
-            if (d.prev && d.prev.status === 'ok' && d.prev.unitPrice > 0) {
+            if (d.lowVolume) { row.valStyle = MUTED; row.tag = '실제 값 · 물량 적음 ' + fmt(d.weightT, 0) + 't'; row.tagStyle = EX; }
+            if (d.prev && d.prev.status === 'ok' && d.prev.lowVolume) { row.chgText = '전월 물량 적음'; }
+            else if (d.prev && d.prev.status === 'ok' && d.prev.unitPrice > 0) {
               var c = (d.unitPrice - d.prev.unitPrice) / d.prev.unitPrice * 100;
               row.chgText = (c > 0 ? '▲' : (c < 0 ? '▼' : '')) + fmt(Math.abs(c), 1) + '% 전월비';
               row.chgStyle = c > 0 ? UP : (c < 0 ? DOWN : FLAT);
