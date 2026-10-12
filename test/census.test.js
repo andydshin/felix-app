@@ -31,6 +31,13 @@ test('여러 HS코드는 분자·분모를 각각 합산한다 (강관)', () => 
   assert.strictEqual(unitPrice(s).unitPrice, 2000);
 });
 
+test('운송 중량 100t 미만은 물량 적음', () => {
+  const r = unitPrice({ VES_VAL_MO: '137970', AIR_VAL_MO: '0', VES_WGT_MO: '63853', AIR_WGT_MO: '0' });
+  assert.strictEqual(r.unitPrice, 2160.74);
+  assert.strictEqual(r.lowVolume, true);
+  assert.strictEqual(unitPrice(VERIFIED).lowVolume, false);
+});
+
 test('월 계산', () => {
   assert.deepStrictEqual(monthsBack(new Date(Date.UTC(2026, 9, 12)), 2), ['2026-09', '2026-08']);
   assert.strictEqual(prevMonth('2026-01'), '2025-12');

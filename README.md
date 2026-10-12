@@ -68,3 +68,9 @@ node --test test/census.test.js
 ## 필수 출처 고지
 
 This product uses the Census Bureau Data API but is not endorsed or certified by the Census Bureau.
+
+## 일본 e-Stat (진행 중)
+
+- 환경변수 `ESTAT_APP_ID` (Vercel → Settings → Environments → Production → Environment Variables).
+- `GET /api/jp-probe`: 재무성 무역통계 品別国別表 표 목록과 최신 수출·수입 표의 구조(차원, 코드 예시, 열연 코일 샘플 값)를 보여주는 진단용 주소. 결과는 1시간 캐시. 앱 ID는 응답·로그에 넣지 않습니다.
+- 서비스에 표시할 크레딧: このサービスは、政府統計総合窓口(e-Stat)のAPI機能を使用していますが、サービスの内容は国によって保証されたものではありません。

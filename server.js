@@ -10,6 +10,8 @@ const PORT = Number(process.env.PORT) || 8787;
 const PUBLIC = path.join(__dirname, 'public');
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml', '.png': 'image/png' };
 const handle = makeHandler();
+const { makeProbeHandler } = require('./lib/estat-handler');
+const handleJpProbe = makeProbeHandler();
 
 function sendJson(res, status, body, cacheControl) {
   res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': cacheControl || 'no-store', 'X-Content-Type-Options': 'nosniff' });
@@ -22,7 +24,8 @@ const server = http.createServer(async (req, res) => {
   if (url.pathname === '/api/us-state-imports') {
     return handle(Object.fromEntries(url.searchParams), (s, b, cc) => sendJson(res, s, b, cc));
   }
-  if (url.pathname === '/healthz') return sendJson(res, 200, { ok: true, keyConfigured: Boolean(process.env.CENSUS_API_KEY) });
+  if (url.pathname === '/api/jp-probe') return handleJpProbe((s, b, cc) => sendJson(res, s, b, cc));
+  if (url.pathname === '/healthz') return sendJson(res, 200, { ok: true, keyConfigured: Boolean(process.env.CENSUS_API_KEY), estatConfigured: Boolean(process.env.ESTAT_APP_ID) });
   const rel = url.pathname === '/' ? 'index.html' : decodeURIComponent(url.pathname).replace(/^\/+/, '');
   const file = path.normalize(path.join(PUBLIC, rel));
   if (!file.startsWith(PUBLIC + path.sep)) { res.writeHead(403); return res.end(); }
