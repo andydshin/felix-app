@@ -1,0 +1,11 @@
+{
+  "name": "felix-app",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Felix steel price app with a Census state imports proxy",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test test/census.test.js"
+  },
+  "engines": { "node": ">=18" }
+}
