@@ -181,7 +181,7 @@ a{color:#1570EF}a:hover{color:#0B4FB3}
             <div>멕시코: INEGI 생산자물가지수(상업적 이용 가능). 철근 값은 INEGI를 인용한 건설업협회 자료이고, 나머지는 원자료 연동 전입니다.</div>
             <div>일본: 재무성 무역통계(e-Stat) 단가(엔/t)의 전월 대비. 철강 제품·스크랩·구리는 수출, 원료와 나머지 비철은 수입 단가입니다. 아래 달러 값은 관세청 과세환율 월평균 환산 참고치입니다. 일본은행 기업물가지수는 상업적 이용에 사전 상담이 필요해 쓰지 않습니다.</div>
             <div>유럽: Eurostat는 출처를 밝히면 상업적 이용이 가능합니다(EU 회원국 데이터 한정). 품목별 지수는 독일 연방통계청에 있으나 이용 조건을 확인하지 못했습니다.</div>
-            <div>세계: 세계은행 월평균 가격(CC BY 4.0), 7월 대비. 제품 가격은 다루지 않습니다.</div>
+            <div>세계: 세계은행 월평균 가격(Pink Sheet, CC BY 4.0), 전월 대비, 자동 갱신. 제품 가격은 다루지 않습니다.</div>
           </div>
         </sc-if>
 
@@ -1228,6 +1228,26 @@ class Component extends DCLogic {
       G.cn.note = '직전 열흘(旬) 대비 변동입니다. 출처: 중국 국가통계국 「流通领域重要生产资料市场价格变动情况」.';
     }
 
+    // 세계: 세계은행 월평균 가격 (/api/world-prices)
+    var wd = s.wbData;
+    if ((s.group === 'raw' || isCmp) && !wd && !self._wbReq) {
+      self._wbReq = true;
+      setTimeout(function () {
+        if (typeof fetch !== 'function') { self.setState({ wbData: { status: 'error' } }); return; }
+        fetch('/api/world-prices')
+          .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+          .then(function (x) { if (!x.ok || !x.j || x.j.status !== 'ok') throw new Error('bad'); self.setState({ wbData: { status: 'ok', j: x.j } }); })
+          .catch(function () { self.setState({ wbData: { status: 'error' } }); });
+      }, 0);
+    }
+    var wbMonth = null;
+    if (wd && wd.status === 'ok') {
+      var wi = wd.j.items || {};
+      wbMonth = wd.j.period;
+      if (wi.iron_ore) liveSet('raw1', wi.iron_ore.value, 1, '달러/t · 세계은행 ' + monthLabel(wi.iron_ore.period) + ' 평균', wi.iron_ore.prev, '');
+      if (wi.coal_au) liveSet('raw2', wi.coal_au.value, 1, '달러/t · 세계은행 ' + monthLabel(wi.coal_au.period) + ' 평균', wi.coal_au.prev, '');
+    }
+
     // 국가 비교 표: 한국 열 추가, 미국·일본 칸을 실제 데이터로 (각 서버 API 결과를 그대로 쓴다)
     var LOADING = { status: '확인 중' };
     var dmon = function (ym) { return ym ? Number(ym.slice(5, 7)) + '월' : ''; };
@@ -1275,10 +1295,13 @@ class Component extends DCLogic {
       return d ? mk(d.price, d.prev, sub || fmt(d.price, 1)) : null;
     };
     var CN_OF = { prod: { '열연': 'cn4', '후판': 'cn3', '선재': 'cn2', '철근': 'cn1', '형강': ['cn6', '앵글'], '강관': ['cn5', '무계목'] }, raw: { '원료탄': ['cn7', '점결탄'], '코크스': 'cn8' }, nf: { '알루미늄': 'al', '구리': 'cu', '아연': 'zn', '납': 'pb' } };
+    var WB_OF = { raw: { '철광석': 'iron_ore', '연료탄': 'coal_au' }, nf: { '알루미늄': 'al', '구리': 'cu', '아연': 'zn', '니켈': 'ni', '납': 'pb' } };
     var row8 = function (tab, name, kr, us, jp) {
       var o = CMP[tab].rows.filter(function (x) { return x[0] === name; })[0][1].slice();
       if (us) o[0] = us;
       if (jp) o[4] = jp;
+      var wm = WB_OF[tab] && WB_OF[tab][name];
+      if (wm && wd && wd.status === 'ok' && wd.j.items[wm]) { var w0 = wd.j.items[wm]; o[6] = mk(w0.value, w0.prev, fmt(w0.value, 0) + '$'); }
       var cm = CN_OF[tab] && CN_OF[tab][name];
       if (cm) { var cc1 = Array.isArray(cm) ? cnCell(cm[0], cm[1]) : cnCell(cm); if (cc1) o[1] = cc1; }
       return [name, [kr].concat(o)];
@@ -1318,7 +1341,7 @@ class Component extends DCLogic {
     var jpSrc0 = jd && jd.status === 'ok' && jd.source ? (jd.source['export'] || jd.source['import']) : null;
     var cmpCols = [
       { name: '한국', sub: krSub }, { name: '미국', sub: usSub }, { name: '중국', sub: cnLabel || '9월 중순' }, { name: '인도', sub: '도매물가' },
-      { name: '멕시코', sub: '6월·전년비' }, { name: '일본', sub: jpSrc0 ? dmon(jpSrc0.month) + '·전월비' : '무역통계' }, { name: '유럽', sub: 'Eurostat' }, { name: '세계', sub: '8월 평균' }
+      { name: '멕시코', sub: '6월·전년비' }, { name: '일본', sub: jpSrc0 ? dmon(jpSrc0.month) + '·전월비' : '무역통계' }, { name: '유럽', sub: 'Eurostat' }, { name: '세계', sub: wbMonth ? dmon(wbMonth) + ' 평균' : '8월 평균' }
     ];
 
     var tabOn = 'color:#1570EF', tabOff = 'color:#55657A';

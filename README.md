@@ -122,3 +122,9 @@ This product uses the Census Bureau Data API but is not endorsed or certified by
 - 키 없음. `GET /api/cn-prices`: 국가통계국 최신 발표 목록(sj/zxfb)에서 「流通领域重要生产资料市场价格变动情况」 최신 글을 찾아 표를 읽습니다. 철강 6종·焦煤·焦炭(cn1~cn8)과 비철 4종(铜·铝·铅·锌). 캐시 6시간.
 - `GET /api/cn-prices-probe`: 목록에서 찾은 링크와 파싱 결과 진단.
 - 페이지 구조가 바뀌면 읽기에 실패할 수 있습니다. 실패하면 앱은 기존(수기) 값을 그대로 보여 줍니다.
+
+## 세계은행 원자재 월평균 (Pink Sheet)
+
+- 키 없음, CC BY 4.0. `GET /api/world-prices`: 세계은행 Commodity Markets 안내 페이지에서 CMO-Historical-Data-Monthly.xlsx 링크를 찾아(못 찾으면 마지막 확인 주소 또는 `WB_XLSX_URL`) 'Monthly Prices' 시트를 읽습니다. 철광석, 호주산 석탄, 알루미늄·구리·납·주석·니켈·아연. 캐시 12시간.
+- xlsx는 의존성 없이 `lib/xlsx-lite.js`로 읽습니다.
+- `GET /api/world-prices-probe`: 파일 주소·크기·파싱 결과 진단.
