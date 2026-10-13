@@ -32,6 +32,12 @@
     },
     "api/fx-daily-probe.js": {
       "maxDuration": 60
+    },
+    "api/us-ppi.js": {
+      "maxDuration": 60
+    },
+    "api/us-ppi-probe.js": {
+      "maxDuration": 60
     }
   },
   "regions": [

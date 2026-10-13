@@ -105,3 +105,9 @@ This product uses the Census Bureau Data API but is not endorsed or certified by
 - `GET /api/fx-daily`: 최근 영업일·전 영업일 매매기준율(USD, CNH, JPY100). 주말은 건너뛰고, 오늘 값이 없으면(오전 11시 이전·공휴일) 이전 날짜로 물러납니다. 앱 환율 탭은 이 값을 우선 표시하고, 없으면 관세청 과세환율을 보여 줍니다.
 - `GET /api/fx-daily-probe`: 최근 5일 응답 진단(결과 코드, 연결 실패 원인).
 - `vercel.json`의 `regions: ["icn1"]`로 함수를 서울 리전에서 실행합니다.
+
+## 미국 BLS 생산자물가지수
+
+- 환경변수 `BLS_API_KEY` (BLS Public Data API v2 등록키, 이메일 활성화 필요). 퍼블릭 도메인.
+- `GET /api/us-ppi`: 미국 방향 3종 — 철강재 전체(WPU1017), 냉연(후보 시리즈 중 공식 제목에 'cold rolled'가 있는 것), 철스크랩(WPU1012). 최신·전월, 예비치(P) 표시. 캐시 12시간.
+- `GET /api/us-ppi-probe`: 후보 시리즈의 공식 제목과 최신값 진단.

@@ -25,6 +25,9 @@ const handleKrPpiProbe = makeKrPpiProbeHandler();
 const { makeFxDailyHandler, makeFxDailyProbeHandler } = require('./lib/eximfx-handler');
 const handleFxDaily = makeFxDailyHandler();
 const handleFxDailyProbe = makeFxDailyProbeHandler();
+const { makeUsPpiHandler, makeUsPpiProbeHandler } = require('./lib/bls-handler');
+const handleUsPpi = makeUsPpiHandler();
+const handleUsPpiProbe = makeUsPpiProbeHandler();
 
 function sendJson(res, status, body, cacheControl) {
   res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': cacheControl || 'no-store', 'X-Content-Type-Options': 'nosniff' });
@@ -37,6 +40,8 @@ const server = http.createServer(async (req, res) => {
   if (url.pathname === '/api/us-state-imports') {
     return handle(Object.fromEntries(url.searchParams), (s, b, cc) => sendJson(res, s, b, cc));
   }
+  if (url.pathname === '/api/us-ppi') return handleUsPpi((s, b, cc) => sendJson(res, s, b, cc));
+  if (url.pathname === '/api/us-ppi-probe') return handleUsPpiProbe((s, b, cc) => sendJson(res, s, b, cc));
   if (url.pathname === '/api/fx-daily') return handleFxDaily((s, b, cc) => sendJson(res, s, b, cc));
   if (url.pathname === '/api/fx-daily-probe') return handleFxDailyProbe((s, b, cc) => sendJson(res, s, b, cc));
   if (url.pathname === '/api/kr-ppi') return handleKrPpi((s, b, cc) => sendJson(res, s, b, cc));
@@ -47,7 +52,7 @@ const server = http.createServer(async (req, res) => {
   if (url.pathname === '/api/kr-probe') return handleKrProbe((s, b, cc) => sendJson(res, s, b, cc));
   if (url.pathname === '/api/jp-trade') return handleJpTrade((s, b, cc) => sendJson(res, s, b, cc));
   if (url.pathname === '/api/jp-probe') return handleJpProbe((s, b, cc) => sendJson(res, s, b, cc));
-  if (url.pathname === '/healthz') return sendJson(res, 200, { ok: true, keyConfigured: Boolean(process.env.CENSUS_API_KEY), estatConfigured: Boolean(process.env.ESTAT_APP_ID), customsConfigured: Boolean(process.env.CUSTOMS_SERVICE_KEY), kosisConfigured: Boolean(process.env.KOSIS_API_KEY), keximConfigured: Boolean(process.env.KOREAEXIM_API_KEY) });
+  if (url.pathname === '/healthz') return sendJson(res, 200, { ok: true, keyConfigured: Boolean(process.env.CENSUS_API_KEY), estatConfigured: Boolean(process.env.ESTAT_APP_ID), customsConfigured: Boolean(process.env.CUSTOMS_SERVICE_KEY), kosisConfigured: Boolean(process.env.KOSIS_API_KEY), keximConfigured: Boolean(process.env.KOREAEXIM_API_KEY), blsConfigured: Boolean(process.env.BLS_API_KEY) });
   const rel = url.pathname === '/' ? 'index.html' : decodeURIComponent(url.pathname).replace(/^\/+/, '');
   const file = path.normalize(path.join(PUBLIC, rel));
   if (!file.startsWith(PUBLIC + path.sep)) { res.writeHead(403); return res.end(); }

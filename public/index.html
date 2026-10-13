@@ -1185,6 +1185,28 @@ class Component extends DCLogic {
       if (anyPpi) { G.kr.real = true; G.kr.date = monthLabel(pd.j.period); G.kr.note = '가격이 아니라 지수(2020=100)입니다. 전월 대비 변동입니다. 출처: 한국은행, 「생산자물가조사」, KOSIS.'; }
     }
 
+    // 미국 방향: BLS 생산자물가지수 (/api/us-ppi)
+    var ud2 = s.usPpi;
+    if (s.group === 'gl' && !ud2 && !self._usPpiReq) {
+      self._usPpiReq = true;
+      setTimeout(function () {
+        if (typeof fetch !== 'function') { self.setState({ usPpi: { status: 'error' } }); return; }
+        fetch('/api/us-ppi')
+          .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+          .then(function (x) { if (!x.ok || !x.j || x.j.status !== 'ok') throw new Error('bad'); self.setState({ usPpi: { status: 'ok', j: x.j } }); })
+          .catch(function () { self.setState({ usPpi: { status: 'error' } }); });
+      }, 0);
+    }
+    if (ud2 && ud2.status === 'ok') {
+      var anyUs = false, usPeriod = null;
+      (ud2.j.items || []).forEach(function (d) {
+        if (d.status !== 'ok') return;
+        anyUs = true; usPeriod = d.period;
+        liveSet(d.id, d.value, 3, '지수 1982=100 · ' + monthLabel(d.period) + (d.preliminary ? ' (예비)' : '') + ' · ' + d.seriesId, d.prev, ' 전월비');
+      });
+      if (anyUs) { G.gl.real = true; G.gl.date = monthLabel(usPeriod); G.gl.note = '가격이 아니라 지수(1982=100)입니다. 최근 4개월 값은 예비치라 바뀔 수 있습니다. 출처: U.S. Bureau of Labor Statistics.'; }
+    }
+
     var tabOn = 'color:#1570EF', tabOff = 'color:#55657A';
     var go = function (t) { return function () { set({ tab: t, sub: null }); }; };
     var top = !s.sub;
