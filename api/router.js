@@ -3,6 +3,15 @@
 // API 키는 각 모듈이 환경변수에서만 읽는다.
 const { ROUTES, routeName } = require('../lib/routes');
 
+// POST 본문(JSON, 최대 300KB). Vercel이 이미 읽어 둔 req.body가 있으면 그대로 쓴다.
+async function readBody(req) {
+  if (req.body && typeof req.body === 'object') return req.body;
+  if (typeof req.body === 'string') return JSON.parse(req.body || '{}');
+  let size = 0; const chunks = [];
+  for await (const c of req) { size += c.length; if (size > 300000) throw new Error('too_large'); chunks.push(c); }
+  return JSON.parse(Buffer.concat(chunks).toString('utf8') || '{}');
+}
+
 module.exports = async (req, res) => {
   const url = new URL(req.url, 'http://localhost');
   const query = Object.fromEntries(url.searchParams);
@@ -17,6 +26,9 @@ module.exports = async (req, res) => {
   };
   const r = ROUTES[name];
   if (!r) return send(404, { error: 'not_found', route: name });
-  if (req.method !== 'GET' && req.method !== 'HEAD') return send(405, { error: 'method_not_allowed' });
-  await r.handle(query, (s, b, cc) => send(s, b, cc, r.sMaxAge));
+  const isPost = req.method === 'POST' && r.post;
+  if (req.method !== 'GET' && req.method !== 'HEAD' && !isPost) return send(405, { error: 'method_not_allowed' });
+  let body = null;
+  if (isPost) { try { body = await readBody(req); } catch (e) { return send(400, { error: 'bad_body' }); } }
+  await r.handle(query, (s, b, cc) => send(s, b, cc, r.sMaxAge), { method: req.method, headers: req.headers || {}, body });
 };

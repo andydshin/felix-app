@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Felix 리포트 편집</title>
+<style>
+  :root { --blue: #1570EF; --blue-d: #0B4FB3; --sky: #E8F2FF; --line: #E3EAF3; --ink: #101828; --sub: #55657A; --bg: #F5F8FC; --up: #C4320A; --down: #175CD3; --ok: #0B6B3A; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.55 -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", sans-serif; }
+  header { position: sticky; top: 0; z-index: 5; background: #fff; border-bottom: 1px solid var(--line); padding: 12px 20px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  header h1 { margin: 0 12px 0 0; font-size: 17px; }
+  main { max-width: 1180px; margin: 0 auto; padding: 18px 20px 80px; display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 18px; }
+  @media (max-width: 900px) { main { grid-template-columns: 1fr; } }
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin-bottom: 14px; }
+  .card h2 { margin: 0 0 10px; font-size: 15px; }
+  .card h3 { margin: 0 0 6px; font-size: 13px; color: var(--sub); }
+  label { display: block; font-size: 12px; font-weight: 700; color: var(--sub); margin: 10px 0 4px; }
+  input, textarea, select { width: 100%; font: inherit; border: 1px solid #CBD5E1; border-radius: 10px; padding: 8px 10px; background: #fff; color: var(--ink); }
+  textarea { min-height: 64px; resize: vertical; }
+  button { font: inherit; font-weight: 600; border-radius: 10px; border: 1px solid var(--blue); background: #fff; color: var(--blue); padding: 8px 14px; cursor: pointer; min-height: 38px; }
+  button.primary { background: var(--blue); color: #fff; }
+  button.ghost { border-color: var(--line); color: var(--sub); }
+  button.danger { border-color: #F4C7B8; color: var(--up); }
+  button:disabled { opacity: .5; cursor: wait; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .muted { color: var(--sub); font-size: 12px; }
+  .pill { display: inline-block; font-size: 11px; font-weight: 700; border-radius: 20px; padding: 2px 8px; background: var(--sky); color: var(--blue-d); }
+  .issue { border: 1px solid var(--line); border-radius: 12px; padding: 12px; margin-top: 12px; }
+  .src a { color: var(--blue-d); word-break: break-all; }
+  .src li { margin: 2px 0; }
+  #log { white-space: pre-wrap; font: 12px/1.5 ui-monospace, Menlo, monospace; background: #0F172A; color: #CFE3FF; border-radius: 12px; padding: 12px; max-height: 220px; overflow: auto; }
+  .up { color: var(--up); font-weight: 700; } .down { color: var(--down); font-weight: 700; }
+  ul { margin: 6px 0; padding-left: 18px; }
+  .newsitem { font-size: 12px; margin: 4px 0; }
+  .steps { display: flex; gap: 8px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Felix 주간 리포트 편집</h1>
+  <input id="token" type="password" placeholder="관리자 토큰" autocomplete="off" style="max-width: 220px">
+  <div class="steps">
+    <button id="bProbe" class="ghost">연결 확인</button>
+    <button id="bCollect">① 자료 수집</button>
+    <button id="bDraft">② AI 초안</button>
+    <button id="bSave">③ 저장</button>
+    <label style="margin:0;display:flex;align-items:center;gap:6px">호수 <input id="no" type="number" min="1" style="width:80px"></label>
+    <button id="bPublish" class="primary">④ 발행</button>
+  </div>
+  <span id="state" class="muted"></span>
+</header>
+<main>
+  <section id="editor">
+    <div class="card"><div class="muted">토큰을 넣고 ‘연결 확인’ 또는 ① 자료 수집부터 시작하세요. 수집은 30초~1분, AI 초안은 두 단계로 1~2분 걸립니다. 같은 호수로 다시 발행하면 덮어씁니다.</div></div>
+  </section>
+  <aside>
+    <div class="card"><h2>진행 기록</h2><div id="log">대기 중</div></div>
+    <div class="card" id="dataBox"><h2>수집한 숫자</h2><div class="muted">아직 없음</div></div>
+    <div class="card" id="newsBox"><h2>수집한 뉴스·공고</h2><div class="muted">아직 없음</div></div>
+  </aside>
+</main>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var REGION = { kr: '한국', us: '미국', cn: '중국', in: '인도', mx: '멕시코', jp: '일본', eu: '유럽', world: '세계' };
+  var draft = null, info = null;
+  try { $('token').value = sessionStorage.getItem('felixAdmin') || ''; } catch (e) {}
+  $('token').addEventListener('change', function () { try { sessionStorage.setItem('felixAdmin', $('token').value); } catch (e) {} });
+
+  function el(tag, attrs, kids) {
+    var e = document.createElement(tag);
+    Object.keys(attrs || {}).forEach(function (k) { if (k === 'text') e.textContent = attrs[k]; else if (k === 'on') Object.keys(attrs.on).forEach(function (ev) { e.addEventListener(ev, attrs.on[ev]); }); else e.setAttribute(k, attrs[k]); });
+    (kids || []).forEach(function (c) { if (c) e.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); });
+    return e;
+  }
+  function log(m) { var l = $('log'); l.textContent = (l.textContent === '대기 중' ? '' : l.textContent + '\n') + new Date().toLocaleTimeString('ko-KR') + '  ' + m; l.scrollTop = l.scrollHeight; }
+  function busy(on) { ['bProbe', 'bCollect', 'bDraft', 'bSave', 'bPublish'].forEach(function (b) { $(b).disabled = on; }); $('state').textContent = on ? '처리 중…' : ''; }
+  function api(body, path) {
+    return fetch(path || '/api/report-admin', { method: path ? 'GET' : 'POST', headers: { 'Content-Type': 'application/json', 'x-admin-token': $('token').value.trim() }, body: path ? undefined : JSON.stringify(body) })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok) throw new Error((j.error || r.status) + (j.message ? ' — ' + j.message : '') + (j.status ? ' (' + j.status + ')' : '')); return j; }); });
+  }
+  var safeHref = function (u) { return /^https?:\/\//i.test(u || '') ? u : '#'; };
+  var sign = function (p) { return p == null ? '' : (p > 0 ? '▲' : p < 0 ? '▼' : '') + Math.abs(p).toFixed(1) + '%'; };
+
+  // ---------- 편집기 ----------
+  function field(lbl, val, onv, area) {
+    var i = el(area ? 'textarea' : 'input', {}); i.value = val || '';
+    i.addEventListener('input', function () { onv(i.value); });
+    return el('div', {}, [el('label', { text: lbl }), i]);
+  }
+  function select(lbl, val, opts, onv) {
+    var s = el('select', {}); opts.forEach(function (o) { var op = el('option', { value: o, text: o }); if (o === val) op.selected = true; s.appendChild(op); });
+    s.addEventListener('change', function () { onv(s.value); });
+    return el('div', {}, [el('label', { text: lbl }), s]);
+  }
+  function srcList(list, onRemove) {
+    var ul = el('ul', { class: 'src' });
+    (list || []).forEach(function (s, i) {
+      ul.appendChild(el('li', {}, [el('a', { href: safeHref(s.url), target: '_blank', rel: 'noopener noreferrer', text: (s.date ? s.date + ' · ' : '') + (s.source || '') + ' — ' + s.title }), ' ', el('button', { class: 'ghost', style: 'min-height:24px;padding:0 6px;font-size:11px', text: '빼기', on: { click: function () { onRemove(i); } } })]));
+    });
+    return ul;
+  }
+
+  function renderEditor() {
+    var box = $('editor'); box.replaceChildren();
+    if (!draft) { box.appendChild(el('div', { class: 'card' }, [el('div', { class: 'muted', text: '초안이 없습니다. ① 자료 수집 → ② AI 초안 순서로 진행하세요.' })])); return; }
+    var d = draft;
+    var head = el('div', { class: 'card' }, [el('h2', { text: '요약' }),
+      field('제목 (35자 이내 권장)', d.title, function (v) { d.title = v; }),
+      field('이번 주 한 줄', d.oneLiner, function (v) { d.oneLiner = v; }, true),
+      field('핵심 3가지 (한 줄에 하나)', (d.takeaways || []).join('\n'), function (v) { d.takeaways = v.split('\n').map(function (x) { return x.trim(); }).filter(Boolean); }, true)]);
+    box.appendChild(head);
+
+    var reg = el('div', { class: 'card' }, [el('h2', { text: '지역별 브리핑' })]);
+    (d.regions || []).forEach(function (r, i) {
+      reg.appendChild(el('div', { class: 'row', style: 'justify-content:space-between;margin-top:8px' }, [el('span', { class: 'pill', text: REGION[r.region] || r.region }), el('button', { class: 'danger', text: '삭제', on: { click: function () { d.regions.splice(i, 1); renderEditor(); } } })]));
+      var t = el('textarea', {}); t.value = r.text; t.addEventListener('input', function () { r.text = t.value; }); reg.appendChild(t);
+    });
+    box.appendChild(reg);
+
+    var iss = el('div', { class: 'card' }, [el('div', { class: 'row', style: 'justify-content:space-between' }, [el('h2', { text: '세계 이슈와 영향 (' + (d.issues || []).length + ')' }), el('button', { class: 'ghost', text: '+ 이슈 추가', on: { click: function () { (d.issues = d.issues || []).push({ type: '거시', title: '', dir: '중립', conf: '중간', items: [], regions: [], sources: [] }); renderEditor(); } } })]),
+      el('div', { class: 'muted', text: '출처 링크를 열어 제목과 실제 기사 내용이 맞는지 확인하세요. 기사에 없는 숫자·날짜가 들어가 있으면 고치거나 지웁니다.' })]);
+    (d.issues || []).forEach(function (x, i) {
+      var c = el('div', { class: 'issue' });
+      c.appendChild(el('div', { class: 'row', style: 'justify-content:space-between' }, [el('strong', { text: (i + 1) + '. ' + (x.title || '(제목 없음)') }), el('div', { class: 'row' }, [
+        el('button', { class: 'ghost', text: '↑', on: { click: function () { if (i) { d.issues.splice(i - 1, 0, d.issues.splice(i, 1)[0]); renderEditor(); } } } }),
+        el('button', { class: 'ghost', text: '↓', on: { click: function () { if (i < d.issues.length - 1) { d.issues.splice(i + 1, 0, d.issues.splice(i, 1)[0]); renderEditor(); } } } }),
+        el('button', { class: 'danger', text: '삭제', on: { click: function () { d.issues.splice(i, 1); renderEditor(); } } })])]));
+      c.appendChild(el('div', { class: 'grid3' }, [select('분류', x.type, ['무역정책', '공급', '수요', '원료', '비철', '거시'], function (v) { x.type = v; }), select('방향', x.dir, ['상승', '하락', '혼조', '중립'], function (v) { x.dir = v; }), select('확실성', x.conf, ['높음', '중간', '낮음'], function (v) { x.conf = v; })]));
+      c.appendChild(field('제목', x.title, function (v) { x.title = v; }));
+      c.appendChild(field('1. 무슨 일인가', x.what, function (v) { x.what = v; }, true));
+      c.appendChild(field('2. 어떤 경로로 오나', x.path, function (v) { x.path = v; }, true));
+      c.appendChild(field('3. 어느 품목에, 어느 방향으로, 언제', x.impact, function (v) { x.impact = v; }, true));
+      c.appendChild(field('4. 무엇을 보면 확인되나', x.watch, function (v) { x.watch = v; }, true));
+      c.appendChild(field('5. 확실성 근거', x.confWhy, function (v) { x.confWhy = v; }));
+      c.appendChild(field('관련 품목 키 (쉼표로: hr, rebar, scrap …)', (x.items || []).join(', '), function (v) { x.items = v.split(',').map(function (s) { return s.trim(); }).filter(Boolean); }));
+      c.appendChild(field('시세 바로가기 데이터 키 (예: cn:hr, 비워도 됨)', x.watchKey, function (v) { x.watchKey = v.trim(); }));
+      c.appendChild(el('label', { text: '출처' })); c.appendChild(srcList(x.sources, function (k) { x.sources.splice(k, 1); renderEditor(); }));
+      c.appendChild(addSourceRow(function (s) { (x.sources = x.sources || []).push(s); renderEditor(); }));
+      iss.appendChild(c);
+    });
+    box.appendChild(iss);
+
+    var cal = el('div', { class: 'card' }, [el('div', { class: 'row', style: 'justify-content:space-between' }, [el('h2', { text: '무역·정책 일정 (뉴스에서 찾은 것)' }), el('button', { class: 'ghost', text: '+ 일정 추가', on: { click: function () { (d.calendar = d.calendar || []).push({ date: '', title: '', why: '', sources: [] }); renderEditor(); } } })]),
+      el('div', { class: 'muted', text: '정기 통계 발표 일정은 발행할 때 자동으로 합쳐집니다.' })]);
+    (d.calendar || []).forEach(function (c, i) {
+      cal.appendChild(el('div', { class: 'issue' }, [el('div', { class: 'grid3' }, [field('날짜 (YYYY-MM-DD)', c.date, function (v) { c.date = v.trim(); }), field('일정', c.title, function (v) { c.title = v; }), el('div', { style: 'display:flex;align-items:flex-end' }, [el('button', { class: 'danger', text: '삭제', on: { click: function () { d.calendar.splice(i, 1); renderEditor(); } } })])]),
+        field('왜 봐야 하나', c.why, function (v) { c.why = v; }), srcList(c.sources, function (k) { c.sources.splice(k, 1); renderEditor(); })]));
+    });
+    box.appendChild(cal);
+
+    var ck = el('div', { class: 'card' }, [el('h2', { text: '이번 호 전망 (다음 호에서 자동 채점)' }), el('div', { class: 'muted', text: '키는 오른쪽 ‘수집한 숫자’의 키 중 하나여야 합니다. 발행 때 지금 값이 기준값으로 저장됩니다.' })]);
+    (d.checks || []).forEach(function (c, i) {
+      ck.appendChild(el('div', { class: 'issue' }, [el('div', { class: 'grid3' }, [field('데이터 키', c.key, function (v) { c.key = v.trim(); }), select('예상', c.expect, ['up', 'down'], function (v) { c.expect = v; }), el('div', { style: 'display:flex;align-items:flex-end' }, [el('button', { class: 'danger', text: '삭제', on: { click: function () { d.checks.splice(i, 1); renderEditor(); } } })])]), field('전망 문장', c.label, function (v) { c.label = v; })]));
+    });
+    ck.appendChild(el('button', { class: 'ghost', style: 'margin-top:10px', text: '+ 전망 추가', on: { click: function () { (d.checks = d.checks || []).push({ key: '', expect: 'down', label: '' }); renderEditor(); } } }));
+    box.appendChild(ck);
+  }
+
+  function addSourceRow(onAdd) {
+    var u = el('input', { placeholder: 'https:// 링크' }), t = el('input', { placeholder: '제목' });
+    return el('div', { class: 'row', style: 'margin-top:6px' }, [el('div', { style: 'flex:2' }, [u]), el('div', { style: 'flex:2' }, [t]), el('button', { class: 'ghost', text: '출처 추가', on: { click: function () { if (!/^https?:\/\//i.test(u.value)) return alert('http(s) 링크만 넣을 수 있습니다.'); onAdd({ url: u.value.trim(), title: t.value.trim() || u.value.trim(), source: (u.value.match(/^https?:\/\/([^/]+)/i) || [])[1] || '' }); } } })]);
+  }
+
+  // ---------- 오른쪽: 수집 자료 ----------
+  function renderInfo() {
+    var dbox = $('dataBox'), nbox = $('newsBox');
+    dbox.replaceChildren(el('h2', { text: '수집한 숫자' })); nbox.replaceChildren(el('h2', { text: '수집한 뉴스·공고' }));
+    var inp = info && info.inputs;
+    if (!inp) { dbox.appendChild(el('div', { class: 'muted', text: '아직 없음' })); nbox.appendChild(el('div', { class: 'muted', text: '아직 없음' })); return; }
+    dbox.appendChild(el('div', { class: 'muted', text: inp.today + ' 수집 · 숫자 ' + inp.rows + '개 · 소스 ' + Object.keys(inp.status).map(function (k) { return k + ' ' + inp.status[k]; }).join(', ') }));
+    var a = inp.analysis;
+    function list(title, rows) { var ul = el('ul'); rows.forEach(function (r) { ul.appendChild(el('li', {}, [r.regionName + ' ' + r.label + ' ', el('span', { class: r.pct > 0 ? 'up' : 'down', text: sign(r.pct) }), el('span', { class: 'muted', text: '  ' + r.key + ' · ' + (r.period || '') })])); }); return el('div', {}, [el('h3', { text: title }), ul]); }
+    dbox.appendChild(list('많이 오른 것', a.movers.up)); dbox.appendChild(list('많이 내린 것', a.movers.down));
+    dbox.appendChild(list('원료', a.flow.raw)); dbox.appendChild(list('제품', a.flow.product));
+    a.regions.forEach(function (g) { dbox.appendChild(list(g.regionName, g.rows)); });
+    if (inp.pastCheck) { var ul = el('ul'); inp.pastCheck.checks.forEach(function (c) { ul.appendChild(el('li', { text: c.label + ' → ' + ({ hit: '맞음', miss: '틀림', pending: '새 값 발표 전', nodata: '데이터 없음' }[c.result]) + (c.pct != null ? ' (' + sign(c.pct) + ')' : '') })); }); dbox.appendChild(el('div', {}, [el('h3', { text: '제' + inp.pastCheck.no + '호 전망 채점' }), ul])); }
+    nbox.appendChild(el('div', { class: 'muted', text: '뉴스 ' + inp.news + '건 · 미국 관보 ' + inp.official + '건' + (inp.newsErrors && inp.newsErrors.gdelt && inp.newsErrors.gdelt.length ? ' · GDELT 오류 ' + inp.newsErrors.gdelt.length : '') }));
+    (inp.newsList || []).forEach(function (n) { nbox.appendChild(el('div', { class: 'newsitem' }, [el('span', { class: 'pill', text: n.id }), ' ', el('a', { href: safeHref(n.url), target: '_blank', rel: 'noopener noreferrer', text: n.title }), el('span', { class: 'muted', text: ' · ' + (n.source || '') + ' ' + (n.date || '') })])); });
+  }
+
+  function refresh() { return api({ action: 'get' }).then(function (j) { info = j; draft = j.draft; $('no').value = $('no').value || j.nextNo; renderInfo(); renderEditor(); if (!j.kvConfigured) log('주의: 저장소(Upstash) 미연결 — 서버 메모리에 임시 저장 중'); }); }
+  function run(label, fn) { busy(true); log(label + ' 시작'); return fn().then(function (r) { log(label + ' 완료' + (r ? ' ' + JSON.stringify(r).slice(0, 300) : '')); }).catch(function (e) { log(label + ' 실패: ' + e.message); }).then(function () { busy(false); }); }
+
+  $('bProbe').addEventListener('click', function () { run('연결 확인', function () { return api(null, '/api/report-probe').then(function (j) { log(JSON.stringify(j, null, 1)); return refresh(); }); }); });
+  $('bCollect').addEventListener('click', function () { run('자료 수집', function () { return api({ action: 'collect' }).then(function (j) { log('숫자 ' + j.rows + '개, 뉴스 ' + j.news + '건, 공고 ' + j.official + '건'); return refresh(); }); }); });
+  $('bDraft').addEventListener('click', function () {
+    if (draft && draft.title && !confirm('지금 초안을 AI 새 초안으로 바꿉니다. 계속할까요?')) return;
+    run('AI 초안', function () { return api({ action: 'draft-issues' }).then(function (a) { log('이슈 ' + a.issues + '개, 일정 ' + a.calendar + '개 (' + a.model + ')'); return api({ action: 'draft-summary' }); }).then(function (b) { log('요약 완료: ' + b.title); return refresh(); }); });
+  });
+  $('bSave').addEventListener('click', function () { if (!draft) return; run('저장', function () { return api({ action: 'save', draft: draft }).then(function (j) { draft = j.draft; renderEditor(); }); }); });
+  $('bPublish').addEventListener('click', function () {
+    if (!draft || !draft.title) return alert('초안이 없습니다.');
+    var no = Number($('no').value) || (info && info.nextNo);
+    if (!confirm('제' + no + '호로 발행합니다. 앱 사용자에게 바로 보입니다. 계속할까요?')) return;
+    run('발행', function () { return api({ action: 'save', draft: draft }).then(function () { return api({ action: 'publish', no: no }); }).then(function (j) { log('제' + j.no + '호 발행 (' + j.weekLabel + ')'); return refresh(); }); });
+  });
+  if ($('token').value) refresh().catch(function (e) { log('불러오기 실패: ' + e.message); });
+})();
+</script>
+</body>
+</html>

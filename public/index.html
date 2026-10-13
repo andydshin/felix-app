@@ -48,8 +48,8 @@ a{color:#1570EF}a:hover{color:#0B4FB3}
         </div>
 
         <button onClick="{{ openReport }}" style="display: block; width: 100%; box-sizing: border-box; background: #1570EF; color: #FFFFFF; border-radius: 14px; padding: 16px 18px">
-          <div style="font-size: 12px; font-weight: 600; opacity: 0.9">주간 리포트 제12호 · 10월 1주</div>
-          <div style="margin-top: 6px; font-size: 16px; font-weight: 600; line-height: 1.5">중국 내수가는 판재 중심으로 내렸고 코크스만 올랐다. 수입재 하락 압력은 이어지고, 환율이 그 폭을 일부 상쇄한다.</div>
+          <div style="font-size: 12px; font-weight: 600; opacity: 0.9">{{ homeRepTag }}</div>
+          <div style="margin-top: 6px; font-size: 16px; font-weight: 600; line-height: 1.5">{{ homeRepLine }}</div>
           <div style="margin-top: 10px; font-size: 13px; font-weight: 600">리포트 읽기 →</div>
         </button>
 
@@ -383,28 +383,23 @@ a{color:#1570EF}a:hover{color:#0B4FB3}
       <div style="display: flex; flex-direction: column; gap: 12px; padding: 18px 20px 28px">
         <div>
           <h1 style="margin: 0; font-size: 22px; font-weight: 700">리포트</h1>
-          <div style="font-size: 13px; color: #55657A">매주 목요일 오전 발행 · 숫자와 세계 뉴스의 영향</div>
+          <div style="font-size: 13px; color: #55657A">매주 목요일 발행 · 숫자와 세계 이슈를 한 번에</div>
         </div>
-        <button onClick="{{ openReport }}" style="display: block; width: 100%; box-sizing: border-box; background: #FFFFFF; border: 1px solid #1570EF; border-radius: 14px; padding: 16px">
-          <div style="font-size: 12px; font-weight: 700; color: #1570EF">최신 · 제12호 · 10월 1주</div>
-          <div style="margin-top: 4px; font-size: 16px; font-weight: 700; line-height: 1.45">중국 판재가 내리고 코크스가 올랐다. 수입재 원가는 어디로 가나</div>
-          <div style="margin-top: 6px; font-size: 13px; color: #55657A">뉴스 3건 · 다음 주 볼 것 3가지 · 지난 전망 점검</div>
-        </button>
-        <div style="background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 16px">
-          <div style="font-size: 12px; font-weight: 700; color: #55657A">제11호 · 9월 4주</div>
-          <div style="margin-top: 4px; font-size: 15px; font-weight: 600">[예시] 환율 반등이 수입재 도착 원가에 주는 영향</div>
-        </div>
-        <div style="background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 16px">
-          <div style="font-size: 12px; font-weight: 700; color: #55657A">제10호 · 9월 3주</div>
-          <div style="margin-top: 4px; font-size: 15px; font-weight: 600">[예시] 8월 통관 단가로 본 중국산 열연 흐름</div>
-        </div>
-        <div style="font-size: 13px; color: #55657A">목업에서는 최신호만 열립니다.</div>
+        <sc-for list="{{ repList }}" as="rl" hint-placeholder-count="3">
+          <button onClick="{{ rl.open }}" style="display: block; width: 100%; box-sizing: border-box; text-align: left; background: #FFFFFF; border: 1px solid {{ rl.border }}; border-radius: 14px; padding: 16px">
+            <div style="font-size: 12px; font-weight: 700; color: {{ rl.tagColor }}">{{ rl.tag }}</div>
+            <div style="margin-top: 4px; font-size: 16px; font-weight: 700; line-height: 1.45">{{ rl.title }}</div>
+            <div style="margin-top: 6px; font-size: 13px; color: #55657A">{{ rl.sub }}</div>
+          </button>
+        </sc-for>
+        <div style="font-size: 13px; color: #55657A">{{ repListNote }}</div>
       </div>
     </sc-if>
 
     <sc-if value="{{ isReport }}" hint-placeholder-val="{{ false }}">
       <div style="display: flex; flex-direction: column; gap: 14px; padding: 8px 20px 28px">
         <button onClick="{{ back }}" style="min-height: 44px; font-size: 14px; font-weight: 600; color: #1570EF">← 리포트 목록</button>
+        <sc-if value="{{ repSample }}" hint-placeholder-val="{{ false }}">
         <div>
           <div style="font-size: 12px; font-weight: 700; color: #1570EF">주간 리포트 제12호 · 2026년 10월 1주</div>
           <h1 style="margin: 4px 0 0; font-size: 22px; font-weight: 700; line-height: 1.35">중국 판재가 내리고 코크스가 올랐다. 수입재 원가는 어디로 가나</h1>
@@ -462,6 +457,173 @@ a{color:#1570EF}a:hover{color:#0B4FB3}
           <div style="margin-top: 8px; font-size: 14px">[예시] 제11호 전망: “중국 열연 내수가는 약세를 이어 간다.”</div>
           <div style="margin-top: 6px; font-size: 14px; font-weight: 700; color: #0B6B3A">결과: 맞음. 9월 중순 열연 ▼1.3%.</div>
         </div>
+
+        </sc-if>
+
+        <sc-if value="{{ repLoading }}" hint-placeholder-val="{{ false }}">
+          <div style="background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 18px; font-size: 14px; color: #55657A">리포트를 불러오는 중입니다.</div>
+        </sc-if>
+        <sc-if value="{{ repLive }}" hint-placeholder-val="{{ false }}">
+          <div>
+            <div style="font-size: 12px; font-weight: 700; color: #1570EF">{{ rp.tag }}</div>
+            <h1 style="margin: 4px 0 0; font-size: 22px; font-weight: 700; line-height: 1.35">{{ rp.title }}</h1>
+            <div style="margin-top: 4px; font-size: 12px; color: #55657A">{{ rp.dateLine }}</div>
+          </div>
+
+          <div style="background: #E8F2FF; border-radius: 14px; padding: 16px">
+            <div style="font-size: 12px; font-weight: 700; color: #0B4FB3">이번 주 한 줄</div>
+            <div style="margin-top: 4px; font-size: 15px; font-weight: 600; line-height: 1.6">{{ rp.oneLiner }}</div>
+            <sc-for list="{{ rp.takeaways }}" as="tk" hint-placeholder-count="3">
+              <div style="display: flex; gap: 8px; margin-top: 10px; font-size: 14px; line-height: 1.55"><div style="flex: none; width: 20px; height: 20px; border-radius: 10px; background: #1570EF; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{ tk.n }}</div><div>{{ tk.text }}</div></div>
+            </sc-for>
+          </div>
+
+          <div style="display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px">
+            <sc-for list="{{ rp.jump }}" as="jp" hint-placeholder-count="5">
+              <button onClick="{{ jp.go }}" style="flex: none; min-height: 36px; padding: 0 12px; border-radius: 18px; font-size: 13px; font-weight: 600; {{ jp.style }}">{{ jp.label }}</button>
+            </sc-for>
+          </div>
+
+          <sc-if value="{{ rp.secNum }}" hint-placeholder-val="{{ true }}">
+            <div style="background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 14px 16px">
+              <div style="font-size: 13px; font-weight: 700; color: #55657A">많이 움직인 가격</div>
+              <div style="font-size: 12px; color: #55657A">시장가·물가지수 기준. 직전 발표 대비.</div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px">
+                <div>
+                  <div style="font-size: 12px; font-weight: 700; color: #C4320A">오름</div>
+                  <sc-for list="{{ rp.up }}" as="m" hint-placeholder-count="3">
+                    <div style="margin-top: 6px"><div style="font-size: 13px; line-height: 1.35">{{ m.name }}</div><div style="font-size: 14px; font-weight: 700; color: #C4320A">{{ m.pct }} <span style="font-size: 11px; font-weight: 500; color: #55657A">{{ m.period }}</span></div></div>
+                  </sc-for>
+                  <sc-if value="{{ rp.noUp }}" hint-placeholder-val="{{ false }}"><div style="margin-top: 6px; font-size: 13px; color: #55657A">없음</div></sc-if>
+                </div>
+                <div>
+                  <div style="font-size: 12px; font-weight: 700; color: #175CD3">내림</div>
+                  <sc-for list="{{ rp.down }}" as="m" hint-placeholder-count="3">
+                    <div style="margin-top: 6px"><div style="font-size: 13px; line-height: 1.35">{{ m.name }}</div><div style="font-size: 14px; font-weight: 700; color: #175CD3">{{ m.pct }} <span style="font-size: 11px; font-weight: 500; color: #55657A">{{ m.period }}</span></div></div>
+                  </sc-for>
+                  <sc-if value="{{ rp.noDown }}" hint-placeholder-val="{{ false }}"><div style="margin-top: 6px; font-size: 13px; color: #55657A">없음</div></sc-if>
+                </div>
+              </div>
+            </div>
+
+            <div style="background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 14px 16px">
+              <div style="font-size: 13px; font-weight: 700; color: #55657A">원료에서 제품으로</div>
+              <div style="font-size: 12px; font-weight: 700; color: #33445A; margin-top: 10px">원료</div>
+              <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px">
+                <sc-for list="{{ rp.raw }}" as="f" hint-placeholder-count="3">
+                  <div style="border-radius: 10px; background: #F5F8FC; padding: 6px 10px; font-size: 13px">{{ f.name }} <b style="{{ f.style }}">{{ f.pct }}</b></div>
+                </sc-for>
+              </div>
+              <div style="text-align: center; font-size: 16px; color: #8A9AB0; margin: 6px 0">↓</div>
+              <div style="font-size: 12px; font-weight: 700; color: #33445A">제품</div>
+              <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px">
+                <sc-for list="{{ rp.product }}" as="f" hint-placeholder-count="3">
+                  <div style="border-radius: 10px; background: #F5F8FC; padding: 6px 10px; font-size: 13px">{{ f.name }} <b style="{{ f.style }}">{{ f.pct }}</b></div>
+                </sc-for>
+              </div>
+              <sc-for list="{{ rp.extra }}" as="x" hint-placeholder-count="2">
+                <div style="display: flex; justify-content: space-between; gap: 10px; margin-top: 10px; font-size: 13px; border-top: 1px solid #EEF2F7; padding-top: 8px"><div style="color: #33445A">{{ x.name }}</div><div style="font-weight: 700">{{ x.value }} <span style="{{ x.style }}">{{ x.pct }}</span></div></div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ rp.secRegion }}" hint-placeholder-val="{{ true }}">
+            <div style="background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 14px 16px">
+              <div style="font-size: 13px; font-weight: 700; color: #55657A">나라별 대표 철강재 전월비</div>
+              <div style="font-size: 12px; color: #55657A">열연 기준(미국은 철강재 전체 물가지수). 기준이 나라마다 달라 방향 위주로 보세요.</div>
+              <sc-for list="{{ rp.chart }}" as="c" hint-placeholder-count="7">
+                <div style="display: grid; grid-template-columns: 52px 1fr 64px; align-items: center; gap: 8px; margin-top: 8px; font-size: 13px">
+                  <div style="font-weight: 600">{{ c.name }}</div>
+                  <div style="position: relative; height: 14px; background: #F5F8FC; border-radius: 7px">
+                    <div style="position: absolute; left: 50%; top: -2px; bottom: -2px; width: 1px; background: #B8C4D4"></div>
+                    <div style="position: absolute; top: 2px; height: 10px; border-radius: 5px; {{ c.bar }}"></div>
+                  </div>
+                  <div style="text-align: right; font-weight: 700; {{ c.style }}">{{ c.pct }}</div>
+                </div>
+              </sc-for>
+              <div style="margin-top: 8px; font-size: 11px; color: #8A9AB0">{{ rp.chartNote }}</div>
+            </div>
+
+            <div style="background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 14px 16px">
+              <div style="font-size: 13px; font-weight: 700; color: #55657A">지역별 브리핑</div>
+              <div style="display: flex; gap: 6px; overflow-x: auto; margin-top: 10px; padding-bottom: 2px">
+                <sc-for list="{{ rp.regionTabs }}" as="rt" hint-placeholder-count="5">
+                  <button onClick="{{ rt.pick }}" style="flex: none; min-height: 36px; padding: 0 12px; border-radius: 18px; font-size: 13px; font-weight: 600; {{ rt.style }}">{{ rt.label }}</button>
+                </sc-for>
+              </div>
+              <div style="margin-top: 12px; font-size: 15px; line-height: 1.65">{{ rp.regionText }}</div>
+              <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px">
+                <sc-for list="{{ rp.regionNums }}" as="rn" hint-placeholder-count="3">
+                  <div style="border-radius: 10px; background: #F5F8FC; padding: 6px 10px; font-size: 12px"><span style="color: #33445A">{{ rn.name }}</span> <b>{{ rn.value }}</b> <b style="{{ rn.style }}">{{ rn.pct }}</b><div style="font-size: 11px; color: #8A9AB0">{{ rn.sub }}</div></div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ rp.secIssue }}" hint-placeholder-val="{{ true }}">
+            <div>
+              <div style="font-size: 13px; font-weight: 700; color: #55657A">세계 이슈와 영향</div>
+              <div style="font-size: 12px; color: #55657A">눌러서 펼치세요. 기사는 제목과 링크만 소개하고, 해석은 Felix가 썼습니다.</div>
+            </div>
+            <sc-for list="{{ rp.issues }}" as="n" hint-placeholder-count="3">
+              <div style="background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 4px 16px 6px">
+                <button onClick="{{ n.toggle }}" aria-expanded="{{ n.open }}" style="display: flex; width: 100%; min-height: 56px; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 0; text-align: left">
+                  <div>
+                    <div style="font-size: 12px; font-weight: 700; color: #1570EF">{{ n.type }} <span style="font-weight: 500; color: #8A9AB0">· {{ n.where }}</span></div>
+                    <div style="font-size: 15px; font-weight: 700; line-height: 1.45">{{ n.title }}</div>
+                  </div>
+                  <div style="flex: none; text-align: right"><div style="font-size: 13px; font-weight: 700; {{ n.dirStyle }}">{{ n.dir }}</div><div style="font-size: 11px; color: #8A9AB0">확실성 {{ n.confShort }}</div></div>
+                </button>
+                <sc-if value="{{ n.open }}" hint-placeholder-val="{{ false }}">
+                  <div style="display: flex; flex-direction: column; gap: 10px; border-top: 1px solid #EEF2F7; padding: 12px 0 10px">
+                    <div><div style="font-size: 12px; font-weight: 700; color: #55657A">1. 무슨 일인가</div><div style="font-size: 14px; line-height: 1.6">{{ n.what }}</div></div>
+                    <div><div style="font-size: 12px; font-weight: 700; color: #55657A">2. 어떤 경로로 오나</div><div style="font-size: 14px; line-height: 1.6">{{ n.path }}</div></div>
+                    <div><div style="font-size: 12px; font-weight: 700; color: #55657A">3. 어느 품목에, 어느 방향으로, 언제</div><div style="font-size: 14px; line-height: 1.6">{{ n.impact }}</div></div>
+                    <div><div style="font-size: 12px; font-weight: 700; color: #55657A">4. 무엇을 보면 확인되나</div><div style="font-size: 14px; line-height: 1.6">{{ n.watch }}</div>
+                      <sc-if value="{{ n.hasItem }}" hint-placeholder-val="{{ false }}">
+                        <button onClick="{{ n.openItem }}" style="margin-top: 6px; min-height: 44px; padding: 0 14px; border-radius: 22px; border: 1px solid #1570EF; color: #1570EF; font-size: 13px; font-weight: 600">{{ n.itemLabel }} 시세 보기</button>
+                      </sc-if>
+                    </div>
+                    <div><div style="font-size: 12px; font-weight: 700; color: #55657A">5. 얼마나 확실한가</div><div style="font-size: 14px; line-height: 1.6">{{ n.conf }}</div></div>
+                    <div><div style="font-size: 12px; font-weight: 700; color: #55657A">출처</div>
+                      <sc-for list="{{ n.sources }}" as="sc" hint-placeholder-count="2">
+                        <a href="{{ sc.href }}" target="_blank" rel="noopener noreferrer" style="display: block; margin-top: 4px; font-size: 13px; line-height: 1.45; color: #0B4FB3">{{ sc.title }} <span style="color: #8A9AB0">· {{ sc.meta }}</span></a>
+                      </sc-for>
+                    </div>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-for>
+          </sc-if>
+
+          <sc-if value="{{ rp.secCal }}" hint-placeholder-val="{{ true }}">
+            <div style="background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 14px 16px">
+              <div style="font-size: 13px; font-weight: 700; color: #55657A">앞으로 2주 일정</div>
+              <sc-for list="{{ rp.calendar }}" as="cl" hint-placeholder-count="4">
+                <div style="display: grid; grid-template-columns: 56px 1fr; gap: 10px; margin-top: 10px">
+                  <div><div style="font-size: 14px; font-weight: 700">{{ cl.md }}</div><div style="font-size: 11px; color: #8A9AB0">{{ cl.wd }}</div></div>
+                  <div><div style="font-size: 14px; font-weight: 600; line-height: 1.45"><span style="display: inline-block; font-size: 11px; font-weight: 700; border-radius: 8px; padding: 1px 6px; margin-right: 4px; {{ cl.tagStyle }}">{{ cl.tag }}</span>{{ cl.title }}</div><div style="font-size: 13px; color: #55657A; line-height: 1.5">{{ cl.why }}</div></div>
+                </div>
+              </sc-for>
+            </div>
+
+            <div style="background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 14px 16px">
+              <div style="font-size: 13px; font-weight: 700; color: #55657A">{{ rp.pastTitle }}</div>
+              <sc-for list="{{ rp.past }}" as="pc" hint-placeholder-count="2">
+                <div style="margin-top: 10px"><div style="font-size: 14px; line-height: 1.5">“{{ pc.label }}”</div><div style="margin-top: 2px; font-size: 13px; font-weight: 700; {{ pc.style }}">{{ pc.result }}</div></div>
+              </sc-for>
+              <sc-if value="{{ rp.noPast }}" hint-placeholder-val="{{ false }}"><div style="margin-top: 6px; font-size: 13px; color: #55657A">첫 호라 점검할 지난 전망이 없습니다.</div></sc-if>
+              <div style="margin-top: 12px; font-size: 12px; font-weight: 700; color: #55657A">이번 호 전망 (다음 호에서 채점)</div>
+              <sc-for list="{{ rp.checks }}" as="ck" hint-placeholder-count="2">
+                <div style="margin-top: 6px; font-size: 13px; line-height: 1.5">· {{ ck.label }}</div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <div style="font-size: 11px; color: #8A9AB0; line-height: 1.6">
+            <sc-for list="{{ rp.credits }}" as="cr" hint-placeholder-count="2"><div>{{ cr }}</div></sc-for>
+          </div>
+        </sc-if>
 
         <div style="background: #E8F2FF; border-radius: 14px; padding: 16px">
           <div style="font-size: 15px; font-weight: 700">이번 주 체감은 어땠습니까</div>
@@ -819,6 +981,101 @@ class Component extends DCLogic {
     var news = NEWS.map(function (n) {
       return Object.assign({}, n, { open: s.newsOpen === n.id, toggle: function () { set({ newsOpen: s.newsOpen === n.id ? null : n.id }); }, openItem: openItem(n.item) });
     });
+
+    // ---------- 주간 리포트 (/api/report) ----------
+    var rd = s.repData;
+    if ((s.tab === 'reports' || s.tab === 'home') && !rd && !self._repReq) {
+      self._repReq = true;
+      setTimeout(function () {
+        if (typeof fetch !== 'function') { self.setState({ repData: { status: 'error' } }); return; }
+        fetch('/api/report')
+          .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+          .then(function (x) { if (!x.ok || !x.j) throw new Error('bad'); var c = Object.assign({}, self.state.repIssues); if (x.j.issue) c[x.j.issue.no] = x.j.issue; self.setState({ repData: { status: x.j.status === 'ok' ? 'ok' : 'empty', j: x.j }, repIssues: c }); })
+          .catch(function () { self.setState({ repData: { status: 'error' } }); });
+      }, 0);
+    }
+    var repOk = !!(rd && rd.status === 'ok');
+    var repLatest = repOk ? rd.j.issue : null;
+    var loadIssue = function (no) {
+      self._repNoReq = self._repNoReq || {};
+      if (self._repNoReq[no] || (self.state.repIssues || {})[no]) return;
+      self._repNoReq[no] = true;
+      fetch('/api/report?no=' + encodeURIComponent(no)).then(function (r) { return r.json(); }).then(function (j) {
+        if (j && j.issue) { var c = Object.assign({}, self.state.repIssues); c[no] = j.issue; self.setState({ repIssues: c }); }
+      }).catch(function () { delete self._repNoReq[no]; });
+    };
+    var openRep = function (no) { return function () { if (no) loadIssue(no); set({ tab: 'reports', sub: 'report', repNo: no || null, repOpen: null, repSec: 'all', repRegion: null }); }; };
+    var SAMPLE_LIST = [['예시 · 제12호 · 10월 1주', '중국 판재가 내리고 코크스가 올랐다. 수입재 원가는 어디로 가나', '발행 전 화면 예시입니다'], ['예시 · 제11호 · 9월 4주', '환율 반등이 수입재 도착 원가에 주는 영향', '예시'], ['예시 · 제10호 · 9월 3주', '8월 통관 단가로 본 중국산 열연 흐름', '예시']];
+    var repList = repOk
+      ? rd.j.list.map(function (x, i) { return { tag: (i === 0 ? '최신 · ' : '') + '제' + x.no + '호 · ' + x.weekLabel, title: x.title, sub: x.date, border: i === 0 ? '#1570EF' : '#E3EAF3', tagColor: i === 0 ? '#1570EF' : '#55657A', open: openRep(x.no) }; })
+      : SAMPLE_LIST.map(function (x, i) { return { tag: x[0], title: x[1], sub: x[2], border: i === 0 ? '#1570EF' : '#E3EAF3', tagColor: i === 0 ? '#1570EF' : '#55657A', open: openRep(null) }; });
+    var repListNote = repOk ? '지난 호는 눌러서 볼 수 있습니다.' : (rd ? '아직 발행된 리포트가 없어 예시를 보여 드립니다.' : '리포트를 불러오는 중입니다.');
+    var homeRepTag = repLatest ? '주간 리포트 제' + repLatest.no + '호 · ' + repLatest.weekLabel.replace(/^\d+년 /, '') : '주간 리포트 예시';
+    var homeRepLine = repLatest ? (repLatest.oneLiner || repLatest.title) : '중국 내수가는 판재 중심으로 내렸고 코크스만 올랐다. 수입재 하락 압력은 이어지고, 환율이 그 폭을 일부 상쇄한다.';
+
+    var repCur = s.sub === 'report' ? (s.repNo ? (s.repIssues || {})[s.repNo] : repLatest) : null;
+    var rp = null;
+    if (repCur) {
+      var pctTxt = function (p) { return p == null ? '—' : (p > 0 ? '▲' : p < 0 ? '▼' : '') + Math.abs(p).toFixed(1) + '%'; };
+      var pctSty = function (p) { return p > 0 ? UP : p < 0 ? DOWN : FLAT; };
+      var nm = function (r) { return r.regionName + ' ' + r.label; };
+      var shortPer = function (p) { return String(p || '').replace(/^\d{4}-0?(\d+)(.*)$/, '$1월$2'); };
+      var A = repCur.analysis || { movers: { up: [], down: [] }, flow: { raw: [], product: [] }, chart: [], regions: [] };
+      var mv = function (r) { return { name: nm(r), pct: pctTxt(r.pct), period: shortPer(r.period) }; };
+      var fl = function (r) { return { name: nm(r), pct: pctTxt(r.pct), style: pctSty(r.pct) }; };
+      var extra = [];
+      if (A.fx) extra.push({ name: '원/달러 (' + A.fx.period + ')', value: Number(A.fx.value).toLocaleString('ko-KR') + '원', pct: pctTxt(A.fx.pct), style: pctSty(A.fx.pct) });
+      if (A.cnSupply) extra.push({ name: '중국산 철강재 수입량 (' + shortPer(A.cnSupply.period) + ')', value: Math.round(A.cnSupply.value / 1000).toLocaleString('ko-KR') + '천t', pct: pctTxt(A.cnSupply.pct), style: pctSty(A.cnSupply.pct) });
+      var maxAbs = Math.max.apply(null, [3].concat(A.chart.filter(function (c) { return c.pct != null; }).map(function (c) { return Math.abs(c.pct); })));
+      var chart = A.chart.map(function (c) {
+        var w = c.pct == null ? 0 : Math.min(50, Math.abs(c.pct) / maxAbs * 50);
+        return { name: c.regionName, pct: c.pct == null ? '자료 없음' : pctTxt(c.pct), style: c.pct == null ? 'color:#8A9AB0;font-weight:500;font-size:11px' : pctSty(c.pct),
+          bar: c.pct == null ? 'display:none' : (c.pct >= 0 ? 'left:50%;' : 'right:50%;') + 'width:' + w.toFixed(1) + '%;background:' + (c.pct >= 0 ? '#F04438' : '#2E90FA') };
+      });
+      var regs = (repCur.regions || []).filter(function (r) { return r.text; });
+      var rgSel = regs.filter(function (r) { return r.region === s.repRegion; })[0] || regs[0] || null;
+      var rgNums = rgSel ? ((A.regions.filter(function (g) { return g.region === rgSel.region; })[0] || { rows: [] }).rows) : [];
+      var REGKO = { kr: '한국', us: '미국', cn: '중국', in: '인도', mx: '멕시코', jp: '일본', eu: '유럽', world: '세계' };
+      var KEY2ITEM = { 'cn:rebar': 'cn1', 'cn:wire_rod': 'cn2', 'cn:plate': 'cn3', 'cn:hr': 'cn4', 'cn:pipe': 'cn5', 'cn:section': 'cn6', 'cn:coking_coal': 'cn7', 'cn:coke': 'cn8',
+        'kr:rebar': 'kr1', 'kr:section': 'kr2', 'kr:hr': 'kr3', 'kr:cr': 'kr4', 'kr:coated': 'kr5', 'kr:plate': 'kr6', 'kr:pipe': 'kr7', 'kr:sts': 'kr8',
+        'krimp:hr': 'imp1', 'krimp:cr': 'imp2', 'krimp:coated': 'imp3', 'krimp:wire_rod': 'imp5', 'krimp:rebar': 'imp6', 'krimp:section': 'imp7', 'krimp:sts': 'imp8', 'krimp:scrap': 'imp9',
+        'us:steel': 'gl1', 'us:cr': 'gl2', 'us:scrap': 'gl3', 'us:plate': 'gl4', 'us:pipe': 'gl5' };
+      var ITEMKO = { hr: '열연', cr: '냉연', coated: '도금강판', plate: '후판', wire_rod: '선재', rebar: '철근', section: '형강', pipe: '강관', sts: '스테인리스', steel: '철강재', scrap: '고철', coke: '코크스', coking_coal: '원료탄', iron_ore: '철광석' };
+      var KEYLBL = function (k) { var p = String(k || '').split(':'); return ({ krimp: '한국 수입 ', kr: '한국 ', cn: '중국 ', us: '미국 ' }[p[0]] || '') + (ITEMKO[p[1]] || '관련 품목'); };
+      var DIRSTY = { '상승': UP, '하락': DOWN, '혼조': FLAT, '중립': FLAT };
+      var sec = s.repSec || 'all';
+      var WD = ['일', '월', '화', '수', '목', '금', '토'];
+      var past = repCur.pastCheck ? repCur.pastCheck.checks.map(function (c) {
+        var res = { hit: '맞음', miss: '틀림', pending: '아직 새 값 발표 전', nodata: '판단할 데이터 없음' }[c.result] || '';
+        return { label: c.label, result: res + (c.pct != null ? ' · ' + (c.itemLabel || '') + ' ' + pctTxt(c.pct) + ' (' + shortPer(c.basePeriod) + ' → ' + shortPer(c.nowPeriod) + ')' : ''), style: c.result === 'hit' ? 'color:#0B6B3A' : c.result === 'miss' ? 'color:#C4320A' : 'color:#55657A' };
+      }) : [];
+      rp = {
+        tag: '주간 리포트 제' + repCur.no + '호 · ' + repCur.weekLabel, title: repCur.title,
+        dateLine: repCur.date + ' 발행 · 각 숫자는 기관별 최신 발표 기준',
+        oneLiner: repCur.oneLiner, takeaways: (repCur.takeaways || []).map(function (t, i) { return { n: i + 1, text: t }; }),
+        jump: [['all', '전체'], ['num', '숫자'], ['region', '지역'], ['issue', '세계 이슈'], ['cal', '일정·점검']].map(function (j) { return { label: j[1], style: chip(sec === j[0]), go: function () { set({ repSec: j[0] }); } }; }),
+        secNum: sec === 'all' || sec === 'num', secRegion: sec === 'all' || sec === 'region', secIssue: sec === 'all' || sec === 'issue', secCal: sec === 'all' || sec === 'cal',
+        up: A.movers.up.map(mv), down: A.movers.down.map(mv), noUp: !A.movers.up.length, noDown: !A.movers.down.length,
+        raw: A.flow.raw.map(fl), product: A.flow.product.map(fl), extra: extra,
+        chart: chart, chartNote: '한국·미국·인도는 물가지수, 중국은 유통가(열흘), 멕시코·일본·유럽은 무역 단가입니다.',
+        regionTabs: regs.map(function (r) { return { label: REGKO[r.region] || r.region, style: chip(rgSel && rgSel.region === r.region), pick: function () { set({ repRegion: r.region }); } }; }),
+        regionText: rgSel ? rgSel.text : '지역 브리핑이 없습니다.',
+        regionNums: rgNums.map(function (r) { return { name: r.label, value: Number(r.value).toLocaleString('ko-KR') + (r.unit === '지수' ? '' : ' ' + r.unit), pct: pctTxt(r.pct), style: pctSty(r.pct), sub: shortPer(r.period) + ' · ' + r.basis }; }),
+        issues: (repCur.issues || []).map(function (n) {
+          var item = KEY2ITEM[n.watchKey];
+          return { type: n.type, where: (n.regions || []).map(function (k) { return REGKO[k] || k; }).join('·') || '세계', title: n.title, dir: n.dir, dirStyle: DIRSTY[n.dir] || FLAT, confShort: n.conf,
+            what: n.what, path: n.path, impact: n.impact, watch: n.watch, conf: n.conf + '. ' + (n.confWhy || ''),
+            hasItem: !!item, openItem: item ? openItem(item) : null, itemLabel: KEYLBL(n.watchKey),
+            sources: (n.sources || []).map(function (x) { return { title: x.title, href: /^https?:\/\//i.test(x.url) ? x.url : '#', meta: (x.source || '') + (x.date ? ' · ' + x.date : '') }; }),
+            open: s.repOpen === n.id, toggle: function () { set({ repOpen: s.repOpen === n.id ? null : n.id }); } };
+        }),
+        calendar: (repCur.calendar || []).map(function (c) { var d = new Date(c.date + 'T00:00:00Z'); return { md: (d.getUTCMonth() + 1) + '/' + d.getUTCDate(), wd: WD[d.getUTCDay()] + (c.approx ? ' 경' : ''), title: c.title, why: c.why, tag: c.kind === 'release' ? '통계' : '이슈', tagStyle: c.kind === 'release' ? 'background:#EEF2F7;color:#33445A' : 'background:#FFF1E7;color:#B54708' }; }),
+        pastTitle: repCur.pastCheck ? '지난 전망 점검 (제' + repCur.pastCheck.no + '호)' : '지난 전망 점검', past: past, noPast: !past.length,
+        checks: repCur.checks || [], credits: repCur.credits || []
+      };
+    }
+    var repLoading = s.sub === 'report' && !repCur && (!rd || (repOk && !!s.repNo));
+    var repSample = s.sub === 'report' && !repCur && !repLoading;
 
     var TIP = [['hr', '열연'], ['cr', '냉연'], ['gi', '도금강판'], ['rb', '철근'], ['hb', 'H형강']];
     var tipLabel = (TIP.filter(function (t) { return t[0] === s.tipItem; })[0] || TIP[0])[1];
@@ -1428,7 +1685,8 @@ class Component extends DCLogic {
       isDetail: s.sub === 'detail', isReport: s.sub === 'report', isSources: s.sub === 'sources',
       goHome: go('home'), goBoard: go('board'), goReports: go('reports'), goTips: go('tips'), goMe: go('me'),
       back: function () { set({ sub: null }); },
-      openReport: function () { set({ tab: 'reports', sub: 'report' }); },
+      openReport: openRep(repLatest ? repLatest.no : null),
+      repList: repList, repListNote: repListNote, homeRepTag: homeRepTag, homeRepLine: homeRepLine, rp: rp || {}, repLive: !!rp, repLoading: repLoading, repSample: repSample,
       openSources: function () { set({ sub: 'sources' }); },
       tabHome: s.tab === 'home' ? tabOn : tabOff, tabBoard: s.tab === 'board' ? tabOn : tabOff, tabReports: s.tab === 'reports' ? tabOn : tabOff,
       tabTips: s.tab === 'tips' ? tabOn : tabOff, tabMe: s.tab === 'me' ? tabOn : tabOff,

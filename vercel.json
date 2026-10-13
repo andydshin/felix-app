@@ -1,16 +1,1 @@
-{
-  "functions": {
-    "api/router.js": {
-      "maxDuration": 60
-    }
-  },
-  "regions": [
-    "icn1"
-  ],
-  "rewrites": [
-    {
-      "source": "/api/:route",
-      "destination": "/api/router?route=:route"
-    }
-  ]
-}
+{"functions": {"api/router.js": {"maxDuration": 60}}, "regions": ["icn1"], "rewrites": [{"source": "/api/:route", "destination": "/api/router?route=:route"}], "crons": [{"path": "/api/report-cron", "schedule": "0 21 * * 2"}], "headers": [{"source": "/admin.html", "headers": [{"key": "X-Robots-Tag", "value": "noindex, nofollow"}, {"key": "Cache-Control", "value": "no-store"}, {"key": "Referrer-Policy", "value": "no-referrer"}]}]}
