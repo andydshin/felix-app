@@ -111,3 +111,8 @@ This product uses the Census Bureau Data API but is not endorsed or certified by
 - 환경변수 `BLS_API_KEY` (BLS Public Data API v2 등록키, 이메일 활성화 필요). 퍼블릭 도메인.
 - `GET /api/us-ppi`: 미국 방향 3종 — 철강재 전체(WPU1017), 냉연(후보 시리즈 중 공식 제목에 'cold rolled'가 있는 것), 철스크랩(WPU1012). 최신·전월, 예비치(P) 표시. 캐시 12시간.
 - `GET /api/us-ppi-probe`: 후보 시리즈의 공식 제목과 최신값 진단.
+
+## Vercel 함수 구조 (Hobby 플랜 12개 제한 대응)
+
+- 모든 `/api/*` 요청은 `api/router.js` 함수 하나가 받습니다(`vercel.json`의 rewrites). 경로별 처리는 `lib/routes.js`.
+- 예전 개별 함수 파일(api/us-ppi.js 등)이 저장소에 남아 있으면 `.vercelignore`가 배포에서 뺍니다.
