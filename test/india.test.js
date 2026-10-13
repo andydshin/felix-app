@@ -9,9 +9,8 @@ const X = fs.readFileSync(path.join(__dirname, 'fixtures', 'in-wpi-mini.xlsx'));
 
 test('월 머리글 해석', () => {
   assert.strictEqual(monthOf('INDX092026'), '2026-09');
-  assert.strictEqual(monthOf('Sep-26'), '2026-09');
-  assert.strictEqual(monthOf('2026-09'), '2026-09');
-  assert.strictEqual(monthOf('COMM_NAME'), null);
+  assert.strictEqual(monthOf('Aug-26'), '2026-08');
+  assert.strictEqual(monthOf('Commodity Name'), null);
 });
 
 test('다운로드 페이지에서 가장 최근 월 파일', () => {
@@ -19,21 +18,23 @@ test('다운로드 페이지에서 가장 최근 월 파일', () => {
   assert.strictEqual(findLink(html), 'https://eaindustry.nic.in/indx_download_2223/wpi_monthly_index_202609.xlsx');
 });
 
-test('표 분석과 품목 고르기', () => {
+test('코드 범위 안에서만 품목을 고른다 (실제 파일 구조, 10/13 진단의 오매칭 사례 포함)', () => {
   const a = analyze(readSheet(X, null));
-  assert.strictEqual(a.headerRow, 2);
   const p = pick(a.items);
-  assert.deepStrictEqual([p.hr.name, p.hr.period, p.hr.value, p.hr.prev], ['HR coils & sheets, including narrow strip', '2026-09', 100.2, 100.8]);
-  assert.strictEqual(p.cr.value, 102.9);
-  assert.strictEqual(p.coated.name, 'GP/GC sheets');
-  assert.strictEqual(p.wire_rod.name, 'MS wire rods');
-  assert.strictEqual(p.rebar.name, 'Bars & rods');
-  assert.strictEqual(p.pipe.name, 'Pipes & tubes');
-  assert.strictEqual(p.sts.value, 96.1);
-  assert.strictEqual(p.iron_ore.value, 99);
-  assert.strictEqual(p.coking_coal.value, 108);
-  assert.strictEqual(p.al.name, 'Aluminium ingot');
-  assert.strictEqual(p.plate, undefined);
+  const n = k => p[k] && p[k].name;
+  assert.strictEqual(n('hr'), 'Hot Rolled Steel Coils/Sheets/Strips');
+  assert.deepStrictEqual([p.hr.period, p.hr.value, p.hr.prev], ['2026-08', 87.9, 92.4]);
+  assert.strictEqual(n('wire_rod'), 'MS Wire Rods');           // 구리 선재 아님
+  assert.strictEqual(n('section'), 'Angles, Channels, Sections'); // 유리 팔찌 아님
+  assert.strictEqual(n('pipe'), 'Steel Pipes & Tubes');        // PVC 아님
+  assert.strictEqual(n('coke'), undefined);                     // 석유 코크스 아님
+  assert.strictEqual(n('al'), 'Aluminium ingot');              // 호일 아님
+  assert.strictEqual(n('zn'), 'Zinc ingot');                   // 정광 아님
+  assert.strictEqual(n('pb'), 'Lead ingot');                   // 연필 아님
+  assert.strictEqual(n('cu'), 'Copper cathodes and sections of cathodes');
+  assert.strictEqual(n('rebar'), 'Bars and Rods of Mild steel');
+  assert.strictEqual(n('scrap'), 'Scrap Iron/Steel');
+  assert.strictEqual(n('coking_coal'), 'Coking Coal');
 });
 
 test('서비스: 페이지 → 파일 → 결과', async () => {
@@ -41,6 +42,6 @@ test('서비스: 페이지 → 파일 → 결과', async () => {
     ? { ok: true, status: 200, text: async () => '<a href="indx_download_2223/wpi_monthly_index_202609.xlsx">WPI</a>' }
     : { ok: true, status: 200, arrayBuffer: async () => X };
   const r = await createIndia({ fetch: f, log: () => {} }).latest();
-  assert.strictEqual(r.period, '2026-09');
+  assert.strictEqual(r.period, '2026-08');
   assert.ok(r.fileUrl.endsWith('wpi_monthly_index_202609.xlsx'));
 });

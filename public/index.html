@@ -177,7 +177,7 @@ a{color:#1570EF}a:hover{color:#0B4FB3}
             <div>한국: 철강 제품은 한국은행 생산자물가지수(KOSIS, 2020=100), 원료·비철은 관세청 수입 통관 단가(달러/t)의 전월 대비입니다.</div>
             <div>미국: 노동통계국 생산자물가지수(1982=100), 자동 갱신. 후판·형강 칸은 봉강·후판·형강을 합친 지수입니다. 열연강판은 2022년 2월, 선재는 2017년, 철근은 2013년에 발표가 중단됐습니다.</div>
             <div>중국: 국가통계국 유통 단계 가격(위안/t), 직전 열흘 대비, 자동 갱신. 냉연·도금·스테인리스, 철광석, 스크랩, 니켈은 조사 품목이 아닙니다.</div>
-            <div>인도: 경제자문관실 품목별 도매물가지수. 철강 품목 구성과 재사용 약관을 확인하지 못했습니다.</div>
+            <div>인도: 상공부 경제자문관실 품목별 도매물가지수(WPI, 2022-23=100), 전월 대비, 자동 갱신. 철강은 기본 철강 분류(코드 131401), 비철은 비철 기본금속 분류(131402) 안의 품목만 씁니다. 재사용 조건은 확인 중입니다.</div>
             <div>멕시코: INEGI 생산자물가지수(상업적 이용 가능). 철근 값은 INEGI를 인용한 건설업협회 자료이고, 나머지는 원자료 연동 전입니다.</div>
             <div>일본: 재무성 무역통계(e-Stat) 단가(엔/t)의 전월 대비. 철강 제품·스크랩·구리는 수출, 원료와 나머지 비철은 수입 단가입니다. 아래 달러 값은 관세청 과세환율 월평균 환산 참고치입니다. 일본은행 기업물가지수는 상업적 이용에 사전 상담이 필요해 쓰지 않습니다.</div>
             <div>유럽: Eurostat는 출처를 밝히면 상업적 이용이 가능합니다(EU 회원국 데이터 한정). 품목별 지수는 독일 연방통계청에 있으나 이용 조건을 확인하지 못했습니다.</div>
@@ -1248,6 +1248,19 @@ class Component extends DCLogic {
       if (wi.coal_au) liveSet('raw2', wi.coal_au.value, 1, '달러/t · 세계은행 ' + monthLabel(wi.coal_au.period) + ' 평균', wi.coal_au.prev, '');
     }
 
+    // 인도: 경제자문관실 WPI 품목별 (/api/in-wpi)
+    var idd = s.inData;
+    if (isCmp && !idd && !self._inReq) {
+      self._inReq = true;
+      setTimeout(function () {
+        if (typeof fetch !== 'function') { self.setState({ inData: { status: 'error' } }); return; }
+        fetch('/api/in-wpi')
+          .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+          .then(function (x) { if (!x.ok || !x.j || x.j.status !== 'ok') throw new Error('bad'); self.setState({ inData: { status: 'ok', j: x.j } }); })
+          .catch(function () { self.setState({ inData: { status: 'error' } }); });
+      }, 0);
+    }
+
     // 국가 비교 표: 한국 열 추가, 미국·일본 칸을 실제 데이터로 (각 서버 API 결과를 그대로 쓴다)
     var LOADING = { status: '확인 중' };
     var dmon = function (ym) { return ym ? Number(ym.slice(5, 7)) + '월' : ''; };
@@ -1295,11 +1308,22 @@ class Component extends DCLogic {
       return d ? mk(d.price, d.prev, sub || fmt(d.price, 1)) : null;
     };
     var CN_OF = { prod: { '열연': 'cn4', '후판': 'cn3', '선재': 'cn2', '철근': 'cn1', '형강': ['cn6', '앵글'], '강관': ['cn5', '무계목'] }, raw: { '원료탄': ['cn7', '점결탄'], '코크스': 'cn8' }, nf: { '알루미늄': 'al', '구리': 'cu', '아연': 'zn', '납': 'pb' } };
+    var IN_OF = { prod: { '열연': 'hr', '냉연': 'cr', '도금': 'coated', '후판': 'plate', '선재': 'wire_rod', '철근': 'rebar', '형강': 'section', '강관': 'pipe', 'STS': 'sts' },
+      raw: { '철광석': 'iron_ore', '원료탄': 'coking_coal', '코크스': 'coke', '스크랩': 'scrap', '연료탄': 'steam_coal' },
+      nf: { '알루미늄': 'al', '구리': 'cu', '아연': 'zn', '니켈': 'ni', '납': 'pb' } };
+    var inCell = function (id) {
+      if (!idd) return LOADING;
+      if (idd.status !== 'ok') return TBD;
+      var d = idd.j.items[id];
+      return d ? mk(d.value, d.prev, fmt(d.value, 1)) : NA;
+    };
     var WB_OF = { raw: { '철광석': 'iron_ore', '연료탄': 'coal_au' }, nf: { '알루미늄': 'al', '구리': 'cu', '아연': 'zn', '니켈': 'ni', '납': 'pb' } };
     var row8 = function (tab, name, kr, us, jp) {
       var o = CMP[tab].rows.filter(function (x) { return x[0] === name; })[0][1].slice();
       if (us) o[0] = us;
       if (jp) o[4] = jp;
+      var im = IN_OF[tab] && IN_OF[tab][name];
+      if (im) o[2] = inCell(im);
       var wm = WB_OF[tab] && WB_OF[tab][name];
       if (wm && wd && wd.status === 'ok' && wd.j.items[wm]) { var w0 = wd.j.items[wm]; o[6] = mk(w0.value, w0.prev, fmt(w0.value, 0) + '$'); }
       var cm = CN_OF[tab] && CN_OF[tab][name];
@@ -1340,7 +1364,7 @@ class Component extends DCLogic {
     var usSub = ud2 && ud2.status === 'ok' && ud2.j.items[0] && ud2.j.items[0].period ? dmon(ud2.j.items[0].period) + '·전월비' : '8월·전월비';
     var jpSrc0 = jd && jd.status === 'ok' && jd.source ? (jd.source['export'] || jd.source['import']) : null;
     var cmpCols = [
-      { name: '한국', sub: krSub }, { name: '미국', sub: usSub }, { name: '중국', sub: cnLabel || '9월 중순' }, { name: '인도', sub: '도매물가' },
+      { name: '한국', sub: krSub }, { name: '미국', sub: usSub }, { name: '중국', sub: cnLabel || '9월 중순' }, { name: '인도', sub: idd && idd.status === 'ok' && idd.j.period ? dmon(idd.j.period) + '·전월비' : '도매물가' },
       { name: '멕시코', sub: '6월·전년비' }, { name: '일본', sub: jpSrc0 ? dmon(jpSrc0.month) + '·전월비' : '무역통계' }, { name: '유럽', sub: 'Eurostat' }, { name: '세계', sub: wbMonth ? dmon(wbMonth) + ' 평균' : '8월 평균' }
     ];
 

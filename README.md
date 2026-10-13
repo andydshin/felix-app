@@ -129,6 +129,6 @@ This product uses the Census Bureau Data API but is not endorsed or certified by
 - xlsx는 의존성 없이 `lib/xlsx-lite.js`로 읽습니다.
 - `GET /api/world-prices-probe`: 파일 주소·크기·파싱 결과 진단.
 
-## 인도 WPI (진행 중)
+## 인도 WPI
 
-- 키 없음. `GET /api/in-wpi-probe`: eaindustry.nic.in/download_data_2223.asp에서 최신 `wpi_monthly_index_YYYYMM.xlsx`를 찾아 첫 시트의 머리글·품목 후보(철강·원료·비철)를 보여 줍니다. 품목 이름이 확정되면 `/api/in-wpi`를 앱 국가 비교 표 인도 열에 연결합니다.
+- 키 없음. `GET /api/in-wpi-probe`: eaindustry.nic.in/download_data_2223.asp에서 최신 `wpi_monthly_index_YYYYMM.xlsx`를 찾아 첫 시트의 머리글·품목 후보(철강·원료·비철)를 보여 줍니다. `/api/in-wpi`는 국가 비교 표 인도 열에 연결됩니다. 철강은 코드 131401(기본 철강), 비철은 131402(비철 기본금속) 범위 안에서만 품목을 찾습니다.
