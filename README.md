@@ -98,3 +98,10 @@ This product uses the Census Bureau Data API but is not endorsed or certified by
 - `GET /api/kr-ppi`: 한국은행 생산자물가지수(2020=100) 철강 8종. 표는 '생산자물가지수' 검색 결과에서 기본분류 표(DT_404Y014)를 고르고, 없는 품목은 품목별 표(DT_404Y016)에서 찾습니다. 품목 코드는 이름으로 찾습니다(찾은 이름 matchedName을 함께 반환). 캐시 12시간.
 - `GET /api/kr-ppi-probe`: 고른 표·후보 표·찾은 품목·샘플 값 진단.
 - 출처 표시: 한국은행, 「생산자물가조사」, KOSIS.
+
+## 한국수출입은행 환율
+
+- 환경변수 `KOREAEXIM_API_KEY` (수출입은행 사이트에서 발급, 공공데이터포털 키와 별개).
+- `GET /api/fx-daily`: 최근 영업일·전 영업일 매매기준율(USD, CNH, JPY100). 주말은 건너뛰고, 오늘 값이 없으면(오전 11시 이전·공휴일) 이전 날짜로 물러납니다. 앱 환율 탭은 이 값을 우선 표시하고, 없으면 관세청 과세환율을 보여 줍니다.
+- `GET /api/fx-daily-probe`: 최근 5일 응답 진단(결과 코드, 연결 실패 원인).
+- `vercel.json`의 `regions: ["icn1"]`로 함수를 서울 리전에서 실행합니다.

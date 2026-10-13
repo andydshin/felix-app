@@ -1140,6 +1140,27 @@ class Component extends DCLogic {
       liveSet('fx3', fj.rates.JPY100, 2, '원 · ' + wk, pr.JPY100, ' 전주비');
       G.fx.real = true; G.fx.date = fj.week + ' 적용 주';
     }
+    // 환율 탭 표시는 수출입은행 영업일 매매기준율을 우선한다(/api/fx-daily). 없으면 위의 관세청 과세환율을 그대로 보여 준다.
+    var dd = s.fxDaily;
+    if (s.group === 'fx' && !dd && !self._fxdReq) {
+      self._fxdReq = true;
+      setTimeout(function () {
+        if (typeof fetch !== 'function') { self.setState({ fxDaily: { status: 'error' } }); return; }
+        fetch('/api/fx-daily')
+          .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+          .then(function (x) { if (!x.ok || !x.j || x.j.status !== 'ok') throw new Error('bad'); self.setState({ fxDaily: { status: 'ok', j: x.j } }); })
+          .catch(function () { self.setState({ fxDaily: { status: 'error' } }); });
+      }, 0);
+    }
+    if (dd && dd.status === 'ok') {
+      var dj = dd.j, dp = dj.prevRates || {};
+      var dl = Number(dj.date.slice(5, 7)) + '월 ' + Number(dj.date.slice(8)) + '일';
+      liveSet('fx1', dj.rates.USD, 1, '원 · 매매기준율 ' + dl, dp.USD, ' 전일비');
+      liveSet('fx2', dj.rates.CNH, 2, '원 · 매매기준율 ' + dl + ' (CNH)', dp.CNH, ' 전일비');
+      liveSet('fx3', dj.rates.JPY100, 2, '원 · 매매기준율 ' + dl, dp.JPY100, ' 전일비');
+      G.fx.real = true; G.fx.src = '한국수출입은행 매매기준율'; G.fx.cycle = '영업일 매일'; G.fx.date = dj.date;
+      G.fx.note = '한국수출입은행이 영업일 오전 11시 무렵 고시하는 매매기준율입니다. 전 영업일 대비 변동입니다. 수입 단가 환산에는 관세청 주간 과세환율을 씁니다.';
+    }
 
     // 국내 방향: 한국은행 생산자물가지수 (KOSIS 경유, /api/kr-ppi)
     var pd = s.ppiData;
