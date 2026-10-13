@@ -132,3 +132,9 @@ This product uses the Census Bureau Data API but is not endorsed or certified by
 ## 인도 WPI
 
 - 키 없음. `GET /api/in-wpi-probe`: eaindustry.nic.in/download_data_2223.asp에서 최신 `wpi_monthly_index_YYYYMM.xlsx`를 찾아 첫 시트의 머리글·품목 후보(철강·원료·비철)를 보여 줍니다. `/api/in-wpi`는 국가 비교 표 인도 열에 연결됩니다. 철강은 코드 131401(기본 철강), 비철은 131402(비철 기본금속) 범위 안에서만 품목을 찾습니다.
+
+## 멕시코 (국가 비교 표)
+
+- `GET /api/mx-trade`: 미국 Census `imports/hs`(HS10, CTY_CODE=2010)로 멕시코산 대미 수출 단가(달러/t). 트럭·철도 운송분이 많아 해상·항공 중량 대신 신고 수량(GEN_QY1_MO, KG·T)을 쓴다. 키는 CENSUS_API_KEY 공용.
+- `GET /api/mx-trade-probe`: 최신 월, 범위 안 HS10의 수량 단위 분포, 품목별 집계 진단.
+- `GET /api/mx-probe`: INEGI 토큰 확인(INEGI_TOKEN). INPP 품목별 지표 번호는 쿼리 작성기에서 찾지 못해 보류(INEGI에 문의 예정).
