@@ -28,7 +28,7 @@ a{color:#1570EF}a:hover{color:#0B4FB3}
 </style>
 </head>
 <body>
-<div id="stage"><div id="app"></div><div id="hint">화면 구성을 보여 주는 목업입니다. 42개 항목 중 23개는 2026년 10월 5일에 확인한 최신 실제 발표값이고, 19개와 뉴스·투표·평가가는 예시입니다.</div></div>
+<div id="stage"><div id="app"></div><div id="hint">Felix 체험판입니다. 미국 주별, 일본 수출입, 한국 수입 통관, 비철, 환율 등은 Felix 서버에서 실제 값을 불러오고, 서버에 연결되지 않은 곳에서는 예시 값으로 표시합니다. 뉴스·투표·평가가는 예시입니다.</div></div>
 <template id="tpl">
 
 <div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: #F4F7FB; color: #0F1B2D; font-family: 'IBM Plex Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; font-size: 15px; line-height: 1.5; font-variant-numeric: tabular-nums; overflow: hidden">
@@ -112,7 +112,7 @@ a{color:#1570EF}a:hover{color:#0B4FB3}
       <div style="padding: 18px 0 28px">
         <div style="padding: 0 20px">
           <h1 style="margin: 0; font-size: 22px; font-weight: 700">시세</h1>
-          <div style="font-size: 13px; color: #55657A">공개 데이터 42개 항목 · 8개 그룹</div>
+          <div style="font-size: 13px; color: #55657A">공개 데이터 44개 항목 · 8개 그룹</div>
         </div>
         <div style="display: flex; gap: 8px; overflow-x: auto; padding: 14px 20px 6px">
           <sc-for list="{{ groups }}" as="g" hint-placeholder-count="5">
@@ -291,6 +291,7 @@ a{color:#1570EF}a:hover{color:#0B4FB3}
                   </div>
                   <div style="text-align: right">
                     <div style="font-size: 16px; font-weight: 700; {{ jr.valStyle }}">{{ jr.valText }}</div>
+                    <div style="font-size: 11.5px; color: #55657A">{{ jr.usd }}</div>
                     <div style="font-size: 12px; font-weight: 600; {{ jr.chgStyle }}">{{ jr.chgText }}</div>
                   </div>
                 </div>
@@ -301,7 +302,7 @@ a{color:#1570EF}a:hover{color:#0B4FB3}
             <div>단가(엔/t) = 해당 월 금액 ÷ 수량. 수출은 본선인도(FOB), 수입은 운임·보험료 포함(CIF) 금액입니다.</div>
             <div>일본은 철강 순수출국이라 철강 제품·스크랩·정련동은 수출 단가, 원료와 나머지 비철은 수입 단가를 보여 줍니다. 품목 아래 국가는 물량 기준 주요 상대국입니다.</div>
             <div>수량 단위가 톤·킬로그램이 아닌 세부 품목은 계산에서 뺍니다. 한 달 물량이 100t 미만이면 회색으로 표시하고 ‘물량 적음’을 붙입니다.</div>
-            <div>1월 값의 전월비는 전년도 표가 달라 아직 계산하지 않습니다. 달러 환산은 준비 중입니다.</div>
+            <div>1월 값의 전월비는 전년도 표가 달라 아직 계산하지 않습니다. 달러 값(≈)은 관세청 수입 과세환율의 해당 월 평균으로 환산한 참고치입니다.</div>
             <div>출처: 財務省 貿易統計 (政府統計の総合窓口 e-Stat, 品別国別表).</div>
             <div style="font-style: italic">このサービスは、政府統計総合窓口(e-Stat)のAPI機能を使用していますが、サービスの内容は国によって保証されたものではありません。</div>
           </div>
@@ -736,7 +737,7 @@ class Component extends DCLogic {
       raw: { label: '원료', src: '세계은행 원자재 가격', cycle: '월 1회', date: '2026년 8월 평균 (9월 2일 발표)', grade: 'A · CC BY 4.0', real: true, note: '월평균 국제 가격입니다. 7월 평균 대비 변동입니다.' },
       nf:  { label: '비철', src: '관세청 품목별 수출입실적', cycle: '월 1회', date: '최근 통관 월', grade: 'A · 이용 제한 없음', real: false, note: '비철 1차 금속의 한국 수입 통관 단가입니다.' },
       gl:  { label: '미국 방향', src: '미국 노동통계국 생산자물가지수', cycle: '월 1회', date: '2026년 8월', grade: 'A · 퍼블릭 도메인', real: true, note: '가격이 아니라 지수입니다. 7월 대비 변동입니다.' },
-      fx:  { label: '환율', src: '한국은행 ECOS', cycle: '매일', date: '2026년 10월 2일 (10월 5일은 대체공휴일)', grade: '약관 확인 전', real: true, note: '매매기준율입니다. 10월 1일 대비 변동입니다.' },
+      fx:  { label: '환율', src: '관세청 관세환율(수입)', cycle: '주 1회', date: '최근 고시 주', grade: 'A · 이용 제한 없음', real: false, note: '세관이 주 단위로 고시하는 수입 과세환율입니다. 은행 매매기준율과 다를 수 있습니다. 전주 대비 변동입니다.' },
       sd:  { label: '수급', src: '관세청 · 세계철강협회 · 국토부', cycle: '월 1회', date: '2026년 8월', grade: '일부 확인 전', real: false, note: '조강 생산량만 실제 발표값입니다.' }
     };
     var ORDER = ['cmp', 'us', 'jp', 'cn', 'imp', 'kr', 'raw', 'nf', 'gl', 'fx', 'sd', 'dom'];
@@ -748,10 +749,10 @@ class Component extends DCLogic {
       ['imp5','imp','선재 (HS 7213)',548,1,0,'달러/t'],['imp6','imp','철근 (HS 7214.20)',521,-4,0,'달러/t'],['imp7','imp','H형강 (HS 7216.33)',640,0,0,'달러/t'],['imp8','imp','STS 판재 (HS 7219)',2015,32,0,'달러/t'],['imp9','imp','철스크랩 (HS 7204)',372,-8,0,'달러/t'],
       ['cn1','cn','철근 Φ20 HRB400E',3165.1,-17.6,1,'위안/t'],['cn2','cn','선재 Φ8-10 HPB300',3353.7,-13.4,1,'위안/t'],['cn3','cn','중후판 20mm Q235',3548.0,-16.7,1,'위안/t'],['cn4','cn','열연 4.75-11.5mm Q235',3308.9,-42.7,1,'위안/t'],
       ['cn5','cn','무계목강관 219×6',4022.4,-4.5,1,'위안/t'],['cn6','cn','앵글 5#',3433.1,-36.7,1,'위안/t'],['cn7','cn','점결탄',2549.3,-48.2,1,'위안/t'],['cn8','cn','코크스',2096.4,112.5,1,'위안/t'],
-      ['raw1','raw','철광석',96.3,-1.9,1,'달러/t'],['raw2','raw','호주산 연료탄',135.2,3.3,1,'달러/t'],
+      ['raw1','raw','철광석',96.3,-1.9,1,'달러/t'],['raw2','raw','호주산 연료탄',135.2,3.3,1,'달러/t'],['raw3','raw','철광석 (한국 수입 CIF)',98.4,-1.2,1,'달러/t',{ real: false }],['raw4','raw','역청탄 (한국 수입 CIF)',152.0,2.1,1,'달러/t',{ real: false }],
       ['nf1','nf','알루미늄 괴 (HS 7601.10)',2650,-30,0,'달러/t'],['nf2','nf','정련동 (HS 7403.11)',10200,150,0,'달러/t'],['nf3','nf','아연 괴 (HS 7901.11)',2950,40,0,'달러/t'],['nf4','nf','납 (HS 7801.10)',2050,-20,0,'달러/t'],['nf5','nf','주석 (HS 8001.10)',34000,600,0,'달러/t'],['nf6','nf','니켈 (HS 7502.10)',16000,-200,0,'달러/t'],
       ['gl1','gl','미국 철강재 전체',381.162,6.369,1,'지수 1982=100'],['gl2','gl','미국 냉연강판',469.251,22.634,1,'지수 1982=100'],['gl3','gl','미국 철스크랩',580.548,-9.035,1,'지수 1982=100'],
-      ['fx1','fx','원/달러',1359.6,3.9,1,'원'],['fx2','fx','원/위안',202.55,0.36,2,'원'],['fx3','fx','원/100엔',860.32,-0.96,2,'원'],
+      ['fx1','fx','원/달러',1385.0,3.5,1,'원'],['fx2','fx','원/위안',194.10,0.30,2,'원'],['fx3','fx','원/100엔',935.20,-1.10,2,'원'],
       ['sd1','sd','중국산 철강재 수입량',62.4,-3.1,1,'만 t'],['sd2','sd','한국 조강 생산량',540,null,0,'만 t',{ real: true, yoy: 2.6 }],['sd3','sd','건축 착공 면적',612,-22,0,'만 ㎡']
     ];
     var fmt = function (v, d) { return Number(v).toLocaleString('ko-KR', { minimumFractionDigits: d, maximumFractionDigits: d }); };
@@ -853,7 +854,7 @@ class Component extends DCLogic {
       return { label: n[1], on: on, text: on ? '켜짐' : '꺼짐', style: on ? onChip : 'background:#EEF2F7;color:#33445A;border:1px solid #C9D6E6', toggle: function () { var o = Object.assign({}, s.noti); o[n[0]] = !on; set({ noti: o }); } };
     });
     var PL = [
-      ['beta', '무료 베타', '0원', '지금 모든 사용자', '시세 42개 항목, 주간 리포트, 알림, 제보 참여'],
+      ['beta', '무료 베타', '0원', '지금 모든 사용자', '시세 44개 항목, 주간 리포트, 알림, 제보 참여'],
       ['basic', '베이직', '연 60만 원대', '중소 유통상, 소규모 실수요가', '전 품목 시세, 주간 리포트, 최근 3개월 시계열'],
       ['pro', '프로', '연 300만 원대', '제조사 구매팀, 건설사', '전체 시계열, 원가·스프레드, 알림, 엑셀 내려받기, 5계정'],
       ['ent', '엔터프라이즈', '개별 계약', '금융, 대기업, 해외 가격기관', 'API, 지수 라이선스, 계약 기준가 사용권']
@@ -1011,10 +1012,11 @@ class Component extends DCLogic {
         jj++;
         var d = jpStatus === 'ok' ? (jd.items && jd.items[it[0]]) : null;
         var flow = d ? FLOW_KO[d.flow] : (it[0] === 'scrap' || sec[0] === '철강 제품' || it[0] === 'cu' ? '수출' : '수입');
-        var row = { name: it[1], hs: it[2], flow: flow, valStyle: '', chgText: '', chgStyle: FLAT, partners: '' };
+        var row = { name: it[1], hs: it[2], flow: flow, valStyle: '', chgText: '', chgStyle: FLAT, partners: '', usd: '' };
         if (jpStatus === 'ok') {
           if (d && d.status === 'ok') {
             row.valText = fmt(d.unitPriceJpy, 0); row.tag = d.preliminary ? '실제 값 · 속보' : '실제 값'; row.tagStyle = REAL;
+            row.usd = d.unitPriceUsd ? '≈ ' + fmt(d.unitPriceUsd, 0) + '달러' : '';
             if (d.lowVolume) { row.valStyle = MUTED; row.tag = '실제 값 · 물량 적음 ' + fmt(d.tons, 0) + 't'; row.tagStyle = EX; }
             row.partners = (d.topPartners || []).slice(0, 2).map(function (p) { return p.name + ' ' + fmt(p.share, 0) + '%'; }).join(' · ');
             if (d.prev && d.prev.status === 'ok' && d.prev.lowVolume) { row.chgText = '전월 물량 적음'; }
@@ -1044,7 +1046,7 @@ class Component extends DCLogic {
 
     // 한국: 관세청 품목별 국가별 수출입실적 → 수입 통관 단가 (달러/t). 서버 /api/kr-trade 경유.
     var kd = s.krData;
-    if (isKr && !kd && !self._krReq) {
+    if ((isKr || s.group === 'raw' || s.group === 'sd') && !kd && !self._krReq) {
       self._krReq = true;
       var putK = function (v) { self.setState({ krData: v }); };
       setTimeout(function () {
@@ -1096,6 +1098,48 @@ class Component extends DCLogic {
       : '관세청 수출입실적을 불러오는 중입니다.'));
     var krBannerStyle = krStatus === 'ok' ? 'background:#E3F4EA;color:#0B4F2B' : 'background:#FFF3D6;color:#5C3A00';
     var krRetry = function () { self._krReq = false; self.setState({ krData: null }); };
+
+    // 관세청 데이터로 일반 그룹 항목 덮어쓰기: 원료(raw3·raw4), 수급(sd1)
+    var liveSet = function (id, val, d, unit, prevVal, chgSuffix) {
+      var it = byId[id]; if (!it) return;
+      it.valText = fmt(val, d); it.unit = unit; it.real = true;
+      if (prevVal != null && prevVal > 0) {
+        var c = val - prevVal, pc = c / prevVal * 100;
+        it.chgText = (c > 0 ? '▲' : (c < 0 ? '▼' : '')) + fmt(Math.abs(c), d) + ' (' + fmt(Math.abs(pc), 1) + '%)' + (chgSuffix || '');
+        it.chgStyle = c > 0 ? UP : (c < 0 ? DOWN : FLAT);
+      } else { it.chgText = '전월 자료 없음'; it.chgStyle = FLAT; }
+      it.pctText = it.chgText; it.chgLine = it.chgText;
+    };
+    if (krStatus === 'ok' && kd.items) {
+      var ml = monthLabel(kd.month) + ' 통관분';
+      ['raw3', 'raw4'].forEach(function (id) { var d = kd.items[id]; if (d && d.status === 'ok') liveSet(id, d.unitPrice, 1, '달러/t · 관세청 ' + ml, d.prev && d.prev.status === 'ok' ? d.prev.unitPrice : null); });
+      var sd = kd.items.sd1;
+      G.raw.note = '철광석·호주산 연료탄은 세계은행 월평균(7월 대비), 한국 수입 CIF는 관세청 ' + ml + ' 단가(전월 대비)입니다.';
+      G.sd.note = '조강 생산량과 중국산 철강재 수입량(관세청 ' + ml + ')이 실제 값입니다.';
+      if (sd && sd.status === 'ok') liveSet('sd1', sd.tons / 10000, 1, '만 t · 관세청 ' + ml + ' (72류 철강재)', sd.prev && sd.prev.status === 'ok' ? sd.prev.tons / 10000 : null);
+    }
+
+    // 환율: 관세청 주간 과세환율 (/api/fx)
+    var fd = s.fxData;
+    if ((s.group === 'fx' || isJp) && !fd && !self._fxReq) {
+      self._fxReq = true;
+      setTimeout(function () {
+        self.setState({ fxData: { status: 'loading' } });
+        if (typeof fetch !== 'function') { self.setState({ fxData: { status: 'error' } }); return; }
+        fetch('/api/fx')
+          .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+          .then(function (x) { if (!x.ok || !x.j || x.j.status !== 'ok') throw new Error('bad'); self.setState({ fxData: { status: 'ok', j: x.j } }); })
+          .catch(function () { self.setState({ fxData: { status: 'error' } }); });
+      }, 0);
+    }
+    if (fd && fd.status === 'ok') {
+      var fj = fd.j, pr = fj.prevRates || {};
+      var wk = fj.week.slice(5, 7).replace(/^0/, '') + '월 ' + fj.week.slice(8).replace(/^0/, '') + '일 주';
+      liveSet('fx1', fj.rates.USD, 1, '원 · ' + wk, pr.USD, ' 전주비');
+      liveSet('fx2', fj.rates.CNY, 2, '원 · ' + wk, pr.CNY, ' 전주비');
+      liveSet('fx3', fj.rates.JPY100, 2, '원 · ' + wk, pr.JPY100, ' 전주비');
+      G.fx.real = true; G.fx.date = fj.week + ' 적용 주';
+    }
 
     var tabOn = 'color:#1570EF', tabOff = 'color:#55657A';
     var go = function (t) { return function () { set({ tab: t, sub: null }); }; };

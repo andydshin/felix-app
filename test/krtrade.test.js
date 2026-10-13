@@ -34,7 +34,10 @@ test('한국 수입 단가: 최신 월, 전월비용 전월, 중국산·일본�
     calls.push(url);
     const p = Object.fromEntries(new URL(url).searchParams);
     assert.strictEqual(p.serviceKey, KEY);
-    assert.strictEqual(p.cntyCd, undefined);           // 국가 생략 = 전 국가
+    if (p.cntyCd) {                                     // 중국산 철강재 수입량만 국가 지정
+      assert.deepStrictEqual([p.cntyCd, p.hsSgn], ['CN', '72']);
+      return { ok: true, status: 200, text: async () => xml([item('2026.09', 'CN', '중국', '720851', 100000000, 60000000), item('2026.09', 'CN', '중국', '720449', 5000000, 1000000), item('2026.08', 'CN', '중국', '721070', 80000000, 50000000)]) };
+    }
     assert.deepStrictEqual([p.strtYymm, p.endYymm], ['202606', '202610']);
     const body = p.hsSgn === '7208' ? xml(ROWS_7208)
       : p.hsSgn === '721633' ? xml([item('2026.09', 'CN', '중국', '7216331000', 50000, 40000)])
@@ -56,9 +59,12 @@ test('한국 수입 단가: 최신 월, 전월비용 전월, 중국산·일본�
   assert.strictEqual(h.lowVolume, true);
   assert.strictEqual(h.prev.status, 'nodata');
   assert.strictEqual(r.items.find(i => i.id === 'imp2').status, 'nodata');
-  assert.strictEqual(calls.length, 15);
+  assert.strictEqual(calls.length, 18);
   assert.strictEqual(r.items.find(i => i.id === 'nf1').status, 'nodata');
+  const sd = r.items.find(i => i.id === 'sd1');
+  assert.strictEqual(sd.tons, 100000);                  // 스크랩(7204)은 빼고 철강재만
+  assert.strictEqual(sd.prev.tons, 80000);
   await svc.latest();
-  assert.strictEqual(calls.length, 15);                  // 캐시
+  assert.strictEqual(calls.length, 18);                  // 캐시
   assert.ok(!(JSON.stringify(r) + logs.join('')).includes(KEY));
 });
