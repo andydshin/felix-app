@@ -180,7 +180,7 @@ a{color:#1570EF}a:hover{color:#0B4FB3}
             <div>인도: 상공부 경제자문관실 품목별 도매물가지수(WPI, 2022-23=100), 전월 대비, 자동 갱신. 품목 코드로 고정해 씁니다. 후판 칸은 폭 600mm 이하 열연 판재(Hot Rolled Plates), 강관 칸은 철강관 전체(Pipes, tubes & casing), 니켈·코크스는 해당 품목이 없습니다. 재사용 조건은 확인 중입니다.</div>
             <div>멕시코: 미국 인구조사국 수입 통계로 본 멕시코산 대미 수출 단가(달러/t), 전월 대비. 멕시코 내수 가격이 아닙니다. 트럭·철도 운송분까지 담기 위해 신고 수량(kg·t)을 씁니다. This product uses the Census Bureau Data API but is not endorsed or certified by the Census Bureau.</div>
             <div>일본: 재무성 무역통계(e-Stat) 단가(엔/t)의 전월 대비. 철강 제품·스크랩·구리는 수출, 원료와 나머지 비철은 수입 단가입니다. 아래 달러 값은 관세청 과세환율 월평균 환산 참고치입니다. 일본은행 기업물가지수는 상업적 이용에 사전 상담이 필요해 쓰지 않습니다.</div>
-            <div>유럽: Eurostat는 출처를 밝히면 상업적 이용이 가능합니다(EU 회원국 데이터 한정). 품목별 지수는 독일 연방통계청에 있으나 이용 조건을 확인하지 못했습니다.</div>
+            <div>유럽: Eurostat 무역통계(Comext)로 본 EU 역외 수입 단가(유로/t)의 전월 대비가 기본입니다. 수입 물량이 적거나 자료가 없는 칸은 EU 생산자물가지수(2021=100) 업종 지수로 채우고 ‘PPI 업종’으로 표시합니다(철강 C241, 강관 C242, 코크스 C191, 알루미늄 C2442, 구리 C2444, 납·아연 C2443, 니켈 C2445). Source: Eurostat.</div>
             <div>세계: 세계은행 월평균 가격(Pink Sheet, CC BY 4.0), 전월 대비, 자동 갱신. 제품 가격은 다루지 않습니다.</div>
           </div>
         </sc-if>
@@ -1274,6 +1274,19 @@ class Component extends DCLogic {
       }, 0);
     }
 
+    // 유럽: Eurostat Comext 역외 수입 단가(기본) + 생산자물가지수 업종(보완) (/api/eu-prices)
+    var eud = s.euData;
+    if (isCmp && !eud && !self._euReq) {
+      self._euReq = true;
+      setTimeout(function () {
+        if (typeof fetch !== 'function') { self.setState({ euData: { status: 'error' } }); return; }
+        fetch('/api/eu-prices')
+          .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+          .then(function (x) { if (!x.ok || !x.j || x.j.status !== 'ok') throw new Error('bad'); self.setState({ euData: { status: 'ok', j: x.j } }); })
+          .catch(function () { self.setState({ euData: { status: 'error' } }); });
+      }, 0);
+    }
+
     // 국가 비교 표: 한국 열 추가, 미국·일본 칸을 실제 데이터로 (각 서버 API 결과를 그대로 쓴다)
     var LOADING = { status: '확인 중' };
     var dmon = function (ym) { return ym ? Number(ym.slice(5, 7)) + '월' : ''; };
@@ -1340,11 +1353,24 @@ class Component extends DCLogic {
       if (!d || d.status !== 'ok') return NA;
       return mk(d.unitPrice, d.prev ? d.prev.unitPrice : null, '$' + fmt(d.unitPrice, 0), d.lowVolume || (d.prev && d.prev.lowVolume));
     };
+    var EU_OF = MX_OF;   // 같은 품목 키
+    var euCell = function (id) {
+      if (!eud) return LOADING;
+      if (eud.status !== 'ok') return LINK;
+      var d = eud.j.items[id]; if (!d) return NA;
+      var c = d.comext;
+      if (c && c.status === 'ok' && !c.lowVolume && c.prev && !c.prev.lowVolume) return mk(c.unitPrice, c.prev.unitPrice, '€' + fmt(c.unitPrice, 0));
+      if (d.ppi && d.ppi.value > 0) return mk(d.ppi.value, d.ppi.prev, 'PPI 업종');
+      if (c && c.status === 'ok') return { status: '물량 적음', sub: '€' + fmt(c.unitPrice, 0) };
+      return NA;
+    };
     var WB_OF = { raw: { '철광석': 'iron_ore', '연료탄': 'coal_au' }, nf: { '알루미늄': 'al', '구리': 'cu', '아연': 'zn', '니켈': 'ni', '납': 'pb' } };
     var row8 = function (tab, name, kr, us, jp) {
       var o = CMP[tab].rows.filter(function (x) { return x[0] === name; })[0][1].slice();
       if (us) o[0] = us;
       if (jp) o[4] = jp;
+      var em = EU_OF[tab] && EU_OF[tab][name];
+      if (em) o[5] = euCell(em);
       var xm = MX_OF[tab] && MX_OF[tab][name];
       if (xm) o[3] = mxCell(xm);
       var im = IN_OF[tab] && IN_OF[tab][name];
@@ -1390,7 +1416,7 @@ class Component extends DCLogic {
     var jpSrc0 = jd && jd.status === 'ok' && jd.source ? (jd.source['export'] || jd.source['import']) : null;
     var cmpCols = [
       { name: '한국', sub: krSub }, { name: '미국', sub: usSub }, { name: '중국', sub: cnLabel || '9월 중순' }, { name: '인도', sub: idd && idd.status === 'ok' && idd.j.period ? dmon(idd.j.period) + '·전월비' : '도매물가' },
-      { name: '멕시코', sub: mxd && mxd.status === 'ok' && mxd.j.month ? dmon(mxd.j.month) + '·대미수출' : '대미 수출' }, { name: '일본', sub: jpSrc0 ? dmon(jpSrc0.month) + '·전월비' : '무역통계' }, { name: '유럽', sub: 'Eurostat' }, { name: '세계', sub: wbMonth ? dmon(wbMonth) + ' 평균' : '8월 평균' }
+      { name: '멕시코', sub: mxd && mxd.status === 'ok' && mxd.j.month ? dmon(mxd.j.month) + '·대미수출' : '대미 수출' }, { name: '일본', sub: jpSrc0 ? dmon(jpSrc0.month) + '·전월비' : '무역통계' }, { name: '유럽', sub: eud && eud.status === 'ok' && eud.j.month ? dmon(eud.j.month) + '·역외수입' : 'Eurostat' }, { name: '세계', sub: wbMonth ? dmon(wbMonth) + ' 평균' : '8월 평균' }
     ];
 
     var tabOn = 'color:#1570EF', tabOff = 'color:#55657A';

@@ -138,3 +138,8 @@ This product uses the Census Bureau Data API but is not endorsed or certified by
 - `GET /api/mx-trade`: 미국 Census `imports/hs`(HS10, CTY_CODE=2010)로 멕시코산 대미 수출 단가(달러/t). 트럭·철도 운송분이 많아 해상·항공 중량 대신 신고 수량(GEN_QY1_MO, KG·T)을 쓴다. 키는 CENSUS_API_KEY 공용.
 - `GET /api/mx-trade-probe`: 최신 월, 범위 안 HS10의 수량 단위 분포, 품목별 집계 진단.
 - `GET /api/mx-probe`: INEGI 토큰 확인(INEGI_TOKEN). INPP 품목별 지표 번호는 쿼리 작성기에서 찾지 못해 보류(INEGI에 문의 예정).
+
+## 유럽 (국가 비교 표)
+
+- 키 없음. `GET /api/eu-prices`: Eurostat Comext DS-045409(EU27_2020 ← EXT_EU27_2020, 수입, VALUE_IN_EUROS·QUANTITY_IN_100KG)로 품목별 유로/t를 기본으로, 비거나 물량이 적은 칸은 sts_inppd_m(EU27_2020, I21, NSA) NACE 업종 PPI로 보완.
+- `GET /api/eu-probe`: Comext 이름 조합(EU27_2020/EU, EXT_EU27_2020/EXT_EU)과 PPI 각각의 응답·오류 진단.
