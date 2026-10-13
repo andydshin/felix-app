@@ -128,10 +128,12 @@ test('관리자 인증: 토큰 없거나 틀리면 거절, 크론은 CRON_SECRET
   const call = (fn, ctx) => new Promise(res => fn({}, (s, b) => res({ s, b }), ctx));
   delete process.env.FELIX_ADMIN_TOKEN;
   assert.strictEqual((await call(h.admin, { headers: {}, body: { action: 'get' } })).s, 503);
+  assert.strictEqual((await call(h.probe, { headers: {} })).s, 503);
   process.env.FELIX_ADMIN_TOKEN = 'admintok';
   assert.strictEqual((await call(h.admin, { headers: { 'x-admin-token': 'nope' }, body: { action: 'get' } })).s, 401);
   assert.strictEqual((await call(h.admin, { headers: { 'x-admin-token': 'admintok' }, body: { action: 'get' } })).s, 200);
   assert.strictEqual((await call(h.probe, { headers: {} })).s, 401);
+  assert.strictEqual((await call(h.admin, { headers: { 'x-admin-token': ' admintok ' }, body: { action: 'get' } })).s, 200); // 앞뒤 공백 무시
   process.env.CRON_SECRET = 'cs';
   assert.strictEqual((await call(h.cron, { headers: { authorization: 'Bearer x' } })).s, 401);
   assert.strictEqual((await call(h.cron, { headers: { authorization: 'Bearer cs' } })).b.ok, 'c');
