@@ -26,11 +26,12 @@ test('코드 범위 안에서만 품목을 고른다 (실제 파일 구조, 10/1
   assert.deepStrictEqual([p.hr.period, p.hr.value, p.hr.prev], ['2026-08', 87.9, 92.4]);
   assert.strictEqual(n('wire_rod'), 'MS Wire Rods');           // 구리 선재 아님
   assert.strictEqual(n('section'), 'Angles, Channels, Sections'); // 유리 팔찌 아님
-  assert.strictEqual(n('pipe'), 'Steel Pipes & Tubes');        // PVC 아님
+  assert.strictEqual(n('pipe'), 'Pipes, tubes & casing of steel/iron');   // PVC·황동관 아님
+  assert.strictEqual(p.pipe.by, 'code');
   assert.strictEqual(n('coke'), undefined);                     // 석유 코크스 아님
-  assert.strictEqual(n('al'), 'Aluminium ingot');              // 호일 아님
-  assert.strictEqual(n('zn'), 'Zinc ingot');                   // 정광 아님
-  assert.strictEqual(n('pb'), 'Lead ingot');                   // 연필 아님
+  assert.strictEqual(n('al'), 'Aluminium ingot');              // 호일 아님 (코드가 다르면 이름 규칙으로)
+  assert.strictEqual(n('zn'), 'Non-Alloyed Zinc');             // 정광 아님
+  assert.strictEqual(n('pb'), 'Refined Lead');                 // 연필 아님
   assert.strictEqual(n('cu'), 'Copper cathodes and sections of cathodes');
   assert.strictEqual(n('rebar'), 'Bars and Rods of Mild steel');
   assert.strictEqual(n('scrap'), 'Scrap Iron/Steel');
