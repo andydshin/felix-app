@@ -176,7 +176,7 @@ a{color:#1570EF}a:hover{color:#0B4FB3}
           <div style="margin: 10px 20px 0; display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #33445A">
             <div>한국: 철강 제품은 한국은행 생산자물가지수(KOSIS, 2020=100), 원료·비철은 관세청 수입 통관 단가(달러/t)의 전월 대비입니다.</div>
             <div>미국: 노동통계국 생산자물가지수(1982=100), 자동 갱신. 후판·형강 칸은 봉강·후판·형강을 합친 지수입니다. 열연강판은 2022년 2월, 선재는 2017년, 철근은 2013년에 발표가 중단됐습니다.</div>
-            <div>중국: 국가통계국 유통 단계 가격(위안/t), 9월 상순 대비. 냉연·도금·스테인리스, 철광석, 스크랩, 니켈은 조사 품목이 아닙니다.</div>
+            <div>중국: 국가통계국 유통 단계 가격(위안/t), 직전 열흘 대비, 자동 갱신. 냉연·도금·스테인리스, 철광석, 스크랩, 니켈은 조사 품목이 아닙니다.</div>
             <div>인도: 경제자문관실 품목별 도매물가지수. 철강 품목 구성과 재사용 약관을 확인하지 못했습니다.</div>
             <div>멕시코: INEGI 생산자물가지수(상업적 이용 가능). 철근 값은 INEGI를 인용한 건설업협회 자료이고, 나머지는 원자료 연동 전입니다.</div>
             <div>일본: 재무성 무역통계(e-Stat) 단가(엔/t)의 전월 대비. 철강 제품·스크랩·구리는 수출, 원료와 나머지 비철은 수입 단가입니다. 아래 달러 값은 관세청 과세환율 월평균 환산 참고치입니다. 일본은행 기업물가지수는 상업적 이용에 사전 상담이 필요해 쓰지 않습니다.</div>
@@ -1204,6 +1204,30 @@ class Component extends DCLogic {
       if (anyUs) { G.gl.real = true; G.gl.date = monthLabel(usPeriod); G.gl.note = '가격이 아니라 지수(1982=100)입니다. 최근 4개월 값은 예비치라 바뀔 수 있습니다. 출처: U.S. Bureau of Labor Statistics.'; }
     }
 
+    // 중국 내수: 국가통계국 열흘 유통가격 (/api/cn-prices)
+    var cd = s.cnData;
+    if ((s.group === 'cn' || isCmp) && !cd && !self._cnReq) {
+      self._cnReq = true;
+      setTimeout(function () {
+        if (typeof fetch !== 'function') { self.setState({ cnData: { status: 'error' } }); return; }
+        fetch('/api/cn-prices')
+          .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+          .then(function (x) { if (!x.ok || !x.j || x.j.status !== 'ok') throw new Error('bad'); self.setState({ cnData: { status: 'ok', j: x.j } }); })
+          .catch(function () { self.setState({ cnData: { status: 'error' } }); });
+      }, 0);
+    }
+    var cnLabel = null;
+    if (cd && cd.status === 'ok') {
+      var cp = cd.j.period || {};
+      cnLabel = cp.month ? cp.month + '월 ' + ({ '上旬': '상순', '中旬': '중순', '下旬': '하순' }[cp.part] || '') : '';
+      ['cn1', 'cn2', 'cn3', 'cn4', 'cn5', 'cn6', 'cn7', 'cn8'].forEach(function (id) {
+        var d = cd.j.items[id]; if (!d) return;
+        liveSet(id, d.price, 1, '위안/t · ' + cnLabel, d.prev, '');
+      });
+      G.cn.date = cp.year ? cp.year + '년 ' + cnLabel : G.cn.date; G.cn.real = true;
+      G.cn.note = '직전 열흘(旬) 대비 변동입니다. 출처: 중국 국가통계국 「流通领域重要生产资料市场价格变动情况」.';
+    }
+
     // 국가 비교 표: 한국 열 추가, 미국·일본 칸을 실제 데이터로 (각 서버 API 결과를 그대로 쓴다)
     var LOADING = { status: '확인 중' };
     var dmon = function (ym) { return ym ? Number(ym.slice(5, 7)) + '월' : ''; };
@@ -1245,10 +1269,18 @@ class Component extends DCLogic {
     var STOP = function (y) { return { status: '중단', sub: y }; };
     var keep = function (tab, name, col) { var r = CMP[tab].rows.filter(function (x) { return x[0] === name; })[0]; return r ? r[1][col] : NA; };
     // 기존 열 순서: 0 미국, 1 중국, 2 인도, 3 멕시코, 4 일본, 5 유럽, 6 세계 → 앞에 한국을 붙인다
+    var cnCell = function (id, sub) {
+      if (!cd || cd.status !== 'ok') return null;               // 못 받으면 기존(수기) 칸 유지
+      var d = cd.j.items[id];
+      return d ? mk(d.price, d.prev, sub || fmt(d.price, 1)) : null;
+    };
+    var CN_OF = { prod: { '열연': 'cn4', '후판': 'cn3', '선재': 'cn2', '철근': 'cn1', '형강': ['cn6', '앵글'], '강관': ['cn5', '무계목'] }, raw: { '원료탄': ['cn7', '점결탄'], '코크스': 'cn8' }, nf: { '알루미늄': 'al', '구리': 'cu', '아연': 'zn', '납': 'pb' } };
     var row8 = function (tab, name, kr, us, jp) {
       var o = CMP[tab].rows.filter(function (x) { return x[0] === name; })[0][1].slice();
       if (us) o[0] = us;
       if (jp) o[4] = jp;
+      var cm = CN_OF[tab] && CN_OF[tab][name];
+      if (cm) { var cc1 = Array.isArray(cm) ? cnCell(cm[0], cm[1]) : cnCell(cm); if (cc1) o[1] = cc1; }
       return [name, [kr].concat(o)];
     };
     var CMP8 = {
@@ -1285,7 +1317,7 @@ class Component extends DCLogic {
     var usSub = ud2 && ud2.status === 'ok' && ud2.j.items[0] && ud2.j.items[0].period ? dmon(ud2.j.items[0].period) + '·전월비' : '8월·전월비';
     var jpSrc0 = jd && jd.status === 'ok' && jd.source ? (jd.source['export'] || jd.source['import']) : null;
     var cmpCols = [
-      { name: '한국', sub: krSub }, { name: '미국', sub: usSub }, { name: '중국', sub: '9월 중순' }, { name: '인도', sub: '도매물가' },
+      { name: '한국', sub: krSub }, { name: '미국', sub: usSub }, { name: '중국', sub: cnLabel || '9월 중순' }, { name: '인도', sub: '도매물가' },
       { name: '멕시코', sub: '6월·전년비' }, { name: '일본', sub: jpSrc0 ? dmon(jpSrc0.month) + '·전월비' : '무역통계' }, { name: '유럽', sub: 'Eurostat' }, { name: '세계', sub: '8월 평균' }
     ];
 

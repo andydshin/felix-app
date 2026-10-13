@@ -116,3 +116,9 @@ This product uses the Census Bureau Data API but is not endorsed or certified by
 
 - 모든 `/api/*` 요청은 `api/router.js` 함수 하나가 받습니다(`vercel.json`의 rewrites). 경로별 처리는 `lib/routes.js`.
 - 예전 개별 함수 파일(api/us-ppi.js 등)이 저장소에 남아 있으면 `.vercelignore`가 배포에서 뺍니다.
+
+## 중국 국가통계국 유통가격
+
+- 키 없음. `GET /api/cn-prices`: 국가통계국 최신 발표 목록(sj/zxfb)에서 「流通领域重要生产资料市场价格变动情况」 최신 글을 찾아 표를 읽습니다. 철강 6종·焦煤·焦炭(cn1~cn8)과 비철 4종(铜·铝·铅·锌). 캐시 6시간.
+- `GET /api/cn-prices-probe`: 목록에서 찾은 링크와 파싱 결과 진단.
+- 페이지 구조가 바뀌면 읽기에 실패할 수 있습니다. 실패하면 앱은 기존(수기) 값을 그대로 보여 줍니다.
