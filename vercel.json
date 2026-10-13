@@ -6,6 +6,8 @@
     "api/kr-probe.js": { "maxDuration": 60 },
     "api/kr-trade.js": { "maxDuration": 60 },
     "api/fx.js": { "maxDuration": 60 },
-    "api/fx-probe.js": { "maxDuration": 60 }
+    "api/fx-probe.js": { "maxDuration": 60 },
+    "api/kr-ppi.js": { "maxDuration": 60 },
+    "api/kr-ppi-probe.js": { "maxDuration": 60 }
   }
 }

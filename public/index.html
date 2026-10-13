@@ -731,7 +731,7 @@ class Component extends DCLogic {
     var chip = function (on) { return on ? onChip : offChip; };
 
     var G = {
-      kr:  { label: '국내 방향', src: '한국은행 ECOS 생산자물가지수', cycle: '월 1회', date: '2026년 8월', grade: '약관 확인 전', real: false, note: '가격이 아니라 지수입니다. 품목 코드 연동 전이라 예시 값입니다.' },
+      kr:  { label: '국내 방향', src: '한국은행 생산자물가지수 (KOSIS)', cycle: '월 1회', date: '최근 발표 월', grade: '출처 표시', real: false, note: '가격이 아니라 지수(2020=100)입니다. 서버에 연결되지 않아 예시 값입니다.' },
       imp: { label: '수입 통관', src: '관세청 품목별 수출입실적', cycle: '월 1회', date: '2026년 8월 통관분', grade: 'A · 약관 확인', real: false, note: '금액을 중량으로 나눈 통관 단가입니다. API 인증키 연동 전이라 예시 값입니다.' },
       cn:  { label: '중국 내수', src: '중국 국가통계국', cycle: '열흘', date: '2026년 9월 중순 (9월 24일 발표)', grade: 'B · 출처 표시 조건으로 인용', real: true, note: '9월 상순 대비 변동입니다. 9월 하순 값은 아직 발표되지 않았습니다.' },
       raw: { label: '원료', src: '세계은행 원자재 가격', cycle: '월 1회', date: '2026년 8월 평균 (9월 2일 발표)', grade: 'A · CC BY 4.0', real: true, note: '월평균 국제 가격입니다. 7월 평균 대비 변동입니다.' },
@@ -1139,6 +1139,29 @@ class Component extends DCLogic {
       liveSet('fx2', fj.rates.CNY, 2, '원 · ' + wk, pr.CNY, ' 전주비');
       liveSet('fx3', fj.rates.JPY100, 2, '원 · ' + wk, pr.JPY100, ' 전주비');
       G.fx.real = true; G.fx.date = fj.week + ' 적용 주';
+    }
+
+    // 국내 방향: 한국은행 생산자물가지수 (KOSIS 경유, /api/kr-ppi)
+    var pd = s.ppiData;
+    if (s.group === 'kr' && !pd && !self._ppiReq) {
+      self._ppiReq = true;
+      setTimeout(function () {
+        self.setState({ ppiData: { status: 'loading' } });
+        if (typeof fetch !== 'function') { self.setState({ ppiData: { status: 'error' } }); return; }
+        fetch('/api/kr-ppi')
+          .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+          .then(function (x) { if (!x.ok || !x.j || x.j.status !== 'ok') throw new Error('bad'); self.setState({ ppiData: { status: 'ok', j: x.j } }); })
+          .catch(function () { self.setState({ ppiData: { status: 'error' } }); });
+      }, 0);
+    }
+    if (pd && pd.status === 'ok') {
+      var anyPpi = false;
+      (pd.j.items || []).forEach(function (d) {
+        if (d.status !== 'ok') { var it0 = byId[d.id]; if (it0) { it0.valText = '자료 없음'; it0.unit = '지수 2020=100 · 품목 확인 중'; it0.chgText = ''; } return; }
+        anyPpi = true;
+        liveSet(d.id, d.value, 1, '지수 2020=100 · ' + monthLabel(d.period) + (d.matchedName && byId[d.id] && byId[d.id].name !== d.matchedName ? ' · ' + d.matchedName : ''), d.prev, ' 전월비');
+      });
+      if (anyPpi) { G.kr.real = true; G.kr.date = monthLabel(pd.j.period); G.kr.note = '가격이 아니라 지수(2020=100)입니다. 전월 대비 변동입니다. 출처: 한국은행, 「생산자물가조사」, KOSIS.'; }
     }
 
     var tabOn = 'color:#1570EF', tabOff = 'color:#55657A';

@@ -91,3 +91,10 @@ This product uses the Census Bureau Data API but is not endorsed or certified by
 - `GET /api/fx-probe`: 요청 형식별 응답 진단.
 - `/api/jp-trade`는 이 월평균으로 엔/t를 달러/t(`unitPriceUsd`)로 환산합니다. 환율을 못 받으면 엔화만 돌려줍니다.
 - `/api/kr-trade`에 원료 2종(raw3 철광석 2601, raw4 역청탄 2701.12)과 수급 sd1(중국산 72류 철강재 수입량, 7201~7205 제외)을 추가했습니다.
+
+## KOSIS 생산자물가지수
+
+- 환경변수 `KOSIS_API_KEY` (KOSIS 공유서비스 OpenAPI 인증키).
+- `GET /api/kr-ppi`: 한국은행 생산자물가지수(2020=100) 철강 8종. 표는 '생산자물가지수' 검색 결과에서 기본분류 표를 고르고, 품목 코드는 이름으로 찾습니다(찾은 이름 matchedName을 함께 반환). 캐시 12시간.
+- `GET /api/kr-ppi-probe`: 고른 표·후보 표·찾은 품목·샘플 값 진단.
+- 출처 표시: 한국은행, 「생산자물가조사」, KOSIS.
