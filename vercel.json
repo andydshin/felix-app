@@ -2,6 +2,7 @@
   "functions": {
     "api/us-state-imports.js": { "maxDuration": 60 },
     "api/jp-probe.js": { "maxDuration": 60 },
-    "api/jp-trade.js": { "maxDuration": 60 }
+    "api/jp-trade.js": { "maxDuration": 60 },
+    "api/kr-probe.js": { "maxDuration": 60 }
   }
 }

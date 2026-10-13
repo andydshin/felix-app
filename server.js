@@ -13,6 +13,8 @@ const handle = makeHandler();
 const { makeProbeHandler, makeJpTradeHandler } = require('./lib/estat-handler');
 const handleJpProbe = makeProbeHandler();
 const handleJpTrade = makeJpTradeHandler();
+const { makeKrProbeHandler } = require('./lib/customs-handler');
+const handleKrProbe = makeKrProbeHandler();
 
 function sendJson(res, status, body, cacheControl) {
   res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': cacheControl || 'no-store', 'X-Content-Type-Options': 'nosniff' });
@@ -25,9 +27,10 @@ const server = http.createServer(async (req, res) => {
   if (url.pathname === '/api/us-state-imports') {
     return handle(Object.fromEntries(url.searchParams), (s, b, cc) => sendJson(res, s, b, cc));
   }
+  if (url.pathname === '/api/kr-probe') return handleKrProbe((s, b, cc) => sendJson(res, s, b, cc));
   if (url.pathname === '/api/jp-trade') return handleJpTrade((s, b, cc) => sendJson(res, s, b, cc));
   if (url.pathname === '/api/jp-probe') return handleJpProbe((s, b, cc) => sendJson(res, s, b, cc));
-  if (url.pathname === '/healthz') return sendJson(res, 200, { ok: true, keyConfigured: Boolean(process.env.CENSUS_API_KEY), estatConfigured: Boolean(process.env.ESTAT_APP_ID) });
+  if (url.pathname === '/healthz') return sendJson(res, 200, { ok: true, keyConfigured: Boolean(process.env.CENSUS_API_KEY), estatConfigured: Boolean(process.env.ESTAT_APP_ID), customsConfigured: Boolean(process.env.CUSTOMS_SERVICE_KEY) });
   const rel = url.pathname === '/' ? 'index.html' : decodeURIComponent(url.pathname).replace(/^\/+/, '');
   const file = path.normalize(path.join(PUBLIC, rel));
   if (!file.startsWith(PUBLIC + path.sep)) { res.writeHead(403); return res.end(); }

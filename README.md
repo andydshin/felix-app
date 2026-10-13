@@ -78,3 +78,8 @@ This product uses the Census Bureau Data API but is not endorsed or certified by
   - 철강 제품·스크랩·정련동은 수출, 원료·나머지 비철은 수입. 수입 최신 월은 9자리 속보일 수 있음(preliminary).
   - 캐시: 표 구조 6시간, 데이터 12시간. e-Stat 동시 호출 3개.
 - 서비스에 표시할 크레딧: このサービスは、政府統計総合窓口(e-Stat)のAPI機能を使用していますが、サービスの内容は国によって保証されたものではありません。
+
+## 한국 관세청 (진행 중)
+
+- 환경변수 `CUSTOMS_SERVICE_KEY`: 공공데이터포털 마이페이지의 일반 인증키 중 **Decoding** 키 (Encoding 키를 넣어도 서버가 풀어서 씁니다).
+- `GET /api/kr-probe`: 품목별 국가별 수출입실적 API가 국가 지정·HS 자릿수에 따라 어떻게 응답하는지 6가지 사례로 확인하는 진단 주소. 키는 응답·로그에 넣지 않습니다.
