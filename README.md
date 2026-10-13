@@ -109,7 +109,7 @@ This product uses the Census Bureau Data API but is not endorsed or certified by
 ## 미국 BLS 생산자물가지수
 
 - 환경변수 `BLS_API_KEY` (BLS Public Data API v2 등록키, 이메일 활성화 필요). 퍼블릭 도메인.
-- `GET /api/us-ppi`: 미국 방향 3종 — 철강재 전체(WPU1017), 냉연(후보 시리즈 중 공식 제목에 'cold rolled'가 있는 것), 철스크랩(WPU1012). 최신·전월, 예비치(P) 표시. 캐시 12시간.
+- `GET /api/us-ppi`: 미국 방향 3종 — 철강재 전체(WPU1017), 냉연(WPU101707), 철스크랩(WPU1012) + 국가 비교 표용 gl4 열연 봉·판·형강(WPU101704), gl5 강관(WPU101706). BLS가 REQUEST_FAILED를 주면 두 번 더 시도(마지막은 catalog 없이). 최신·전월, 예비치(P) 표시. 캐시 12시간.
 - `GET /api/us-ppi-probe`: 후보 시리즈의 공식 제목과 최신값 진단.
 
 ## Vercel 함수 구조 (Hobby 플랜 12개 제한 대응)

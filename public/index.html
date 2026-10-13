@@ -152,21 +152,17 @@ a{color:#1570EF}a:hover{color:#0B4FB3}
             <div style="font-size: 15px; font-weight: 700; padding: 0 4px">{{ cmpTitle }}</div>
             <div style="font-size: 12px; color: #55657A; padding: 2px 4px 10px">변동률로 비교합니다. 단위와 기준 기간이 달라 가격 수준은 비교하지 않습니다. 표는 옆으로 밀어 볼 수 있습니다.</div>
             <div style="overflow-x: auto">
-              <div style="min-width: 520px">
-                <div style="display: grid; grid-template-columns: 60px repeat(7, minmax(56px, 1fr)); gap: 4px; align-items: end; padding-bottom: 6px; border-bottom: 1px solid #E3EAF3">
+              <div style="min-width: 590px">
+                <div style="display: grid; grid-template-columns: 60px repeat(8, minmax(56px, 1fr)); gap: 4px; align-items: end; padding-bottom: 6px; border-bottom: 1px solid #E3EAF3">
                   <div></div>
-                  <div style="text-align: center"><div style="font-size: 13px; font-weight: 700">미국</div><div style="font-size: 10.5px; color: #55657A">8월·전월비</div></div>
-                  <div style="text-align: center"><div style="font-size: 13px; font-weight: 700">중국</div><div style="font-size: 10.5px; color: #55657A">9월 중순</div></div>
-                  <div style="text-align: center"><div style="font-size: 13px; font-weight: 700">인도</div><div style="font-size: 10.5px; color: #55657A">도매물가</div></div>
-                  <div style="text-align: center"><div style="font-size: 13px; font-weight: 700">멕시코</div><div style="font-size: 10.5px; color: #55657A">6월·전년비</div></div>
-                  <div style="text-align: center"><div style="font-size: 13px; font-weight: 700">일본</div><div style="font-size: 10.5px; color: #55657A">무역통계</div></div>
-                  <div style="text-align: center"><div style="font-size: 13px; font-weight: 700">유럽</div><div style="font-size: 10.5px; color: #55657A">Eurostat</div></div>
-                  <div style="text-align: center"><div style="font-size: 13px; font-weight: 700">세계</div><div style="font-size: 10.5px; color: #55657A">8월 평균</div></div>
+                  <sc-for list="{{ cmpCols }}" as="cc0" hint-placeholder-count="8">
+                    <div style="text-align: center"><div style="font-size: 13px; font-weight: 700">{{ cc0.name }}</div><div style="font-size: 10.5px; color: #55657A">{{ cc0.sub }}</div></div>
+                  </sc-for>
                 </div>
                 <sc-for list="{{ cmpRows }}" as="cr" hint-placeholder-count="5">
-                  <div style="display: grid; grid-template-columns: 60px repeat(7, minmax(56px, 1fr)); gap: 4px; align-items: center; border-bottom: 1px solid #EEF2F7">
+                  <div style="display: grid; grid-template-columns: 60px repeat(8, minmax(56px, 1fr)); gap: 4px; align-items: center; border-bottom: 1px solid #EEF2F7">
                     <div style="font-size: 13px; font-weight: 700; padding-left: 4px">{{ cr.name }}</div>
-                    <sc-for list="{{ cr.cells }}" as="cc" hint-placeholder-count="7">
+                    <sc-for list="{{ cr.cells }}" as="cc" hint-placeholder-count="8">
                       <button onClick="{{ cc.open }}" aria-label="{{ cc.label }}" style="min-height: 52px; border-radius: 8px; text-align: center; padding: 4px 2px; {{ cc.boxStyle }}">
                         <div style="font-size: 13px; font-weight: 700; {{ cc.mainStyle }}">{{ cc.main }}</div>
                         <div style="font-size: 10.5px; color: #55657A">{{ cc.sub }}</div>
@@ -178,11 +174,12 @@ a{color:#1570EF}a:hover{color:#0B4FB3}
             </div>
           </div>
           <div style="margin: 10px 20px 0; display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #33445A">
-            <div>미국: 노동통계국 생산자물가지수(1982=100). 후판·형강 칸은 봉강·후판·형강을 합친 지수입니다. 열연강판은 2022년 2월, 선재는 2017년, 철근은 2013년에 발표가 중단됐습니다.</div>
+            <div>한국: 철강 제품은 한국은행 생산자물가지수(KOSIS, 2020=100), 원료·비철은 관세청 수입 통관 단가(달러/t)의 전월 대비입니다.</div>
+            <div>미국: 노동통계국 생산자물가지수(1982=100), 자동 갱신. 후판·형강 칸은 봉강·후판·형강을 합친 지수입니다. 열연강판은 2022년 2월, 선재는 2017년, 철근은 2013년에 발표가 중단됐습니다.</div>
             <div>중국: 국가통계국 유통 단계 가격(위안/t), 9월 상순 대비. 냉연·도금·스테인리스, 철광석, 스크랩, 니켈은 조사 품목이 아닙니다.</div>
             <div>인도: 경제자문관실 품목별 도매물가지수. 철강 품목 구성과 재사용 약관을 확인하지 못했습니다.</div>
             <div>멕시코: INEGI 생산자물가지수(상업적 이용 가능). 철근 값은 INEGI를 인용한 건설업협회 자료이고, 나머지는 원자료 연동 전입니다.</div>
-            <div>일본: 일본은행 기업물가지수는 상업적 이용에 사전 상담이 필요해 쓰지 않습니다. 상업적 이용이 허용된 재무성 무역통계(e-Stat)의 수출입 단가로 채울 예정입니다.</div>
+            <div>일본: 재무성 무역통계(e-Stat) 단가(엔/t)의 전월 대비. 철강 제품·스크랩·구리는 수출, 원료와 나머지 비철은 수입 단가입니다. 아래 달러 값은 관세청 과세환율 월평균 환산 참고치입니다. 일본은행 기업물가지수는 상업적 이용에 사전 상담이 필요해 쓰지 않습니다.</div>
             <div>유럽: Eurostat는 출처를 밝히면 상업적 이용이 가능합니다(EU 회원국 데이터 한정). 품목별 지수는 독일 연방통계청에 있으나 이용 조건을 확인하지 못했습니다.</div>
             <div>세계: 세계은행 월평균 가격(CC BY 4.0), 7월 대비. 제품 가격은 다루지 않습니다.</div>
           </div>
@@ -982,7 +979,7 @@ class Component extends DCLogic {
 
     // 일본: 재무성 무역통계(e-Stat) 품목별 수출·수입 단가 (엔/t). 서버 /api/jp-trade 경유.
     var jd = s.jpData;
-    if (isJp && !jd && !self._jpReq) {
+    if ((isJp || isCmp) && !jd && !self._jpReq) {
       self._jpReq = true;
       var putJ = function (v) { self.setState({ jpData: v }); };
       setTimeout(function () {
@@ -1046,7 +1043,7 @@ class Component extends DCLogic {
 
     // 한국: 관세청 품목별 국가별 수출입실적 → 수입 통관 단가 (달러/t). 서버 /api/kr-trade 경유.
     var kd = s.krData;
-    if ((isKr || s.group === 'raw' || s.group === 'sd') && !kd && !self._krReq) {
+    if ((isKr || isCmp || s.group === 'raw' || s.group === 'sd') && !kd && !self._krReq) {
       self._krReq = true;
       var putK = function (v) { self.setState({ krData: v }); };
       setTimeout(function () {
@@ -1106,7 +1103,7 @@ class Component extends DCLogic {
       if (prevVal != null && prevVal > 0) {
         var c = val - prevVal, pc = c / prevVal * 100;
         it.chgText = (c > 0 ? '▲' : (c < 0 ? '▼' : '')) + fmt(Math.abs(c), d) + ' (' + fmt(Math.abs(pc), 1) + '%)' + (chgSuffix || '');
-        it.chgStyle = c > 0 ? UP : (c < 0 ? DOWN : FLAT);
+        it.chgStyle = c > 0 ? UP : (c < 0 ? DOWN : FLAT); it.pct = pc;
       } else { it.chgText = '전월 자료 없음'; it.chgStyle = FLAT; }
       it.pctText = it.chgText; it.chgLine = it.chgText;
     };
@@ -1164,7 +1161,7 @@ class Component extends DCLogic {
 
     // 국내 방향: 한국은행 생산자물가지수 (KOSIS 경유, /api/kr-ppi)
     var pd = s.ppiData;
-    if (s.group === 'kr' && !pd && !self._ppiReq) {
+    if ((s.group === 'kr' || isCmp) && !pd && !self._ppiReq) {
       self._ppiReq = true;
       setTimeout(function () {
         self.setState({ ppiData: { status: 'loading' } });
@@ -1187,7 +1184,7 @@ class Component extends DCLogic {
 
     // 미국 방향: BLS 생산자물가지수 (/api/us-ppi)
     var ud2 = s.usPpi;
-    if (s.group === 'gl' && !ud2 && !self._usPpiReq) {
+    if ((s.group === 'gl' || isCmp) && !ud2 && !self._usPpiReq) {
       self._usPpiReq = true;
       setTimeout(function () {
         if (typeof fetch !== 'function') { self.setState({ usPpi: { status: 'error' } }); return; }
@@ -1207,6 +1204,91 @@ class Component extends DCLogic {
       if (anyUs) { G.gl.real = true; G.gl.date = monthLabel(usPeriod); G.gl.note = '가격이 아니라 지수(1982=100)입니다. 최근 4개월 값은 예비치라 바뀔 수 있습니다. 출처: U.S. Bureau of Labor Statistics.'; }
     }
 
+    // 국가 비교 표: 한국 열 추가, 미국·일본 칸을 실제 데이터로 (각 서버 API 결과를 그대로 쓴다)
+    var LOADING = { status: '확인 중' };
+    var dmon = function (ym) { return ym ? Number(ym.slice(5, 7)) + '월' : ''; };
+    var mk = function (cur, prev, sub, low) {
+      if (low) return { status: '물량 적음', sub: sub };
+      if (!(cur > 0)) return NA;
+      if (!(prev > 0)) return { status: '전월 없음', sub: sub };
+      return { pct: (cur - prev) / prev * 100, sub: sub };
+    };
+    // 한국
+    var krCell = function (id, kind) {
+      if (kind === 'ppi') {
+        if (!pd || pd.status === 'loading') return LOADING;
+        if (pd.status !== 'ok') return LINK;
+        var d = (pd.j.items || []).filter(function (x) { return x.id === id; })[0];
+        return d && d.status === 'ok' ? mk(d.value, d.prev, fmt(d.value, 1)) : NA;
+      }
+      if (!kd || kd.status === 'loading') return LOADING;
+      if (kd.status !== 'ok') return LINK;
+      var t = kd.items && kd.items[id];
+      return t && t.status === 'ok' ? mk(t.unitPrice, t.prev && t.prev.status === 'ok' ? t.prev.unitPrice : null, '$' + fmt(t.unitPrice, 0), t.lowVolume) : NA;
+    };
+    // 미국
+    var usCell = function (id, fallback) {
+      if (!ud2 || ud2.status === 'loading') return fallback || LOADING;
+      if (ud2.status !== 'ok') return fallback || LINK;
+      var d = (ud2.j.items || []).filter(function (x) { return x.id === id; })[0];
+      return d && d.status === 'ok' ? mk(d.value, d.prev, fmt(d.value, 1) + (id === 'gl4' ? '*' : '')) : (fallback || NA);
+    };
+    // 일본
+    var jpCell = function (id) {
+      if (!jd || jd.status === 'loading') return LOADING;
+      if (jd.status !== 'ok') return LINK;
+      var d = jd.items && jd.items[id];
+      if (!d || d.status !== 'ok') return NA;
+      var sub = (d.flow === 'export' ? '수출 ' : '수입 ') + (d.unitPriceUsd ? '$' + fmt(d.unitPriceUsd, 0) : fmt(d.unitPriceJpy / 1000, 0) + '천엔');
+      return mk(d.unitPriceJpy, d.prev && d.prev.status === 'ok' ? d.prev.unitPriceJpy : null, sub, d.lowVolume);
+    };
+    var STOP = function (y) { return { status: '중단', sub: y }; };
+    var keep = function (tab, name, col) { var r = CMP[tab].rows.filter(function (x) { return x[0] === name; })[0]; return r ? r[1][col] : NA; };
+    // 기존 열 순서: 0 미국, 1 중국, 2 인도, 3 멕시코, 4 일본, 5 유럽, 6 세계 → 앞에 한국을 붙인다
+    var row8 = function (tab, name, kr, us, jp) {
+      var o = CMP[tab].rows.filter(function (x) { return x[0] === name; })[0][1].slice();
+      if (us) o[0] = us;
+      if (jp) o[4] = jp;
+      return [name, [kr].concat(o)];
+    };
+    var CMP8 = {
+      prod: { title: '철강 제품, 여덟 곳의 방향', rows: [
+        row8('prod', '열연', krCell('kr3', 'ppi'), STOP('2022.2'), jpCell('hr')),
+        row8('prod', '냉연', krCell('kr4', 'ppi'), usCell('gl2'), jpCell('cr')),
+        row8('prod', '도금', krCell('kr5', 'ppi'), NA, jpCell('coated')),
+        row8('prod', '후판', krCell('kr6', 'ppi'), usCell('gl4', keep('prod', '후판', 0)), jpCell('plate')),
+        row8('prod', '선재', NA, STOP('2017'), jpCell('wire_rod')),
+        row8('prod', '철근', krCell('kr1', 'ppi'), STOP('2013'), jpCell('rebar')),
+        row8('prod', '형강', krCell('kr2', 'ppi'), usCell('gl4', keep('prod', '형강', 0)), NA),
+        row8('prod', '강관', krCell('kr7', 'ppi'), usCell('gl5'), jpCell('pipe')),
+        row8('prod', 'STS', krCell('kr8', 'ppi'), NA, NA)
+      ] },
+      raw: { title: '철 원료, 여덟 곳의 방향', rows: [
+        row8('raw', '철광석', krCell('raw3'), null, jpCell('iron_ore')),
+        row8('raw', '원료탄', krCell('raw4'), null, jpCell('coal')),
+        row8('raw', '코크스', NA, null, NA),
+        row8('raw', '스크랩', krCell('imp9'), usCell('gl3'), jpCell('scrap')),
+        row8('raw', '연료탄', { status: '없음', sub: '원료탄에 포함' }, null, NA)
+      ] },
+      nf: { title: '비철, 여덟 곳의 방향', rows: [
+        row8('nf', '알루미늄', krCell('nf1'), null, jpCell('al')),
+        row8('nf', '구리', krCell('nf2'), null, jpCell('cu')),
+        row8('nf', '아연', krCell('nf3'), null, jpCell('zn')),
+        row8('nf', '니켈', krCell('nf6'), null, jpCell('ni')),
+        row8('nf', '납', krCell('nf4'), null, NA)
+      ] }
+    };
+    var tabKey = CMP8[s.cmpTab] ? s.cmpTab : 'prod';
+    ct = CMP8[tabKey];
+    cmpRows = ct.rows.map(function (r) { return { name: r[0], cells: r[1].map(cell) }; });
+    var krSub = tabKey === 'prod' ? (pd && pd.status === 'ok' ? dmon(pd.j.period) + '·전월비' : '물가지수') : (kd && kd.status === 'ok' ? dmon(kd.month) + ' 통관' : '수입 단가');
+    var usSub = ud2 && ud2.status === 'ok' && ud2.j.items[0] && ud2.j.items[0].period ? dmon(ud2.j.items[0].period) + '·전월비' : '8월·전월비';
+    var jpSrc0 = jd && jd.status === 'ok' && jd.source ? (jd.source['export'] || jd.source['import']) : null;
+    var cmpCols = [
+      { name: '한국', sub: krSub }, { name: '미국', sub: usSub }, { name: '중국', sub: '9월 중순' }, { name: '인도', sub: '도매물가' },
+      { name: '멕시코', sub: '6월·전년비' }, { name: '일본', sub: jpSrc0 ? dmon(jpSrc0.month) + '·전월비' : '무역통계' }, { name: '유럽', sub: 'Eurostat' }, { name: '세계', sub: '8월 평균' }
+    ];
+
     var tabOn = 'color:#1570EF', tabOff = 'color:#55657A';
     var go = function (t) { return function () { set({ tab: t, sub: null }); }; };
     var top = !s.sub;
@@ -1221,7 +1303,7 @@ class Component extends DCLogic {
       tabHome: s.tab === 'home' ? tabOn : tabOff, tabBoard: s.tab === 'board' ? tabOn : tabOff, tabReports: s.tab === 'reports' ? tabOn : tabOff,
       tabTips: s.tab === 'tips' ? tabOn : tabOff, tabMe: s.tab === 'me' ? tabOn : tabOff,
       movers: movers, watchItems: watchItems, noWatch: watchItems.length === 0,
-      groups: groups, rows: rows, isDataGroup: !isDom && !isCmp && !isUs && !isJp && !isKr, isKrGroup: isKr, krTitle: isNf ? '비철 수입 통관 단가' : '한국 수입 통관 단가', krIsSteel: !isNf, krIsNf: isNf, krRows: krRows, krBanner: krBanner, krBannerStyle: krBannerStyle, krShowRetry: krStatus === 'error', krRetry: krRetry, krMonthLabel: krMonthLabel, isJpGroup: isJp, jpSections: jpSections, jpBanner: jpBanner, jpBannerStyle: jpBannerStyle, jpShowRetry: jpStatus === 'error', jpRetry: jpRetry, jpMonthLabel: jpMonthLabel, isDomGroup: isDom, isCmpGroup: isCmp, cmpRows: cmpRows, cmpTabs: cmpTabs, cmpTitle: ct.title, isUsGroup: isUs, usStates: usStates, usSections: usSections, usStateName: STATES.at(si)[1], usBanner: usBanner, usBannerStyle: usBannerStyle, usShowRetry: usStatus === 'error', usRetry: usRetry, usMonthLabel: usStatus === 'ok' ? monthLabel(ud.month) : (usStatus === 'error' ? '예시' : '확인 중'),
+      groups: groups, rows: rows, isDataGroup: !isDom && !isCmp && !isUs && !isJp && !isKr, isKrGroup: isKr, krTitle: isNf ? '비철 수입 통관 단가' : '한국 수입 통관 단가', krIsSteel: !isNf, krIsNf: isNf, krRows: krRows, krBanner: krBanner, krBannerStyle: krBannerStyle, krShowRetry: krStatus === 'error', krRetry: krRetry, krMonthLabel: krMonthLabel, isJpGroup: isJp, jpSections: jpSections, jpBanner: jpBanner, jpBannerStyle: jpBannerStyle, jpShowRetry: jpStatus === 'error', jpRetry: jpRetry, jpMonthLabel: jpMonthLabel, isDomGroup: isDom, isCmpGroup: isCmp, cmpRows: cmpRows, cmpCols: cmpCols, cmpTabs: cmpTabs, cmpTitle: ct.title, isUsGroup: isUs, usStates: usStates, usSections: usSections, usStateName: STATES.at(si)[1], usBanner: usBanner, usBannerStyle: usBannerStyle, usShowRetry: usStatus === 'error', usRetry: usRetry, usMonthLabel: usStatus === 'ok' ? monthLabel(ud.month) : (usStatus === 'error' ? '예시' : '확인 중'),
       groupSrc: g.src, groupCycle: g.cycle, groupDate: g.date, groupNote: g.note,
       groupTag: s.group === 'sd' ? '일부 실제 값' : (g.real ? '실제 발표값' : '예시 값'), groupTagStyle: g.real ? 'color:#0B6B3A' : 'color:#7A4B00',
       domRows: [{ name: '열연 유통가', status: '제보 대기' }, { name: '냉연 유통가', status: '제보 대기' }, { name: '도금강판 유통가', status: '제보 대기' }, { name: '철근 유통가', status: '제보 대기' }],
