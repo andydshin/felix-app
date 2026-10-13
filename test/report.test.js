@@ -137,3 +137,27 @@ test('관리자 인증: 토큰 없거나 틀리면 거절, 크론은 CRON_SECRET
   assert.strictEqual((await call(h.cron, { headers: { authorization: 'Bearer cs' } })).b.ok, 'c');
   delete process.env.FELIX_ADMIN_TOKEN; delete process.env.CRON_SECRET;
 });
+
+test('API 없이: 숫자 초안, 요청문 복사, Claude 답 붙여넣기', async () => {
+  const f = async (url) => { const s = require('../lib/report-data').SOURCES.find(x => url.endsWith(x.path)); return { ok: true, status: 200, json: async () => (s ? RAW[s.id] : {}) }; };
+  const news = { collect: async () => ({ news: [{ id: 'n1', title: 'EU cuts steel quotas', url: 'https://ex.com/eu', source: 'ex.com', date: '2026-10-10' }], official: [{ id: 'o1', title: 'Certain Steel: Initiation', url: 'https://www.federalregister.gov/d/1', date: '2026-10-09', kind: 'official' }], errors: {} }) };
+  const r = createReport({ fetch: f, kv: createKv(), news, ai: { pickModel: async () => { throw new Error('no'); } }, now: () => new Date('2026-10-13T01:00:00Z') });
+  await r.collect('http://x');
+  const a = await r.draftAuto();
+  assert.ok(a.title.includes('%'));
+  let d = (await r.adminGet()).draft;
+  assert.ok(d.oneLiner.length > 0 && d.takeaways.length >= 2 && d.regions.length > 0);
+  assert.deepStrictEqual(d.issues, []);
+  const p = (await r.prompt()).prompt;
+  assert.ok(p.includes('n1 | 2026-10-10 | ex.com | EU cuts steel quotas') && p.includes('o1 |') && p.includes('"issues"') && p.includes('"takeaways"') && p.includes('cn:hr'));
+  const answer = '좋습니다. 아래가 결과입니다.\n```json\n' + JSON.stringify({ title: '새 제목', oneLiner: '한 줄', takeaways: ['a', 'b', 'c'], regions: [{ region: 'cn', text: '중국 설명' }],
+    issues: [{ type: '무역정책', title: 'EU 쿼터 축소', what: 'w', path: 'p', impact: 'i', dir: '하락', items: ['hr'], regions: ['eu'], watch: 'w', watchKey: 'cn:hr', conf: '중간', confWhy: 'c', sources: ['n1'] }, { title: '출처 없음', sources: [] }],
+    calendar: [{ date: '2026-10-20', title: '예비판정', why: 'y', sources: ['o1'] }], checks: [{ key: 'cn:hr', expect: 'down', label: '약세' }] }) + '\n```';
+  const imp = await r.importAnswer(answer);
+  assert.deepStrictEqual([imp.issues, imp.dropped, imp.calendar, imp.checks], [1, 1, 1, 1]);
+  d = (await r.adminGet()).draft;
+  assert.strictEqual(d.title, '새 제목');
+  assert.strictEqual(d.issues[0].sources[0].url, 'https://ex.com/eu');
+  await assert.rejects(r.importAnswer('죄송합니다'), e => e.code === 'bad_answer');
+  assert.deepStrictEqual(await r.publish(), { no: 1, weekLabel: '2026년 10월 2주' });
+});
