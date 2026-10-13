@@ -128,3 +128,7 @@ This product uses the Census Bureau Data API but is not endorsed or certified by
 - 키 없음, CC BY 4.0. `GET /api/world-prices`: 세계은행 Commodity Markets 안내 페이지에서 CMO-Historical-Data-Monthly.xlsx 링크를 찾아(못 찾으면 마지막 확인 주소 또는 `WB_XLSX_URL`) 'Monthly Prices' 시트를 읽습니다. 철광석, 호주산 석탄, 알루미늄·구리·납·주석·니켈·아연. 캐시 12시간.
 - xlsx는 의존성 없이 `lib/xlsx-lite.js`로 읽습니다.
 - `GET /api/world-prices-probe`: 파일 주소·크기·파싱 결과 진단.
+
+## 인도 WPI (진행 중)
+
+- 키 없음. `GET /api/in-wpi-probe`: eaindustry.nic.in/download_data_2223.asp에서 최신 `wpi_monthly_index_YYYYMM.xlsx`를 찾아 첫 시트의 머리글·품목 후보(철강·원료·비철)를 보여 줍니다. 품목 이름이 확정되면 `/api/in-wpi`를 앱 국가 비교 표 인도 열에 연결합니다.
