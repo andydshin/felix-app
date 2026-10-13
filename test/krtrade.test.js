@@ -56,8 +56,9 @@ test('한국 수입 단가: 최신 월, 전월비용 전월, 중국산·일본�
   assert.strictEqual(h.lowVolume, true);
   assert.strictEqual(h.prev.status, 'nodata');
   assert.strictEqual(r.items.find(i => i.id === 'imp2').status, 'nodata');
-  assert.strictEqual(calls.length, 9);
+  assert.strictEqual(calls.length, 15);
+  assert.strictEqual(r.items.find(i => i.id === 'nf1').status, 'nodata');
   await svc.latest();
-  assert.strictEqual(calls.length, 9);                  // 캐시
+  assert.strictEqual(calls.length, 15);                  // 캐시
   assert.ok(!(JSON.stringify(r) + logs.join('')).includes(KEY));
 });
