@@ -12,6 +12,7 @@ const xml = items => '<response><header><resultCode>00</resultCode><resultMsg>�
 test('통화 고르기: 엔은 100엔 기준으로 맞춘다', () => {
   assert.deepStrictEqual(pick([{ currSgn: 'USD', fxrt: '1,380.5' }, { currSgn: 'JPY', fxrt: '9.3' }, { currSgn: 'CNY', fxrt: '190.1' }, { currSgn: 'EUR', fxrt: '1500' }]), { USD: 1380.5, JPY100: 930, CNY: 190.1 });
   assert.strictEqual(pick([{ currSgn: 'JPY', fxrt: '930.12' }]).JPY100, 930.12);
+  assert.strictEqual(pick([{ currSgn: 'JPY', fxrt: '9.31', mtryUtNm: 'Yen(100)' }]).JPY100, 9.31);
 });
 
 test('주 시작일은 일요일', () => {
