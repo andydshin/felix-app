@@ -95,6 +95,6 @@ This product uses the Census Bureau Data API but is not endorsed or certified by
 ## KOSIS 생산자물가지수
 
 - 환경변수 `KOSIS_API_KEY` (KOSIS 공유서비스 OpenAPI 인증키).
-- `GET /api/kr-ppi`: 한국은행 생산자물가지수(2020=100) 철강 8종. 표는 '생산자물가지수' 검색 결과에서 기본분류 표를 고르고, 품목 코드는 이름으로 찾습니다(찾은 이름 matchedName을 함께 반환). 캐시 12시간.
+- `GET /api/kr-ppi`: 한국은행 생산자물가지수(2020=100) 철강 8종. 표는 '생산자물가지수' 검색 결과에서 기본분류 표(DT_404Y014)를 고르고, 없는 품목은 품목별 표(DT_404Y016)에서 찾습니다. 품목 코드는 이름으로 찾습니다(찾은 이름 matchedName을 함께 반환). 캐시 12시간.
 - `GET /api/kr-ppi-probe`: 고른 표·후보 표·찾은 품목·샘플 값 진단.
 - 출처 표시: 한국은행, 「생산자물가조사」, KOSIS.

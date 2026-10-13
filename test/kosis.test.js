@@ -9,7 +9,13 @@ const { makeKrPpiHandler } = require('../lib/kosis-handler');
 const SEARCH = [
   { ORG_ID: '301', TBL_ID: 'DT_SPECIAL', TBL_NM: '생산자물가지수(특수분류)', STAT_NM: '생산자물가조사' },
   { ORG_ID: '301', TBL_ID: 'DT_BASIC', TBL_NM: '생산자물가지수(기본분류)(2020=100)', STAT_NM: '생산자물가조사' },
+  { ORG_ID: '301', TBL_ID: 'DT_ITEMS', TBL_NM: '생산자물가지수(품목별)', STAT_NM: '생산자물가조사' },
   { ORG_ID: '101', TBL_ID: 'DT_OTHER', TBL_NM: '소비자물가지수', STAT_NM: 'x' }
+];
+const META_ITEMS = [
+  { OBJ_ID: 'B', OBJ_NM: '품목별', ITM_ID: 'B1', ITM_NM: '냉연강판', UP_ITM_ID: 'B0' },
+  { OBJ_ID: 'B', OBJ_NM: '품목별', ITM_ID: 'B2', ITM_NM: '용융아연도강판', UP_ITM_ID: 'B0' },
+  { OBJ_ID: 'B', OBJ_NM: '품목별', ITM_ID: 'B3', ITM_NM: '스테인리스냉연강판', UP_ITM_ID: 'B0' }
 ];
 const META = [
   { OBJ_ID: 'ITEM', OBJ_NM: '항목', ITM_ID: 'T1', ITM_NM: '지수' },
@@ -26,6 +32,7 @@ const META = [
 
 test('표 고르기: 기본분류 우선, 특수분류 제외', () => {
   assert.strictEqual(pickTable(SEARCH).best.tblId, 'DT_BASIC');
+  assert.strictEqual(pickTable(SEARCH).itemTable.tblId, 'DT_ITEMS');
 });
 
 test('품목 찾기: 정확히 같은 이름 → 포함, 엉뚱한 품목은 고르지 않음', () => {
@@ -44,8 +51,9 @@ function fakeFetch(calls) {
     assert.strictEqual(p.apiKey, KEY);
     const ok = b => ({ ok: true, status: 200, text: async () => JSON.stringify(b) });
     if (u.pathname.endsWith('/statisticsSearch.do')) return ok(SEARCH);
-    if (u.pathname.endsWith('/statisticsData.do')) return ok(META);
+    if (u.pathname.endsWith('/statisticsData.do')) return ok(p.tblId === 'DT_ITEMS' ? META_ITEMS : META);
     if (u.pathname.endsWith('/statisticsParameterData.do')) {
+      if (p.tblId === 'DT_ITEMS') return ok([['202607', 100], ['202608', 101]].map(([d, v]) => ({ PRD_DE: d, DT: String(v), UNIT_NM: '2020=100' })));
       assert.strictEqual(p.tblId, 'DT_BASIC');
       if (p.objL1 === 'A107') return ok({ err: '30', errMsg: '데이터가 존재하지 않습니다.' });
       const base = { A101: 118, A102: 121, A103: 124, A104: 119, A105: 122, A106: 126 }[p.objL1];
@@ -63,7 +71,8 @@ test('국내 PPI: 최신 월·전월비, 없는 품목은 nodata, 키 비노출,
   const rebar = r.items.find(i => i.id === 'kr1');
   assert.deepStrictEqual([rebar.value, rebar.prev, rebar.change], [118.6, 118, 0.6]);
   assert.strictEqual(r.items.find(i => i.id === 'kr7').status, 'nodata');
-  assert.strictEqual(r.items.find(i => i.id === 'kr8').reason, 'item_not_found');
+  const ss = r.items.find(i => i.id === 'kr8');                        // 기본분류에 없으면 품목별 표에서
+  assert.deepStrictEqual([ss.status, ss.tblId, ss.matchedName, ss.value], ['ok', 'DT_ITEMS', '스테인리스냉연강판', 101]);
   const n = calls.length;
   await svc.latest();
   assert.strictEqual(calls.length, n);
