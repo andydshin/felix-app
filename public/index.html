@@ -232,6 +232,41 @@ a{color:#1570EF}a:hover{color:#0B4FB3}
           </div>
         </sc-if>
 
+        <sc-if value="{{ isKrGroup }}" hint-placeholder-val="{{ false }}">
+          <div style="margin: 8px 20px 0; border-radius: 12px; padding: 10px 12px; font-size: 12px; {{ krBannerStyle }}">
+            <div>{{ krBanner }}</div>
+            <sc-if value="{{ krShowRetry }}" hint-placeholder-val="{{ false }}">
+              <button onClick="{{ krRetry }}" style="margin-top: 6px; min-height: 44px; padding: 0 14px; border-radius: 22px; border: 1px solid #7A4B00; font-size: 13px; font-weight: 600">다시 불러오기</button>
+            </sc-if>
+          </div>
+          <div style="margin: 12px 20px 0">
+            <div style="font-size: 15px; font-weight: 700">한국 수입 통관 단가</div>
+            <div style="font-size: 12px; color: #55657A">기준 월: {{ krMonthLabel }} · 단위: 달러/t · 출처: 관세청</div>
+          </div>
+          <div style="margin: 10px 20px 0; background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 4px 16px 6px">
+            <sc-for list="{{ krRows }}" as="kr" hint-placeholder-count="9">
+              <div style="display: flex; min-height: 64px; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid #EEF2F7; padding: 6px 0">
+                <div>
+                  <div style="font-size: 15px; font-weight: 600">{{ kr.name }}</div>
+                  <div style="font-size: 12px; font-weight: 700; {{ kr.tagStyle }}">{{ kr.tag }}</div>
+                  <div style="font-size: 12px; color: #33445A">{{ kr.origin }}</div>
+                  <div style="font-size: 11.5px; color: #55657A">{{ kr.partners }}</div>
+                </div>
+                <div style="text-align: right">
+                  <div style="font-size: 16px; font-weight: 700; {{ kr.valStyle }}">{{ kr.valText }}</div>
+                  <div style="font-size: 12px; font-weight: 600; {{ kr.chgStyle }}">{{ kr.chgText }}</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="margin: 10px 20px 0; display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #33445A">
+            <div>수입 통관 단가 = 수입 금액(달러, 운임·보험료 포함 과세가격) ÷ 순중량. 전 국가 합계입니다.</div>
+            <div>중국산·일본산은 같은 품목의 원산지별 단가이고, 아래 줄은 물량 기준 상위 수입국입니다.</div>
+            <div>한 달 물량이 100t 미만이면 회색으로 표시하고 ‘물량 적음’을 붙입니다. 품목 안 세부 규격 구성이 달마다 달라 단가가 움직일 수 있습니다.</div>
+            <div>출처: 관세청 품목별 국가별 수출입실적 (공공데이터포털).</div>
+          </div>
+        </sc-if>
+
         <sc-if value="{{ isJpGroup }}" hint-placeholder-val="{{ false }}">
           <div style="margin: 8px 20px 0; border-radius: 12px; padding: 10px 12px; font-size: 12px; {{ jpBannerStyle }}">
             <div>{{ jpBanner }}</div>
@@ -741,7 +776,7 @@ class Component extends DCLogic {
     var byId = {};
     items.forEach(function (it) { byId[it.id] = it; });
 
-    var isDom = s.group === 'dom', isCmp = s.group === 'cmp', isUs = s.group === 'us', isJp = s.group === 'jp';
+    var isDom = s.group === 'dom', isCmp = s.group === 'cmp', isUs = s.group === 'us', isJp = s.group === 'jp', isKr = s.group === 'imp';
     var g = G[s.group] || G.cn;
     var groups = ORDER.map(function (k) {
       return { label: k === 'dom' ? '국내 유통가' : (k === 'cmp' ? '국가 비교' : (k === 'us' ? '미국 주별' : (k === 'jp' ? '일본 수출입' : G[k].label))), style: chip(s.group === k), pick: function () { set({ group: k }); } };
@@ -1006,6 +1041,61 @@ class Component extends DCLogic {
     var jpBannerStyle = jpStatus === 'ok' ? 'background:#E3F4EA;color:#0B4F2B' : 'background:#FFF3D6;color:#5C3A00';
     var jpRetry = function () { self._jpReq = false; self.setState({ jpData: null }); };
 
+    // 한국: 관세청 품목별 국가별 수출입실적 → 수입 통관 단가 (달러/t). 서버 /api/kr-trade 경유.
+    var kd = s.krData;
+    if (isKr && !kd && !self._krReq) {
+      self._krReq = true;
+      var putK = function (v) { self.setState({ krData: v }); };
+      setTimeout(function () {
+        putK({ status: 'loading' });
+        if (typeof fetch !== 'function') { putK({ status: 'error' }); return; }
+        fetch('/api/kr-trade')
+          .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+          .then(function (x) {
+            if (!x.ok || !x.j || !x.j.items) throw new Error('bad response');
+            var m = {};
+            x.j.items.forEach(function (it) { m[it.id] = it; });
+            putK({ status: x.j.month ? 'ok' : 'nomonth', month: x.j.month, items: m });
+          })
+          .catch(function () { putK({ status: 'error' }); });
+      }, 0);
+    }
+    var krStatus = kd ? kd.status : 'loading';
+    var pctChg = function (a, b) { return (a - b) / b * 100; };
+    var chgLabel = function (c) { return (c > 0 ? '▲' : (c < 0 ? '▼' : '')) + fmt(Math.abs(c), 1) + '% 전월비'; };
+    var krRows = items.filter(function (it) { return it.group === 'imp'; }).map(function (it, k) {
+      var row = { name: it.name, valStyle: '', chgText: '', chgStyle: FLAT, origin: '', partners: '' };
+      if (krStatus === 'ok' || krStatus === 'nomonth') {
+        var d = kd.items && kd.items[it.id];
+        if (d && d.status === 'ok') {
+          row.valText = fmt(d.unitPrice, 0); row.tag = '실제 값 · ' + fmt(d.tons, 0) + 't'; row.tagStyle = REAL;
+          if (d.lowVolume) { row.valStyle = MUTED; row.tag = '실제 값 · 물량 적음 ' + fmt(d.tons, 0) + 't'; row.tagStyle = EX; }
+          var o = [];
+          [['CN', '중국산'], ['JP', '일본산']].forEach(function (c) {
+            var x = d.byCountry && d.byCountry[c[0]];
+            if (x && x.status === 'ok') o.push(c[1] + ' ' + fmt(x.unitPrice, 0) + (x.lowVolume ? '(소량)' : ''));
+          });
+          row.origin = o.join(' · ');
+          row.partners = (d.topPartners || []).map(function (p) { return p.name + ' ' + fmt(p.share, 0) + '%'; }).join(' · ');
+          if (d.prev && d.prev.status === 'ok' && d.prev.lowVolume) row.chgText = '전월 물량 적음';
+          else if (d.prev && d.prev.status === 'ok' && d.prev.unitPrice > 0) {
+            var c = pctChg(d.unitPrice, d.prev.unitPrice);
+            row.chgText = chgLabel(c); row.chgStyle = c > 0 ? UP : (c < 0 ? DOWN : FLAT);
+          } else row.chgText = '전월 자료 없음';
+        } else { row.valText = '자료 없음'; row.valStyle = MUTED; row.tag = '자료 없음'; row.tagStyle = MUTED; }
+      } else if (krStatus === 'error') {
+        row.valText = it.valText; row.tag = '예시 값'; row.tagStyle = EX; row.chgText = it.chgText + ' (예시)'; row.chgStyle = it.chgStyle;
+      } else { row.valText = '불러오는 중'; row.valStyle = MUTED; row.tag = '조회 중'; row.tagStyle = MUTED; }
+      return row;
+    });
+    var krMonthLabel = krStatus === 'ok' ? monthLabel(kd.month) : (krStatus === 'error' ? '예시' : (krStatus === 'nomonth' ? '확인 불가' : '확인 중'));
+    var krBanner = krStatus === 'ok' ? '실제 값: ' + krMonthLabel + ' 통관분, 관세청 품목별 국가별 수출입실적. 자료가 없는 품목은 ‘자료 없음’으로 표시합니다.'
+      : (krStatus === 'nomonth' ? '조회 가능한 월을 찾지 못했습니다. 값을 만들어 넣지 않고 ‘자료 없음’으로 표시합니다.'
+      : (krStatus === 'error' ? '데이터 서버에 연결하지 못해 예시 값을 보여 줍니다. 실제 값은 Felix 서버를 통해서만 표시됩니다.'
+      : '관세청 수출입실적을 불러오는 중입니다.'));
+    var krBannerStyle = krStatus === 'ok' ? 'background:#E3F4EA;color:#0B4F2B' : 'background:#FFF3D6;color:#5C3A00';
+    var krRetry = function () { self._krReq = false; self.setState({ krData: null }); };
+
     var tabOn = 'color:#1570EF', tabOff = 'color:#55657A';
     var go = function (t) { return function () { set({ tab: t, sub: null }); }; };
     var top = !s.sub;
@@ -1020,7 +1110,7 @@ class Component extends DCLogic {
       tabHome: s.tab === 'home' ? tabOn : tabOff, tabBoard: s.tab === 'board' ? tabOn : tabOff, tabReports: s.tab === 'reports' ? tabOn : tabOff,
       tabTips: s.tab === 'tips' ? tabOn : tabOff, tabMe: s.tab === 'me' ? tabOn : tabOff,
       movers: movers, watchItems: watchItems, noWatch: watchItems.length === 0,
-      groups: groups, rows: rows, isDataGroup: !isDom && !isCmp && !isUs && !isJp, isJpGroup: isJp, jpSections: jpSections, jpBanner: jpBanner, jpBannerStyle: jpBannerStyle, jpShowRetry: jpStatus === 'error', jpRetry: jpRetry, jpMonthLabel: jpMonthLabel, isDomGroup: isDom, isCmpGroup: isCmp, cmpRows: cmpRows, cmpTabs: cmpTabs, cmpTitle: ct.title, isUsGroup: isUs, usStates: usStates, usSections: usSections, usStateName: STATES.at(si)[1], usBanner: usBanner, usBannerStyle: usBannerStyle, usShowRetry: usStatus === 'error', usRetry: usRetry, usMonthLabel: usStatus === 'ok' ? monthLabel(ud.month) : (usStatus === 'error' ? '예시' : '확인 중'),
+      groups: groups, rows: rows, isDataGroup: !isDom && !isCmp && !isUs && !isJp && !isKr, isKrGroup: isKr, krRows: krRows, krBanner: krBanner, krBannerStyle: krBannerStyle, krShowRetry: krStatus === 'error', krRetry: krRetry, krMonthLabel: krMonthLabel, isJpGroup: isJp, jpSections: jpSections, jpBanner: jpBanner, jpBannerStyle: jpBannerStyle, jpShowRetry: jpStatus === 'error', jpRetry: jpRetry, jpMonthLabel: jpMonthLabel, isDomGroup: isDom, isCmpGroup: isCmp, cmpRows: cmpRows, cmpTabs: cmpTabs, cmpTitle: ct.title, isUsGroup: isUs, usStates: usStates, usSections: usSections, usStateName: STATES.at(si)[1], usBanner: usBanner, usBannerStyle: usBannerStyle, usShowRetry: usStatus === 'error', usRetry: usRetry, usMonthLabel: usStatus === 'ok' ? monthLabel(ud.month) : (usStatus === 'error' ? '예시' : '확인 중'),
       groupSrc: g.src, groupCycle: g.cycle, groupDate: g.date, groupNote: g.note,
       groupTag: s.group === 'sd' ? '일부 실제 값' : (g.real ? '실제 발표값' : '예시 값'), groupTagStyle: g.real ? 'color:#0B6B3A' : 'color:#7A4B00',
       domRows: [{ name: '열연 유통가', status: '제보 대기' }, { name: '냉연 유통가', status: '제보 대기' }, { name: '도금강판 유통가', status: '제보 대기' }, { name: '철근 유통가', status: '제보 대기' }],

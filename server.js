@@ -13,8 +13,9 @@ const handle = makeHandler();
 const { makeProbeHandler, makeJpTradeHandler } = require('./lib/estat-handler');
 const handleJpProbe = makeProbeHandler();
 const handleJpTrade = makeJpTradeHandler();
-const { makeKrProbeHandler } = require('./lib/customs-handler');
+const { makeKrProbeHandler, makeKrTradeHandler } = require('./lib/customs-handler');
 const handleKrProbe = makeKrProbeHandler();
+const handleKrTrade = makeKrTradeHandler();
 
 function sendJson(res, status, body, cacheControl) {
   res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': cacheControl || 'no-store', 'X-Content-Type-Options': 'nosniff' });
@@ -27,6 +28,7 @@ const server = http.createServer(async (req, res) => {
   if (url.pathname === '/api/us-state-imports') {
     return handle(Object.fromEntries(url.searchParams), (s, b, cc) => sendJson(res, s, b, cc));
   }
+  if (url.pathname === '/api/kr-trade') return handleKrTrade((s, b, cc) => sendJson(res, s, b, cc));
   if (url.pathname === '/api/kr-probe') return handleKrProbe((s, b, cc) => sendJson(res, s, b, cc));
   if (url.pathname === '/api/jp-trade') return handleJpTrade((s, b, cc) => sendJson(res, s, b, cc));
   if (url.pathname === '/api/jp-probe') return handleJpProbe((s, b, cc) => sendJson(res, s, b, cc));
