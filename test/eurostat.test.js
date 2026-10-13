@@ -20,10 +20,10 @@ test('JSON-stat 펼치기', () => {
 });
 
 test('Comext 단가(유로/t)와 PPI 보완, 최신 달은 값이 있는 마지막 달', async () => {
-  const comextJs = js([['freq', ['M']], ['reporter', ['EU27_2020']], ['partner', ['EXT_EU27_2020']], ['product', ['7208', '7601', '7502']], ['flow', ['1']], ['indicators', ['QUANTITY_IN_100KG', 'VALUE_IN_EUROS']], ['time', ['2026M06', '2026M07', '2026M08']]],
+  const comextJs = js([['freq', ['M']], ['reporter', ['EU27_2020']], ['partner', ['EXT_EU27_2020']], ['product', ['7208', '7601', '7502']], ['flow', ['1']], ['indicators', ['QUANTITY_IN_100KG', 'VALUE_IN_EUROS']], ['time', ['2026-06', '2026-07', '2026-08', '2026-09', '2026-10']]],
     c => {
-      if (c.time === '2026M08') return null;                                   // 8월은 아직 없음
-      if (c.product === '7208') return c.indicators === 'VALUE_IN_EUROS' ? (c.time === '2026M07' ? 60000000 : 55000000) : 1000000; // 100kg → 100,000t
+      if (c.time >= '2026-08') return null;                                    // 실제 응답처럼 뒤쪽 미래 달은 빈 칸
+      if (c.product === '7208') return c.indicators === 'VALUE_IN_EUROS' ? (c.time === '2026-07' ? 60000000 : 55000000) : 1000000; // 100kg → 100,000t
       if (c.product === '7601') return c.indicators === 'VALUE_IN_EUROS' ? 2600000 : 10000;   // 1,000t
       if (c.product === '7502') return c.indicators === 'VALUE_IN_EUROS' ? 500000 : 300;        // 30t → 물량 적음
       return null;
@@ -32,12 +32,14 @@ test('Comext 단가(유로/t)와 PPI 보완, 최신 달은 값이 있는 마지�
     c => (c.nace_r2 === 'C241' ? 120 : 130) + (c.time === '2026M08' ? 1 : 0));
   const urls = [];
   const f = async (url) => { urls.push(url); return { ok: true, status: 200, text: async () => JSON.stringify(url.includes('comext') ? comextJs : ppiJs) }; };
-  const r = await createEurostat({ fetch: f, log: () => {} }).latest();
+  const r = await createEurostat({ fetch: f, log: () => {}, now: () => new Date('2026-10-13T00:00:00Z') }).latest();
   assert.strictEqual(r.month, '2026-07');
   assert.deepStrictEqual([r.items.hr.comext.unitPrice, r.items.hr.comext.prev.unitPrice, r.items.hr.comext.tons], [600, 550, 100000]);
   assert.strictEqual(r.items.al.comext.unitPrice, 2600);
   assert.strictEqual(r.items.ni.comext.lowVolume, true);
   assert.deepStrictEqual([r.items.hr.ppi.nace, r.items.hr.ppi.value, r.items.hr.ppi.prev], ['C241', 121, 120]);
   assert.strictEqual(r.items.ni.ppi.value, 131);
-  assert.ok(urls[0].includes('product=7208') && urls[0].includes('flow=1'));
+  const cu = urls.find(u => u.includes('comext'));
+  assert.ok(cu.includes('product=7208') && cu.includes('flow=1'));
+  assert.ok(cu.includes('sinceTimePeriod=2026-04') && !cu.includes('lastTimePeriod'));
 });
