@@ -4,20 +4,22 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Felix 앱 체험판</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
-:root{--page:#DCE6F2;--ink:#0F1B2D;--note:#33445A}
+:root{--page:#F2F4F7;--ink:#0B0D12;--note:#344054}
 html,body{height:100%}
-body{margin:0;background:var(--page);color:var(--ink);font-family:'IBM Plex Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif}
+body{margin:0;background:var(--page);color:var(--ink);font-family:'Inter', 'Pretendard Variable', Pretendard, -apple-system, 'Apple SD Gothic Neo', sans-serif}
 
 
 button{font:inherit;color:inherit;cursor:pointer;background:none;border:0;padding:0;text-align:left}
 input{font:inherit;color:inherit}
-button:focus-visible,input:focus-visible{outline:2px solid #1570EF;outline-offset:2px}
-a{color:#1570EF}a:hover{color:#0B4FB3}
+button:focus-visible,input:focus-visible{outline:2px solid #0072F5;outline-offset:2px}
+a{color:#0072F5}a:hover{color:#0058CC}
 
 #stage{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding-block:20px;padding-inline:16px;box-sizing:border-box}
-#app>div{max-width:100%;height:min(844px,calc(100vh - 96px))!important;border-radius:28px;box-shadow:0 12px 40px rgba(15,27,45,.18)}
+#app>div{max-width:100%;height:min(844px,calc(100vh - 96px))!important;border-radius:28px;box-shadow:0 12px 40px rgba(16,24,40,.10)}
 #hint{font-size:13px;color:var(--note);text-align:center;max-width:390px}
 @media (max-width:480px){
 #stage{padding:0;gap:0;justify-content:flex-start}
@@ -31,11 +33,11 @@ a{color:#1570EF}a:hover{color:#0B4FB3}
 <div id="stage"><div id="app"></div><div id="hint">Felix 체험판입니다. 미국 주별, 일본 수출입, 한국 수입 통관, 비철, 환율 등은 Felix 서버에서 실제 값을 불러오고, 서버에 연결되지 않은 곳에서는 예시 값으로 표시합니다. 뉴스·투표·평가가는 예시입니다.</div></div>
 <template id="tpl">
 
-<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: #F4F7FB; color: #0F1B2D; font-family: 'IBM Plex Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; font-size: 15px; line-height: 1.5; font-variant-numeric: tabular-nums; overflow: hidden">
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: #FFFFFF; color: #0B0D12; font-family: 'Inter', 'Pretendard Variable', Pretendard, -apple-system, 'Apple SD Gothic Neo', sans-serif; letter-spacing: -0.01em; font-size: 15px; line-height: 1.5; font-variant-numeric: tabular-nums; overflow: hidden">
 
-  <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 20px 12px; background: #FFFFFF; border-bottom: 1px solid #E3EAF3">
-    <div style="font-size: 17px; font-weight: 700; letter-spacing: 1.5px; color: #1570EF">FELIX</div>
-    <div style="font-size: 12px; font-weight: 600; color: #7A4B00; background: #FFF3D6; border-radius: 12px; padding: 3px 10px">목업 · 일부 예시 값</div>
+  <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 20px 12px; background: #FFFFFF; border-bottom: 1px solid #EAECF0">
+    <div style="display: flex; align-items: center; gap: 8px"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="6" style="fill: #EEF6FF; stroke: #0072F5; stroke-opacity: 0.5"></rect><path d="M6 16 L10 11 L13 13.5 L18 7" style="fill: none; stroke: #0072F5; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"></path></svg><div style="font-size: 16px; font-weight: 700; letter-spacing: 0.18em; color: #0B0D12">FELIX</div></div>
+    <div style="display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; color: #667085; border: 1px solid #EAECF0; border-radius: 12px; padding: 3px 10px"><span style="width: 6px; height: 6px; border-radius: 3px; background: #12B76A"></span>BETA · 일부 예시 값</div>
   </div>
 
   <div style="flex: 1; min-height: 0; overflow-y: auto">
@@ -43,65 +45,65 @@ a{color:#1570EF}a:hover{color:#0B4FB3}
     <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
       <div style="display: flex; flex-direction: column; gap: 14px; padding: 18px 20px 28px">
         <div>
-          <div style="font-size: 13px; color: #55657A">2026년 10월 5일 월요일</div>
-          <h1 style="margin: 2px 0 0; font-size: 22px; font-weight: 700; line-height: 1.35">이번 주 철강 시장</h1>
+          <div style="font-size: 13px; color: #667085">{{ todayLabel }}</div>
+          <h1 style="margin: 2px 0 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.35">이번 주 철강 시장</h1>
         </div>
 
-        <button onClick="{{ openReport }}" style="display: block; width: 100%; box-sizing: border-box; background: #1570EF; color: #FFFFFF; border-radius: 14px; padding: 16px 18px">
-          <div style="font-size: 12px; font-weight: 600; opacity: 0.9">{{ homeRepTag }}</div>
-          <div style="margin-top: 6px; font-size: 16px; font-weight: 600; line-height: 1.5">{{ homeRepLine }}</div>
-          <div style="margin-top: 10px; font-size: 13px; font-weight: 600">리포트 읽기 →</div>
+        <button onClick="{{ openReport }}" style="display: block; width: 100%; box-sizing: border-box; text-align: left; background: linear-gradient(135deg, #EEF6FF 0%, #FFFFFF 70%); border: 1px solid #CFE3FF; color: #0B0D12; border-radius: 16px; padding: 20px">
+          <div style="font-size: 12px; font-weight: 600; color: #0072F5; letter-spacing: 0.02em">{{ homeRepTag }}</div>
+          <div style="margin-top: 8px; font-size: 17px; font-weight: 600; line-height: 1.5">{{ homeRepLine }}</div>
+          <div style="margin-top: 14px; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #0072F5">리포트 읽기 <span aria-hidden="true">→</span></div>
         </button>
 
-        <div style="background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 14px 16px">
-          <div style="font-size: 13px; font-weight: 700; color: #55657A">크게 움직인 항목 · 실제 발표값 기준</div>
+        <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
+          <div style="font-size: 13px; font-weight: 700; color: #667085">크게 움직인 항목 · 실제 발표값 기준</div>
           <sc-for list="{{ movers }}" as="m" hint-placeholder-count="3">
-            <button onClick="{{ m.open }}" style="display: flex; width: 100%; min-height: 52px; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid #EEF2F7; margin-top: 8px; padding-top: 8px">
+            <button onClick="{{ m.open }}" style="display: flex; width: 100%; min-height: 52px; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid #F2F4F7; margin-top: 8px; padding-top: 8px">
               <div>
                 <div style="font-size: 15px; font-weight: 600">{{ m.name }}</div>
-                <div style="font-size: 12px; color: #55657A">{{ m.groupLabel }} · {{ m.valText }} {{ m.unit }}</div>
+                <div style="font-size: 12px; color: #667085">{{ m.groupLabel }} · {{ m.valText }} {{ m.unit }}</div>
               </div>
-              <div style="font-size: 16px; font-weight: 700; {{ m.chgStyle }}">{{ m.pctText }}</div>
+              <div style="font-size: 16px; font-weight: 700; {{ m.chgStyle }}; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ m.pctText }}</div>
             </button>
           </sc-for>
         </div>
 
-        <div style="background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 14px 16px">
+        <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
           <div style="display: flex; justify-content: space-between; align-items: center">
-            <div style="font-size: 13px; font-weight: 700; color: #55657A">내 관심 품목</div>
-            <button onClick="{{ goBoard }}" style="min-height: 44px; font-size: 13px; font-weight: 600; color: #1570EF">전체 시세</button>
+            <div style="font-size: 13px; font-weight: 700; color: #667085">내 관심 품목</div>
+            <button onClick="{{ goBoard }}" style="min-height: 44px; font-size: 13px; font-weight: 600; color: #0072F5">전체 시세</button>
           </div>
           <sc-for list="{{ watchItems }}" as="w" hint-placeholder-count="3">
-            <button onClick="{{ w.open }}" style="display: flex; width: 100%; min-height: 52px; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid #EEF2F7; padding: 6px 0">
+            <button onClick="{{ w.open }}" style="display: flex; width: 100%; min-height: 52px; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid #F2F4F7; padding: 6px 0">
               <div>
                 <div style="font-size: 15px; font-weight: 600">{{ w.name }}</div>
-                <div style="font-size: 12px; color: #55657A">{{ w.groupLabel }}</div>
+                <div style="font-size: 12px; color: #667085">{{ w.groupLabel }}</div>
               </div>
               <div style="text-align: right">
-                <div style="font-size: 15px; font-weight: 700">{{ w.valText }}</div>
-                <div style="font-size: 12px; font-weight: 600; {{ w.chgStyle }}">{{ w.chgText }}</div>
+                <div style="font-size: 15px; font-weight: 700; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ w.valText }}</div>
+                <div style="font-size: 12px; font-weight: 600; {{ w.chgStyle }}; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ w.chgText }}</div>
               </div>
             </button>
           </sc-for>
           <sc-if value="{{ noWatch }}" hint-placeholder-val="{{ false }}">
-            <div style="font-size: 14px; color: #55657A; padding: 10px 0">시세 탭에서 항목을 열고 관심 품목에 추가하세요.</div>
+            <div style="font-size: 14px; color: #667085; padding: 10px 0">시세 탭에서 항목을 열고 관심 품목에 추가하세요.</div>
           </sc-if>
         </div>
 
-        <div style="background: #E8F2FF; border-radius: 14px; padding: 16px 18px">
+        <div style="background: #EEF6FF; border-radius: 16px; padding: 16px 18px">
           <div style="font-size: 15px; font-weight: 700">국내 유통가 칸은 아직 비어 있습니다</div>
-          <div style="margin-top: 4px; font-size: 14px; color: #33445A">공개된 숫자로는 방향만 알 수 있습니다. 이번 주 체감을 5초 투표로 알려 주세요.</div>
-          <button onClick="{{ goTips }}" style="margin-top: 12px; min-height: 44px; padding: 0 18px; border-radius: 22px; background: #1570EF; color: #FFFFFF; font-size: 14px; font-weight: 600">이번 주 방향 투표하기</button>
+          <div style="margin-top: 4px; font-size: 14px; color: #344054">공개된 숫자로는 방향만 알 수 있습니다. 이번 주 체감을 5초 투표로 알려 주세요.</div>
+          <button onClick="{{ goTips }}" style="margin-top: 12px; min-height: 44px; padding: 0 18px; border-radius: 22px; background: #0072F5; color: #FFFFFF; font-size: 14px; font-weight: 600">이번 주 방향 투표하기</button>
         </div>
 
-        <div style="background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 14px 16px">
-          <div style="font-size: 13px; font-weight: 700; color: #55657A">다가오는 일정</div>
+        <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
+          <div style="font-size: 13px; font-weight: 700; color: #667085">다가오는 일정</div>
           <div style="display: flex; gap: 12px; margin-top: 10px">
-            <div style="width: 58px; font-size: 13px; font-weight: 700; color: #1570EF">10월 14일경</div>
+            <div style="width: 58px; font-size: 13px; font-weight: 700; color: #0072F5">10월 14일경</div>
             <div style="flex: 1; font-size: 14px">중국 국가통계국 10월 상순 생산재 가격 발표</div>
           </div>
           <div style="display: flex; gap: 12px; margin-top: 10px">
-            <div style="width: 58px; font-size: 13px; font-weight: 700; color: #1570EF">10월 15일경</div>
+            <div style="width: 58px; font-size: 13px; font-weight: 700; color: #0072F5">10월 15일경</div>
             <div style="flex: 1; font-size: 14px">관세청 9월 품목별 수출입 실적 공개. 수입 통관 단가 9개 항목 갱신</div>
           </div>
         </div>
@@ -111,69 +113,84 @@ a{color:#1570EF}a:hover{color:#0B4FB3}
     <sc-if value="{{ isBoard }}" hint-placeholder-val="{{ false }}">
       <div style="padding: 18px 0 28px">
         <div style="padding: 0 20px">
-          <h1 style="margin: 0; font-size: 22px; font-weight: 700">시세</h1>
-          <div style="font-size: 13px; color: #55657A">공개 데이터 44개 항목 · 8개 그룹</div>
+          <h1 style="margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em">시세</h1>
+          <div style="font-size: 13px; color: #667085">공개 데이터 44개 항목 · 8개 그룹</div>
         </div>
-        <div style="display: flex; gap: 8px; overflow-x: auto; padding: 14px 20px 6px">
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; padding: 14px 20px 6px">
           <sc-for list="{{ groups }}" as="g" hint-placeholder-count="5">
-            <button onClick="{{ g.pick }}" style="flex: none; min-height: 44px; padding: 0 16px; border-radius: 22px; font-size: 14px; font-weight: 600; white-space: nowrap; {{ g.style }}">{{ g.label }}</button>
+            <button onClick="{{ g.pick }}" style="flex: none; min-height: 34px; padding: 0 12px; border-radius: 17px; font-size: 13px; font-weight: 600; white-space: nowrap; {{ g.style }}">{{ g.label }}</button>
           </sc-for>
         </div>
 
         <sc-if value="{{ isDataGroup }}" hint-placeholder-val="{{ true }}">
-          <div style="margin: 8px 20px 0; background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 4px 16px 6px">
-            <div style="display: flex; justify-content: space-between; gap: 10px; padding: 12px 0 8px; font-size: 12px; color: #55657A">
+          <div style="margin: 8px 20px 0; background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 4px 16px 6px">
+            <div style="display: flex; justify-content: space-between; gap: 10px; padding: 12px 0 8px; font-size: 12px; color: #667085">
               <div>{{ groupSrc }} · {{ groupCycle }} 갱신</div>
               <div style="font-weight: 600; {{ groupTagStyle }}">{{ groupTag }}</div>
             </div>
             <sc-for list="{{ rows }}" as="r" hint-placeholder-count="8">
-              <button onClick="{{ r.open }}" style="display: flex; width: 100%; min-height: 56px; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid #EEF2F7; padding: 6px 0">
+              <button onClick="{{ r.open }}" style="display: flex; width: 100%; min-height: 56px; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid #F2F4F7; padding: 6px 0">
                 <div>
                   <div style="font-size: 15px; font-weight: 600">{{ r.name }}</div>
-                  <div style="font-size: 12px; color: #55657A">{{ r.unit }}</div>
+                  <div style="font-size: 12px; color: #667085">{{ r.unit }}</div>
                 </div>
                 <div style="text-align: right">
-                  <div style="font-size: 16px; font-weight: 700">{{ r.valText }}</div>
-                  <div style="font-size: 12px; font-weight: 600; {{ r.chgStyle }}">{{ r.chgText }}</div>
+                  <div style="font-size: 16px; font-weight: 700; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ r.valText }}</div>
+                  <div style="font-size: 12px; font-weight: 600; {{ r.chgStyle }}; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ r.chgText }}</div>
                 </div>
               </button>
             </sc-for>
           </div>
-          <div style="margin: 10px 20px 0; font-size: 12px; color: #55657A">기준: {{ groupDate }}. {{ groupNote }}</div>
+          <div style="margin: 10px 20px 0; font-size: 12px; color: #667085">기준: {{ groupDate }}. {{ groupNote }}</div>
         </sc-if>
 
         <sc-if value="{{ isCmpGroup }}" hint-placeholder-val="{{ false }}">
-          <div style="display: flex; gap: 6px; margin: 8px 20px 0; background: #E6ECF4; border-radius: 12px; padding: 4px">
+          <div style="display: flex; gap: 6px; margin: 8px 20px 0; background: #F2F4F7; border-radius: 12px; padding: 4px">
             <sc-for list="{{ cmpTabs }}" as="ct" hint-placeholder-count="3">
               <button onClick="{{ ct.pick }}" aria-pressed="{{ ct.on }}" style="flex: 1; min-height: 44px; border-radius: 9px; font-size: 13px; font-weight: 700; text-align: center; {{ ct.style }}">{{ ct.label }}</button>
             </sc-for>
           </div>
-          <div style="margin: 10px 20px 0; background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 12px 12px 8px">
-            <div style="font-size: 15px; font-weight: 700; padding: 0 4px">{{ cmpTitle }}</div>
-            <div style="font-size: 12px; color: #55657A; padding: 2px 4px 10px">변동률로 비교합니다. 단위와 기준 기간이 달라 가격 수준은 비교하지 않습니다. 표는 옆으로 밀어 볼 수 있습니다.</div>
-            <div style="overflow-x: auto">
-              <div style="min-width: 590px">
-                <div style="display: grid; grid-template-columns: 60px repeat(8, minmax(56px, 1fr)); gap: 4px; align-items: end; padding-bottom: 6px; border-bottom: 1px solid #E3EAF3">
-                  <div></div>
-                  <sc-for list="{{ cmpCols }}" as="cc0" hint-placeholder-count="8">
-                    <div style="text-align: center"><div style="font-size: 13px; font-weight: 700">{{ cc0.name }}</div><div style="font-size: 10.5px; color: #55657A">{{ cc0.sub }}</div></div>
-                  </sc-for>
-                </div>
-                <sc-for list="{{ cmpRows }}" as="cr" hint-placeholder-count="5">
-                  <div style="display: grid; grid-template-columns: 60px repeat(8, minmax(56px, 1fr)); gap: 4px; align-items: center; border-bottom: 1px solid #EEF2F7">
-                    <div style="font-size: 13px; font-weight: 700; padding-left: 4px">{{ cr.name }}</div>
-                    <sc-for list="{{ cr.cells }}" as="cc" hint-placeholder-count="8">
-                      <button onClick="{{ cc.open }}" aria-label="{{ cc.label }}" style="min-height: 52px; border-radius: 8px; text-align: center; padding: 4px 2px; {{ cc.boxStyle }}">
-                        <div style="font-size: 13px; font-weight: 700; {{ cc.mainStyle }}">{{ cc.main }}</div>
-                        <div style="font-size: 10.5px; color: #55657A">{{ cc.sub }}</div>
-                      </button>
-                    </sc-for>
+          <div style="margin: 10px 20px 0; background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 16px">
+            <div style="font-size: 15px; font-weight: 700">{{ cmpTitle }}</div>
+            <div style="font-size: 12px; color: #667085; margin-top: 2px">품목을 고르면 나라별 변동률을 봅니다. 단위와 기준 기간이 달라 가격 수준은 비교하지 않습니다.</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px">
+              <sc-for list="{{ cmpItems }}" as="ci" hint-placeholder-count="6">
+                <button onClick="{{ ci.pick }}" aria-pressed="{{ ci.on }}" style="min-height: 36px; padding: 0 12px; border-radius: 18px; font-size: 13px; font-weight: 600; {{ ci.style }}">{{ ci.name }}</button>
+              </sc-for>
+            </div>
+            <div style="margin-top: 12px">
+              <sc-for list="{{ cmpList }}" as="cl" hint-placeholder-count="8">
+                <button onClick="{{ cl.open }}" aria-label="{{ cl.label }}" style="display: flex; width: 100%; min-height: 56px; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid #F2F4F7; padding: 8px 0">
+                  <div>
+                    <div style="font-size: 15px; font-weight: 600">{{ cl.name }}</div>
+                    <div style="font-size: 12px; color: #667085">{{ cl.colSub }}</div>
                   </div>
-                </sc-for>
-              </div>
+                  <div style="text-align: right">
+                    <div style="font-size: 15px; font-weight: 700; {{ cl.mainStyle }}">{{ cl.main }}</div>
+                    <div style="font-size: 12px; color: #667085">{{ cl.sub }}</div>
+                  </div>
+                </button>
+              </sc-for>
             </div>
           </div>
-          <div style="margin: 10px 20px 0; display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #33445A">
+
+          <div style="margin: 10px 20px 0; background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 16px">
+            <div style="font-size: 13px; font-weight: 700; color: #667085">한눈에 보기</div>
+            <div style="display: flex; gap: 12px; margin-top: 4px; font-size: 11px; color: #667085">
+              <span><span style="display: inline-block; width: 8px; height: 8px; border-radius: 4px; background: #F04452"></span> 오름</span><span><span style="display: inline-block; width: 8px; height: 8px; border-radius: 4px; background: #1B64DA"></span> 내림</span><span><span style="display: inline-block; width: 8px; height: 8px; border-radius: 4px; border: 1px solid #C4CAD4; box-sizing: border-box"></span> 자료 없음</span>
+            </div>
+            <div style="display: grid; grid-template-columns: 64px repeat(8, 1fr); gap: 2px; margin-top: 10px; font-size: 11px; color: #667085; text-align: center">
+              <div></div>
+              <sc-for list="{{ cmpCols }}" as="hc" hint-placeholder-count="8"><div style="font-size: 10.5px; white-space: nowrap; letter-spacing: -0.04em">{{ hc.name }}</div></sc-for>
+            </div>
+            <sc-for list="{{ cmpMatrix }}" as="mx" hint-placeholder-count="6">
+              <button onClick="{{ mx.pick }}" style="display: grid; width: 100%; grid-template-columns: 64px repeat(8, 1fr); gap: 2px; align-items: center; min-height: 34px; border-radius: 8px; {{ mx.rowStyle }}">
+                <div style="font-size: 13px; font-weight: 600; text-align: left; padding-left: 4px">{{ mx.name }}</div>
+                <sc-for list="{{ mx.dots }}" as="dt" hint-placeholder-count="8"><div style="display: flex; justify-content: center"><span style="width: 10px; height: 10px; border-radius: 5px; box-sizing: border-box; {{ dt }}"></span></div></sc-for>
+              </button>
+            </sc-for>
+          </div>
+          <div style="margin: 10px 20px 0; display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #344054">
             <div>한국: 철강 제품은 한국은행 생산자물가지수(KOSIS, 2020=100), 원료·비철은 관세청 수입 통관 단가(달러/t)의 전월 대비입니다.</div>
             <div>미국: 노동통계국 생산자물가지수(1982=100), 자동 갱신. 후판·형강 칸은 봉강·후판·형강을 합친 지수입니다. 열연강판은 2022년 2월, 선재는 2017년, 철근은 2013년에 발표가 중단됐습니다.</div>
             <div>중국: 국가통계국 유통 단계 가격(위안/t), 직전 열흘 대비, 자동 갱신. 냉연·도금·스테인리스, 철광석, 스크랩, 니켈은 조사 품목이 아닙니다.</div>
@@ -189,36 +206,36 @@ a{color:#1570EF}a:hover{color:#0B4FB3}
           <div style="margin: 8px 20px 0; border-radius: 12px; padding: 10px 12px; font-size: 12px; {{ usBannerStyle }}">
             <div>{{ usBanner }}</div>
             <sc-if value="{{ usShowRetry }}" hint-placeholder-val="{{ false }}">
-              <button onClick="{{ usRetry }}" style="margin-top: 6px; min-height: 44px; padding: 0 14px; border-radius: 22px; border: 1px solid #7A4B00; font-size: 13px; font-weight: 600">다시 불러오기</button>
+              <button onClick="{{ usRetry }}" style="margin-top: 6px; min-height: 44px; padding: 0 14px; border-radius: 22px; border: 1px solid #B54708; font-size: 13px; font-weight: 600">다시 불러오기</button>
             </sc-if>
           </div>
-          <div style="display: flex; gap: 8px; overflow-x: auto; padding: 12px 20px 4px">
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; padding: 12px 20px 4px">
             <sc-for list="{{ usStates }}" as="us" hint-placeholder-count="8">
               <button onClick="{{ us.pick }}" aria-pressed="{{ us.on }}" style="flex: none; min-height: 44px; padding: 0 14px; border-radius: 22px; font-size: 14px; font-weight: 600; white-space: nowrap; {{ us.style }}">{{ us.label }}</button>
             </sc-for>
           </div>
           <div style="margin: 8px 20px 0">
             <div style="font-size: 15px; font-weight: 700">{{ usStateName }} 도착 수입품의 해상·항공 수입 단가</div>
-            <div style="font-size: 12px; color: #55657A">기준 월: {{ usMonthLabel }} · 단위: 달러/t · 출처: 미국 인구조사국</div>
+            <div style="font-size: 12px; color: #667085">기준 월: {{ usMonthLabel }} · 단위: 달러/t · 출처: 미국 인구조사국</div>
           </div>
           <sc-for list="{{ usSections }}" as="sec" hint-placeholder-count="3">
-            <div style="margin: 10px 20px 0; background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 4px 16px 6px">
-              <div style="padding: 10px 0 4px; font-size: 13px; font-weight: 700; color: #55657A">{{ sec.label }}</div>
+            <div style="margin: 10px 20px 0; background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 4px 16px 6px">
+              <div style="padding: 10px 0 4px; font-size: 13px; font-weight: 700; color: #667085">{{ sec.label }}</div>
               <sc-for list="{{ sec.rows }}" as="ur" hint-placeholder-count="4">
-                <div style="display: flex; min-height: 56px; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid #EEF2F7">
+                <div style="display: flex; min-height: 56px; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid #F2F4F7">
                   <div>
                     <div style="font-size: 15px; font-weight: 600">{{ ur.name }}</div>
-                    <div style="font-size: 12px; color: #55657A">HS {{ ur.hs }} · <span style="font-weight: 700; {{ ur.tagStyle }}">{{ ur.tag }}</span></div>
+                    <div style="font-size: 12px; color: #667085">HS {{ ur.hs }} · <span style="font-weight: 700; {{ ur.tagStyle }}">{{ ur.tag }}</span></div>
                   </div>
                   <div style="text-align: right">
-                    <div style="font-size: 16px; font-weight: 700; {{ ur.valStyle }}">{{ ur.valText }}</div>
-                    <div style="font-size: 12px; font-weight: 600; {{ ur.chgStyle }}">{{ ur.chgText }}</div>
+                    <div style="font-size: 16px; font-weight: 700; {{ ur.valStyle }}; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ ur.valText }}</div>
+                    <div style="font-size: 12px; font-weight: 600; {{ ur.chgStyle }}; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ ur.chgText }}</div>
                   </div>
                 </div>
               </sc-for>
             </div>
           </sc-for>
-          <div style="margin: 10px 20px 0; display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #33445A">
+          <div style="margin: 10px 20px 0; display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #344054">
             <div>해상·항공 수입 단가 = (해상 수입액 + 항공 수입액) ÷ (해상 + 항공 운송 중량) × 1,000. 전체 수입액은 분자에 쓰지 않습니다.</div>
             <div>중량은 순중량이 아니라 포장 등을 포함한 운송 중량(shipping weight) 기준입니다.</div>
             <div>운송 중량이 100t 미만인 달은 소수 거래가 단가를 좌우하므로 값을 회색으로 표시하고 ‘물량 적음’을 붙입니다. 전월이 이 경우면 변동률을 계산하지 않습니다.</div>
@@ -233,30 +250,30 @@ a{color:#1570EF}a:hover{color:#0B4FB3}
           <div style="margin: 8px 20px 0; border-radius: 12px; padding: 10px 12px; font-size: 12px; {{ krBannerStyle }}">
             <div>{{ krBanner }}</div>
             <sc-if value="{{ krShowRetry }}" hint-placeholder-val="{{ false }}">
-              <button onClick="{{ krRetry }}" style="margin-top: 6px; min-height: 44px; padding: 0 14px; border-radius: 22px; border: 1px solid #7A4B00; font-size: 13px; font-weight: 600">다시 불러오기</button>
+              <button onClick="{{ krRetry }}" style="margin-top: 6px; min-height: 44px; padding: 0 14px; border-radius: 22px; border: 1px solid #B54708; font-size: 13px; font-weight: 600">다시 불러오기</button>
             </sc-if>
           </div>
           <div style="margin: 12px 20px 0">
             <div style="font-size: 15px; font-weight: 700">{{ krTitle }}</div>
-            <div style="font-size: 12px; color: #55657A">기준 월: {{ krMonthLabel }} · 단위: 달러/t · 출처: 관세청</div>
+            <div style="font-size: 12px; color: #667085">기준 월: {{ krMonthLabel }} · 단위: 달러/t · 출처: 관세청</div>
           </div>
-          <div style="margin: 10px 20px 0; background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 4px 16px 6px">
+          <div style="margin: 10px 20px 0; background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 4px 16px 6px">
             <sc-for list="{{ krRows }}" as="kr" hint-placeholder-count="9">
-              <div style="display: flex; min-height: 64px; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid #EEF2F7; padding: 6px 0">
+              <div style="display: flex; min-height: 64px; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid #F2F4F7; padding: 6px 0">
                 <div>
                   <div style="font-size: 15px; font-weight: 600">{{ kr.name }}</div>
                   <div style="font-size: 12px; font-weight: 700; {{ kr.tagStyle }}">{{ kr.tag }}</div>
-                  <div style="font-size: 12px; color: #33445A">{{ kr.origin }}</div>
-                  <div style="font-size: 11.5px; color: #55657A">{{ kr.partners }}</div>
+                  <div style="font-size: 12px; color: #344054">{{ kr.origin }}</div>
+                  <div style="font-size: 11.5px; color: #667085">{{ kr.partners }}</div>
                 </div>
                 <div style="text-align: right">
-                  <div style="font-size: 16px; font-weight: 700; {{ kr.valStyle }}">{{ kr.valText }}</div>
-                  <div style="font-size: 12px; font-weight: 600; {{ kr.chgStyle }}">{{ kr.chgText }}</div>
+                  <div style="font-size: 16px; font-weight: 700; {{ kr.valStyle }}; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ kr.valText }}</div>
+                  <div style="font-size: 12px; font-weight: 600; {{ kr.chgStyle }}; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ kr.chgText }}</div>
                 </div>
               </div>
             </sc-for>
           </div>
-          <div style="margin: 10px 20px 0; display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #33445A">
+          <div style="margin: 10px 20px 0; display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #344054">
             <div>수입 통관 단가 = 수입 금액(달러, 운임·보험료 포함 과세가격) ÷ 순중량. 전 국가 합계입니다.</div>
             <sc-if value="{{ krIsSteel }}" hint-placeholder-val="{{ true }}"><div>중국산·일본산은 같은 품목의 원산지별 단가이고, 아래 줄은 물량 기준 상위 수입국입니다.</div></sc-if>
             <sc-if value="{{ krIsNf }}" hint-placeholder-val="{{ false }}"><div>비철은 합금·스크랩을 빼고 순도가 정해진 1차 금속(괴·캐소드)만 봅니다. 거래소 시세가 아니라 실제 수입 신고 가격이며, 계약 시점 차이로 시세보다 늦게 움직입니다. 아래 줄은 물량 기준 상위 수입국입니다.</div></sc-if>
@@ -269,33 +286,33 @@ a{color:#1570EF}a:hover{color:#0B4FB3}
           <div style="margin: 8px 20px 0; border-radius: 12px; padding: 10px 12px; font-size: 12px; {{ jpBannerStyle }}">
             <div>{{ jpBanner }}</div>
             <sc-if value="{{ jpShowRetry }}" hint-placeholder-val="{{ false }}">
-              <button onClick="{{ jpRetry }}" style="margin-top: 6px; min-height: 44px; padding: 0 14px; border-radius: 22px; border: 1px solid #7A4B00; font-size: 13px; font-weight: 600">다시 불러오기</button>
+              <button onClick="{{ jpRetry }}" style="margin-top: 6px; min-height: 44px; padding: 0 14px; border-radius: 22px; border: 1px solid #B54708; font-size: 13px; font-weight: 600">다시 불러오기</button>
             </sc-if>
           </div>
           <div style="margin: 12px 20px 0">
             <div style="font-size: 15px; font-weight: 700">일본 수출·수입 단가</div>
-            <div style="font-size: 12px; color: #55657A">기준 월: {{ jpMonthLabel }} · 단위: 엔/t · 출처: 일본 재무성 무역통계</div>
+            <div style="font-size: 12px; color: #667085">기준 월: {{ jpMonthLabel }} · 단위: 엔/t · 출처: 일본 재무성 무역통계</div>
           </div>
           <sc-for list="{{ jpSections }}" as="sec" hint-placeholder-count="3">
-            <div style="margin: 10px 20px 0; background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 4px 16px 6px">
-              <div style="padding: 10px 0 4px; font-size: 13px; font-weight: 700; color: #55657A">{{ sec.label }}</div>
+            <div style="margin: 10px 20px 0; background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 4px 16px 6px">
+              <div style="padding: 10px 0 4px; font-size: 13px; font-weight: 700; color: #667085">{{ sec.label }}</div>
               <sc-for list="{{ sec.rows }}" as="jr" hint-placeholder-count="4">
-                <div style="display: flex; min-height: 60px; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid #EEF2F7; padding: 6px 0">
+                <div style="display: flex; min-height: 60px; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid #F2F4F7; padding: 6px 0">
                   <div>
-                    <div style="font-size: 15px; font-weight: 600">{{ jr.name }} <span style="font-size: 11px; font-weight: 700; color: #175CD3; background: #EAF2FF; border-radius: 6px; padding: 1px 6px">{{ jr.flow }}</span></div>
-                    <div style="font-size: 12px; color: #55657A">HS {{ jr.hs }} · <span style="font-weight: 700; {{ jr.tagStyle }}">{{ jr.tag }}</span></div>
-                    <div style="font-size: 11.5px; color: #55657A">{{ jr.partners }}</div>
+                    <div style="font-size: 15px; font-weight: 600">{{ jr.name }} <span style="font-size: 11px; font-weight: 700; color: #1B64DA; background: #EEF6FF; border-radius: 6px; padding: 1px 6px">{{ jr.flow }}</span></div>
+                    <div style="font-size: 12px; color: #667085">HS {{ jr.hs }} · <span style="font-weight: 700; {{ jr.tagStyle }}">{{ jr.tag }}</span></div>
+                    <div style="font-size: 11.5px; color: #667085">{{ jr.partners }}</div>
                   </div>
                   <div style="text-align: right">
-                    <div style="font-size: 16px; font-weight: 700; {{ jr.valStyle }}">{{ jr.valText }}</div>
-                    <div style="font-size: 11.5px; color: #55657A">{{ jr.usd }}</div>
-                    <div style="font-size: 12px; font-weight: 600; {{ jr.chgStyle }}">{{ jr.chgText }}</div>
+                    <div style="font-size: 16px; font-weight: 700; {{ jr.valStyle }}; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ jr.valText }}</div>
+                    <div style="font-size: 11.5px; color: #667085">{{ jr.usd }}</div>
+                    <div style="font-size: 12px; font-weight: 600; {{ jr.chgStyle }}; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ jr.chgText }}</div>
                   </div>
                 </div>
               </sc-for>
             </div>
           </sc-for>
-          <div style="margin: 10px 20px 0; display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #33445A">
+          <div style="margin: 10px 20px 0; display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #344054">
             <div>단가(엔/t) = 해당 월 금액 ÷ 수량. 수출은 본선인도(FOB), 수입은 운임·보험료 포함(CIF) 금액입니다.</div>
             <div>일본은 철강 순수출국이라 철강 제품·스크랩·정련동은 수출 단가, 원료와 나머지 비철은 수입 단가를 보여 줍니다. 품목 아래 국가는 물량 기준 주요 상대국입니다.</div>
             <div>수량 단위가 톤·킬로그램이 아닌 세부 품목은 계산에서 뺍니다. 한 달 물량이 100t 미만이면 회색으로 표시하고 ‘물량 적음’을 붙입니다.</div>
@@ -306,16 +323,16 @@ a{color:#1570EF}a:hover{color:#0B4FB3}
         </sc-if>
 
         <sc-if value="{{ isDomGroup }}" hint-placeholder-val="{{ false }}">
-          <div style="margin: 8px 20px 0; background: #FFFFFF; border: 1px dashed #9DB7D9; border-radius: 14px; padding: 16px">
+          <div style="margin: 8px 20px 0; background: #FFFFFF; border: 1px dashed #9CC3FF; border-radius: 16px; padding: 16px">
             <div style="font-size: 15px; font-weight: 700">제보로 채워지는 칸</div>
-            <div style="margin-top: 4px; font-size: 14px; color: #33445A">국내 유통 실거래가는 합법적으로 가져올 공개 소스가 없습니다. 제보가 품목당 3개사 이상 모이면 평가가를 발행합니다.</div>
+            <div style="margin-top: 4px; font-size: 14px; color: #344054">국내 유통 실거래가는 합법적으로 가져올 공개 소스가 없습니다. 제보가 품목당 3개사 이상 모이면 평가가를 발행합니다.</div>
             <sc-for list="{{ domRows }}" as="dm" hint-placeholder-count="4">
-              <div style="display: flex; min-height: 52px; align-items: center; justify-content: space-between; border-top: 1px solid #EEF2F7; margin-top: 10px; padding-top: 10px">
+              <div style="display: flex; min-height: 52px; align-items: center; justify-content: space-between; border-top: 1px solid #F2F4F7; margin-top: 10px; padding-top: 10px">
                 <div style="font-size: 15px; font-weight: 600">{{ dm.name }}</div>
-                <div style="font-size: 13px; color: #55657A">{{ dm.status }}</div>
+                <div style="font-size: 13px; color: #667085">{{ dm.status }}</div>
               </div>
             </sc-for>
-            <button onClick="{{ goTips }}" style="margin-top: 14px; width: 100%; min-height: 48px; border-radius: 24px; background: #1570EF; color: #FFFFFF; font-size: 15px; font-weight: 600; text-align: center">제보 참여하기</button>
+            <button onClick="{{ goTips }}" style="margin-top: 14px; width: 100%; min-height: 48px; border-radius: 24px; background: #0072F5; color: #FFFFFF; font-size: 15px; font-weight: 600; text-align: center">제보 참여하기</button>
           </div>
         </sc-if>
       </div>
@@ -323,58 +340,58 @@ a{color:#1570EF}a:hover{color:#0B4FB3}
 
     <sc-if value="{{ isDetail }}" hint-placeholder-val="{{ false }}">
       <div style="display: flex; flex-direction: column; gap: 14px; padding: 8px 20px 28px">
-        <button onClick="{{ back }}" style="min-height: 44px; font-size: 14px; font-weight: 600; color: #1570EF">← 뒤로</button>
+        <button onClick="{{ back }}" style="min-height: 44px; font-size: 14px; font-weight: 600; color: #0072F5">← 뒤로</button>
         <div>
-          <div style="font-size: 13px; color: #55657A">{{ d.groupLabel }}</div>
-          <h1 style="margin: 0; font-size: 22px; font-weight: 700">{{ d.name }}</h1>
+          <div style="font-size: 13px; color: #667085">{{ d.groupLabel }}</div>
+          <h1 style="margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em">{{ d.name }}</h1>
         </div>
-        <div style="background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 16px">
+        <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 16px">
           <div style="display: flex; align-items: baseline; gap: 8px">
-            <div style="font-size: 32px; font-weight: 700; line-height: 1.2">{{ d.valText }}</div>
-            <div style="font-size: 14px; color: #55657A">{{ d.unit }}</div>
+            <div style="font-size: 32px; font-weight: 700; line-height: 1.2; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ d.valText }}</div>
+            <div style="font-size: 14px; color: #667085">{{ d.unit }}</div>
           </div>
           <div style="margin-top: 2px; font-size: 15px; font-weight: 600; {{ d.chgStyle }}">{{ d.chgLine }}</div>
           <svg viewBox="0 0 326 120" style="display: block; width: 100%; margin-top: 14px" role="img" aria-label="최근 12회 추이">
-            <line x1="0" y1="20" x2="326" y2="20" style="stroke: #EEF2F7; stroke-width: 1"></line>
-            <line x1="0" y1="60" x2="326" y2="60" style="stroke: #EEF2F7; stroke-width: 1"></line>
-            <line x1="0" y1="100" x2="326" y2="100" style="stroke: #EEF2F7; stroke-width: 1"></line>
-            <polygon points="{{ d.area }}" style="fill: #E8F2FF; stroke: none"></polygon>
-            <polyline points="{{ d.points }}" style="fill: none; stroke: #1570EF; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round"></polyline>
-            <circle cx="{{ d.endX }}" cy="{{ d.endY }}" r="4.5" style="fill: #1570EF; stroke: #FFFFFF; stroke-width: 2"></circle>
+            <line x1="0" y1="20" x2="326" y2="20" style="stroke: #F2F4F7; stroke-width: 1"></line>
+            <line x1="0" y1="60" x2="326" y2="60" style="stroke: #F2F4F7; stroke-width: 1"></line>
+            <line x1="0" y1="100" x2="326" y2="100" style="stroke: #F2F4F7; stroke-width: 1"></line>
+            <defs><linearGradient id="felixArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0072F5" stop-opacity="0.32"></stop><stop offset="1" stop-color="#0072F5" stop-opacity="0"></stop></linearGradient></defs><polygon points="{{ d.area }}" style="fill: url(#felixArea); stroke: none"></polygon>
+            <polyline points="{{ d.points }}" style="fill: none; stroke: #0072F5; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round"></polyline>
+            <circle cx="{{ d.endX }}" cy="{{ d.endY }}" r="4.5" style="fill: #0072F5; stroke: #FFFFFF; stroke-width: 2"></circle>
           </svg>
-          <div style="display: flex; justify-content: space-between; font-size: 12px; color: #55657A">
+          <div style="display: flex; justify-content: space-between; font-size: 12px; color: #667085">
             <div>12회 전</div>
             <div>최근 12회 추이 · 예시 곡선</div>
             <div>최신</div>
           </div>
         </div>
 
-        <div style="background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 6px 16px">
-          <div style="display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; font-size: 14px"><div style="color: #55657A">출처</div><div style="font-weight: 600; text-align: right">{{ d.src }}</div></div>
-          <div style="display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-top: 1px solid #EEF2F7; font-size: 14px"><div style="color: #55657A">갱신 주기</div><div style="font-weight: 600">{{ d.cycle }}</div></div>
-          <div style="display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-top: 1px solid #EEF2F7; font-size: 14px"><div style="color: #55657A">기준 시점</div><div style="font-weight: 600">{{ d.date }}</div></div>
-          <div style="display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-top: 1px solid #EEF2F7; font-size: 14px"><div style="color: #55657A">소스 등급</div><div style="font-weight: 600">{{ d.grade }}</div></div>
-          <div style="display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-top: 1px solid #EEF2F7; font-size: 14px"><div style="color: #55657A">이 숫자의 성격</div><div style="font-weight: 600; text-align: right; {{ d.realStyle }}">{{ d.realText }}</div></div>
+        <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 6px 16px">
+          <div style="display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; font-size: 14px"><div style="color: #667085">출처</div><div style="font-weight: 600; text-align: right">{{ d.src }}</div></div>
+          <div style="display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-top: 1px solid #F2F4F7; font-size: 14px"><div style="color: #667085">갱신 주기</div><div style="font-weight: 600">{{ d.cycle }}</div></div>
+          <div style="display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-top: 1px solid #F2F4F7; font-size: 14px"><div style="color: #667085">기준 시점</div><div style="font-weight: 600">{{ d.date }}</div></div>
+          <div style="display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-top: 1px solid #F2F4F7; font-size: 14px"><div style="color: #667085">소스 등급</div><div style="font-weight: 600">{{ d.grade }}</div></div>
+          <div style="display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-top: 1px solid #F2F4F7; font-size: 14px"><div style="color: #667085">이 숫자의 성격</div><div style="font-weight: 600; text-align: right; {{ d.realStyle }}">{{ d.realText }}</div></div>
         </div>
 
         <div style="display: flex; gap: 10px">
           <button onClick="{{ d.toggleWatch }}" aria-pressed="{{ d.watched }}" style="flex: 1; min-height: 48px; border-radius: 24px; font-size: 15px; font-weight: 600; text-align: center; {{ d.watchStyle }}">{{ d.watchLabel }}</button>
         </div>
 
-        <div style="background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 14px 16px">
+        <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
           <div style="font-size: 15px; font-weight: 700">가격 알림</div>
-          <div style="font-size: 13px; color: #55657A">직전 발표 대비 이만큼 움직이면 알려 드립니다.</div>
+          <div style="font-size: 13px; color: #667085">직전 발표 대비 이만큼 움직이면 알려 드립니다.</div>
           <div style="display: flex; gap: 8px; margin-top: 10px">
             <sc-for list="{{ alertOpts }}" as="a" hint-placeholder-count="4">
               <button onClick="{{ a.pick }}" aria-pressed="{{ a.on }}" style="flex: 1; min-height: 44px; border-radius: 10px; font-size: 14px; font-weight: 600; text-align: center; {{ a.style }}">{{ a.label }}</button>
             </sc-for>
           </div>
-          <div style="margin-top: 8px; font-size: 13px; color: #33445A">{{ alertMsg }}</div>
+          <div style="margin-top: 8px; font-size: 13px; color: #344054">{{ alertMsg }}</div>
         </div>
 
-        <div style="background: #F0F3F8; border-radius: 14px; padding: 14px 16px">
+        <div style="background: #F5F7FA; border-radius: 16px; padding: 14px 16px">
           <div style="font-size: 14px; font-weight: 700">프로 등급에서 열리는 기능</div>
-          <div style="margin-top: 2px; font-size: 13px; color: #33445A">전체 시계열, 고시가·수입재와의 스프레드, 엑셀 내려받기. 1단계 무료 베타에서는 제공하지 않습니다.</div>
+          <div style="margin-top: 2px; font-size: 13px; color: #344054">전체 시계열, 고시가·수입재와의 스프레드, 엑셀 내려받기. 1단계 무료 베타에서는 제공하지 않습니다.</div>
         </div>
       </div>
     </sc-if>
@@ -382,171 +399,171 @@ a{color:#1570EF}a:hover{color:#0B4FB3}
     <sc-if value="{{ isReports }}" hint-placeholder-val="{{ false }}">
       <div style="display: flex; flex-direction: column; gap: 12px; padding: 18px 20px 28px">
         <div>
-          <h1 style="margin: 0; font-size: 22px; font-weight: 700">리포트</h1>
-          <div style="font-size: 13px; color: #55657A">매주 목요일 발행 · 숫자와 세계 이슈를 한 번에</div>
+          <h1 style="margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em">리포트</h1>
+          <div style="font-size: 13px; color: #667085">매주 목요일 발행 · 숫자와 세계 이슈를 한 번에</div>
         </div>
         <sc-for list="{{ repList }}" as="rl" hint-placeholder-count="3">
-          <button onClick="{{ rl.open }}" style="display: block; width: 100%; box-sizing: border-box; text-align: left; background: #FFFFFF; border: 1px solid {{ rl.border }}; border-radius: 14px; padding: 16px">
+          <button onClick="{{ rl.open }}" style="display: block; width: 100%; box-sizing: border-box; text-align: left; background: #FFFFFF; border: 1px solid {{ rl.border }}; border-radius: 16px; padding: 16px">
             <div style="font-size: 12px; font-weight: 700; color: {{ rl.tagColor }}">{{ rl.tag }}</div>
             <div style="margin-top: 4px; font-size: 16px; font-weight: 700; line-height: 1.45">{{ rl.title }}</div>
-            <div style="margin-top: 6px; font-size: 13px; color: #55657A">{{ rl.sub }}</div>
+            <div style="margin-top: 6px; font-size: 13px; color: #667085">{{ rl.sub }}</div>
           </button>
         </sc-for>
-        <div style="font-size: 13px; color: #55657A">{{ repListNote }}</div>
+        <div style="font-size: 13px; color: #667085">{{ repListNote }}</div>
       </div>
     </sc-if>
 
     <sc-if value="{{ isReport }}" hint-placeholder-val="{{ false }}">
       <div style="display: flex; flex-direction: column; gap: 14px; padding: 8px 20px 28px">
-        <button onClick="{{ back }}" style="min-height: 44px; font-size: 14px; font-weight: 600; color: #1570EF">← 리포트 목록</button>
+        <button onClick="{{ back }}" style="min-height: 44px; font-size: 14px; font-weight: 600; color: #0072F5">← 리포트 목록</button>
         <sc-if value="{{ repSample }}" hint-placeholder-val="{{ false }}">
         <div>
-          <div style="font-size: 12px; font-weight: 700; color: #1570EF">주간 리포트 제12호 · 2026년 10월 1주</div>
-          <h1 style="margin: 4px 0 0; font-size: 22px; font-weight: 700; line-height: 1.35">중국 판재가 내리고 코크스가 올랐다. 수입재 원가는 어디로 가나</h1>
+          <div style="font-size: 12px; font-weight: 700; color: #0072F5">주간 리포트 제12호 · 2026년 10월 1주</div>
+          <h1 style="margin: 4px 0 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.35">중국 판재가 내리고 코크스가 올랐다. 수입재 원가는 어디로 가나</h1>
         </div>
 
-        <div style="background: #E8F2FF; border-radius: 14px; padding: 16px">
-          <div style="font-size: 12px; font-weight: 700; color: #0B4FB3">이번 주 한 줄</div>
+        <div style="background: #EEF6FF; border-radius: 16px; padding: 16px">
+          <div style="font-size: 12px; font-weight: 700; color: #0058CC">이번 주 한 줄</div>
           <div style="margin-top: 4px; font-size: 15px; font-weight: 600; line-height: 1.6">중국 내수가는 판재 중심으로 내렸고 코크스만 올랐다. 수입재 하락 압력은 이어지고, 환율이 그 폭을 일부 상쇄한다.</div>
         </div>
 
-        <div style="background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 14px 16px">
-          <div style="font-size: 13px; font-weight: 700; color: #55657A">숫자</div>
-          <div style="display: flex; justify-content: space-between; gap: 12px; margin-top: 10px; font-size: 14px"><div>중국 열연 내수가</div><div style="font-weight: 700">3,308.9 위안/t <span style="color: #175CD3">▼1.3%</span></div></div>
-          <div style="display: flex; justify-content: space-between; gap: 12px; margin-top: 8px; font-size: 14px"><div>중국 코크스</div><div style="font-weight: 700">2,096.4 위안/t <span style="color: #C4320A">▲5.7%</span></div></div>
-          <div style="display: flex; justify-content: space-between; gap: 12px; margin-top: 8px; font-size: 14px"><div>중국 점결탄</div><div style="font-weight: 700">2,549.3 위안/t <span style="color: #175CD3">▼1.9%</span></div></div>
-          <div style="margin-top: 10px; font-size: 12px; color: #55657A">중국 국가통계국 9월 중순 발표값. 9월 상순 대비.</div>
+        <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
+          <div style="font-size: 13px; font-weight: 700; color: #667085">숫자</div>
+          <div style="display: flex; justify-content: space-between; gap: 12px; margin-top: 10px; font-size: 14px"><div>중국 열연 내수가</div><div style="font-weight: 700">3,308.9 위안/t <span style="color: #1B64DA">▼1.3%</span></div></div>
+          <div style="display: flex; justify-content: space-between; gap: 12px; margin-top: 8px; font-size: 14px"><div>중국 코크스</div><div style="font-weight: 700">2,096.4 위안/t <span style="color: #F04452">▲5.7%</span></div></div>
+          <div style="display: flex; justify-content: space-between; gap: 12px; margin-top: 8px; font-size: 14px"><div>중국 점결탄</div><div style="font-weight: 700">2,549.3 위안/t <span style="color: #1B64DA">▼1.9%</span></div></div>
+          <div style="margin-top: 10px; font-size: 12px; color: #667085">중국 국가통계국 9월 중순 발표값. 9월 상순 대비.</div>
         </div>
 
         <div>
-          <div style="font-size: 13px; font-weight: 700; color: #55657A">세계 뉴스와 영향</div>
-          <div style="font-size: 12px; color: #55657A">뉴스 내용은 화면 구성을 보여 주기 위한 예시입니다. 눌러서 펼치세요.</div>
+          <div style="font-size: 13px; font-weight: 700; color: #667085">세계 뉴스와 영향</div>
+          <div style="font-size: 12px; color: #667085">뉴스 내용은 화면 구성을 보여 주기 위한 예시입니다. 눌러서 펼치세요.</div>
         </div>
         <sc-for list="{{ news }}" as="n" hint-placeholder-count="3">
-          <div style="background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 4px 16px 6px">
+          <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 4px 16px 6px">
             <button onClick="{{ n.toggle }}" aria-expanded="{{ n.open }}" style="display: flex; width: 100%; min-height: 56px; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 0">
               <div>
-                <div style="font-size: 12px; font-weight: 700; color: #1570EF">{{ n.type }}</div>
+                <div style="font-size: 12px; font-weight: 700; color: #0072F5">{{ n.type }}</div>
                 <div style="font-size: 15px; font-weight: 700; line-height: 1.45">{{ n.title }}</div>
               </div>
               <div style="flex: none; font-size: 13px; font-weight: 700; {{ n.dirStyle }}">{{ n.dir }}</div>
             </button>
             <sc-if value="{{ n.open }}" hint-placeholder-val="{{ false }}">
-              <div style="display: flex; flex-direction: column; gap: 10px; border-top: 1px solid #EEF2F7; padding: 12px 0 10px">
-                <div><div style="font-size: 12px; font-weight: 700; color: #55657A">1. 무슨 일인가</div><div style="font-size: 14px">{{ n.what }}</div></div>
-                <div><div style="font-size: 12px; font-weight: 700; color: #55657A">2. 어떤 경로로 오나</div><div style="font-size: 14px">{{ n.path }}</div></div>
-                <div><div style="font-size: 12px; font-weight: 700; color: #55657A">3. 어느 품목에, 어느 방향으로, 언제</div><div style="font-size: 14px">{{ n.impact }}</div></div>
-                <div><div style="font-size: 12px; font-weight: 700; color: #55657A">4. 무엇을 보면 확인되나</div><div style="font-size: 14px">{{ n.watch }}</div>
-                  <button onClick="{{ n.openItem }}" style="margin-top: 6px; min-height: 44px; padding: 0 14px; border-radius: 22px; border: 1px solid #1570EF; color: #1570EF; font-size: 13px; font-weight: 600">{{ n.itemLabel }} 시세 보기</button>
+              <div style="display: flex; flex-direction: column; gap: 10px; border-top: 1px solid #F2F4F7; padding: 12px 0 10px">
+                <div><div style="font-size: 12px; font-weight: 700; color: #667085">1. 무슨 일인가</div><div style="font-size: 14px">{{ n.what }}</div></div>
+                <div><div style="font-size: 12px; font-weight: 700; color: #667085">2. 어떤 경로로 오나</div><div style="font-size: 14px">{{ n.path }}</div></div>
+                <div><div style="font-size: 12px; font-weight: 700; color: #667085">3. 어느 품목에, 어느 방향으로, 언제</div><div style="font-size: 14px">{{ n.impact }}</div></div>
+                <div><div style="font-size: 12px; font-weight: 700; color: #667085">4. 무엇을 보면 확인되나</div><div style="font-size: 14px">{{ n.watch }}</div>
+                  <button onClick="{{ n.openItem }}" style="margin-top: 6px; min-height: 44px; padding: 0 14px; border-radius: 22px; border: 1px solid #0072F5; color: #0072F5; font-size: 13px; font-weight: 600">{{ n.itemLabel }} 시세 보기</button>
                 </div>
-                <div><div style="font-size: 12px; font-weight: 700; color: #55657A">5. 얼마나 확실한가</div><div style="font-size: 14px">{{ n.conf }}</div></div>
+                <div><div style="font-size: 12px; font-weight: 700; color: #667085">5. 얼마나 확실한가</div><div style="font-size: 14px">{{ n.conf }}</div></div>
               </div>
             </sc-if>
           </div>
         </sc-for>
 
-        <div style="background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 14px 16px">
-          <div style="font-size: 13px; font-weight: 700; color: #55657A">다음 주에 볼 것</div>
+        <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
+          <div style="font-size: 13px; font-weight: 700; color: #667085">다음 주에 볼 것</div>
           <div style="margin-top: 8px; font-size: 14px">1. 10월 14일경 중국 10월 상순 가격. 열연이 다시 내리면 하락 추세 확인.</div>
           <div style="margin-top: 6px; font-size: 14px">2. 10월 15일경 9월 수입 통관 단가. 중국산 열연이 전월보다 낮은지.</div>
           <div style="margin-top: 6px; font-size: 14px">3. 원/달러 환율. 수입재 하락 폭을 얼마나 상쇄하는지.</div>
         </div>
 
-        <div style="background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 14px 16px">
-          <div style="font-size: 13px; font-weight: 700; color: #55657A">지난 전망 점검</div>
+        <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
+          <div style="font-size: 13px; font-weight: 700; color: #667085">지난 전망 점검</div>
           <div style="margin-top: 8px; font-size: 14px">[예시] 제11호 전망: “중국 열연 내수가는 약세를 이어 간다.”</div>
-          <div style="margin-top: 6px; font-size: 14px; font-weight: 700; color: #0B6B3A">결과: 맞음. 9월 중순 열연 ▼1.3%.</div>
+          <div style="margin-top: 6px; font-size: 14px; font-weight: 700; color: #12B76A">결과: 맞음. 9월 중순 열연 ▼1.3%.</div>
         </div>
 
         </sc-if>
 
         <sc-if value="{{ repLoading }}" hint-placeholder-val="{{ false }}">
-          <div style="background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 18px; font-size: 14px; color: #55657A">리포트를 불러오는 중입니다.</div>
+          <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 18px; font-size: 14px; color: #667085">리포트를 불러오는 중입니다.</div>
         </sc-if>
         <sc-if value="{{ repLive }}" hint-placeholder-val="{{ false }}">
           <div>
-            <div style="font-size: 12px; font-weight: 700; color: #1570EF">{{ rp.tag }}</div>
-            <h1 style="margin: 4px 0 0; font-size: 22px; font-weight: 700; line-height: 1.35">{{ rp.title }}</h1>
-            <div style="margin-top: 4px; font-size: 12px; color: #55657A">{{ rp.dateLine }}</div>
+            <div style="font-size: 12px; font-weight: 700; color: #0072F5">{{ rp.tag }}</div>
+            <h1 style="margin: 4px 0 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.35">{{ rp.title }}</h1>
+            <div style="margin-top: 4px; font-size: 12px; color: #667085">{{ rp.dateLine }}</div>
           </div>
 
-          <div style="background: #E8F2FF; border-radius: 14px; padding: 16px">
-            <div style="font-size: 12px; font-weight: 700; color: #0B4FB3">이번 주 한 줄</div>
+          <div style="background: #EEF6FF; border-radius: 16px; padding: 16px">
+            <div style="font-size: 12px; font-weight: 700; color: #0058CC">이번 주 한 줄</div>
             <div style="margin-top: 4px; font-size: 15px; font-weight: 600; line-height: 1.6">{{ rp.oneLiner }}</div>
             <sc-for list="{{ rp.takeaways }}" as="tk" hint-placeholder-count="3">
-              <div style="display: flex; gap: 8px; margin-top: 10px; font-size: 14px; line-height: 1.55"><div style="flex: none; width: 20px; height: 20px; border-radius: 10px; background: #1570EF; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{ tk.n }}</div><div>{{ tk.text }}</div></div>
+              <div style="display: flex; gap: 8px; margin-top: 10px; font-size: 14px; line-height: 1.55"><div style="flex: none; width: 20px; height: 20px; border-radius: 10px; background: #0072F5; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{ tk.n }}</div><div>{{ tk.text }}</div></div>
             </sc-for>
           </div>
 
-          <div style="display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px">
+          <div style="display: flex; gap: 6px; flex-wrap: wrap; padding-bottom: 2px">
             <sc-for list="{{ rp.jump }}" as="jp" hint-placeholder-count="5">
               <button onClick="{{ jp.go }}" style="flex: none; min-height: 36px; padding: 0 12px; border-radius: 18px; font-size: 13px; font-weight: 600; {{ jp.style }}">{{ jp.label }}</button>
             </sc-for>
           </div>
 
           <sc-if value="{{ rp.secNum }}" hint-placeholder-val="{{ true }}">
-            <div style="background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 14px 16px">
-              <div style="font-size: 13px; font-weight: 700; color: #55657A">많이 움직인 가격</div>
-              <div style="font-size: 12px; color: #55657A">시장가·물가지수 기준. 직전 발표 대비.</div>
+            <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
+              <div style="font-size: 13px; font-weight: 700; color: #667085">많이 움직인 가격</div>
+              <div style="font-size: 12px; color: #667085">시장가·물가지수 기준. 직전 발표 대비.</div>
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px">
                 <div>
-                  <div style="font-size: 12px; font-weight: 700; color: #C4320A">오름</div>
+                  <div style="font-size: 12px; font-weight: 700; color: #F04452">오름</div>
                   <sc-for list="{{ rp.up }}" as="m" hint-placeholder-count="3">
-                    <div style="margin-top: 6px"><div style="font-size: 13px; line-height: 1.35">{{ m.name }}</div><div style="font-size: 14px; font-weight: 700; color: #C4320A">{{ m.pct }} <span style="font-size: 11px; font-weight: 500; color: #55657A">{{ m.period }}</span></div></div>
+                    <div style="margin-top: 6px"><div style="font-size: 13px; line-height: 1.35">{{ m.name }}</div><div style="font-size: 14px; font-weight: 700; color: #F04452; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ m.pct }} <span style="font-size: 11px; font-weight: 500; color: #667085; font-family: 'Inter', 'Pretendard Variable', sans-serif">{{ m.period }}</span></div></div>
                   </sc-for>
-                  <sc-if value="{{ rp.noUp }}" hint-placeholder-val="{{ false }}"><div style="margin-top: 6px; font-size: 13px; color: #55657A">없음</div></sc-if>
+                  <sc-if value="{{ rp.noUp }}" hint-placeholder-val="{{ false }}"><div style="margin-top: 6px; font-size: 13px; color: #667085">없음</div></sc-if>
                 </div>
                 <div>
-                  <div style="font-size: 12px; font-weight: 700; color: #175CD3">내림</div>
+                  <div style="font-size: 12px; font-weight: 700; color: #1B64DA">내림</div>
                   <sc-for list="{{ rp.down }}" as="m" hint-placeholder-count="3">
-                    <div style="margin-top: 6px"><div style="font-size: 13px; line-height: 1.35">{{ m.name }}</div><div style="font-size: 14px; font-weight: 700; color: #175CD3">{{ m.pct }} <span style="font-size: 11px; font-weight: 500; color: #55657A">{{ m.period }}</span></div></div>
+                    <div style="margin-top: 6px"><div style="font-size: 13px; line-height: 1.35">{{ m.name }}</div><div style="font-size: 14px; font-weight: 700; color: #1B64DA; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ m.pct }} <span style="font-size: 11px; font-weight: 500; color: #667085; font-family: 'Inter', 'Pretendard Variable', sans-serif">{{ m.period }}</span></div></div>
                   </sc-for>
-                  <sc-if value="{{ rp.noDown }}" hint-placeholder-val="{{ false }}"><div style="margin-top: 6px; font-size: 13px; color: #55657A">없음</div></sc-if>
+                  <sc-if value="{{ rp.noDown }}" hint-placeholder-val="{{ false }}"><div style="margin-top: 6px; font-size: 13px; color: #667085">없음</div></sc-if>
                 </div>
               </div>
             </div>
 
-            <div style="background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 14px 16px">
-              <div style="font-size: 13px; font-weight: 700; color: #55657A">원료에서 제품으로</div>
-              <div style="font-size: 12px; font-weight: 700; color: #33445A; margin-top: 10px">원료</div>
+            <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
+              <div style="font-size: 13px; font-weight: 700; color: #667085">원료에서 제품으로</div>
+              <div style="font-size: 12px; font-weight: 700; color: #344054; margin-top: 10px">원료</div>
               <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px">
                 <sc-for list="{{ rp.raw }}" as="f" hint-placeholder-count="3">
-                  <div style="border-radius: 10px; background: #F5F8FC; padding: 6px 10px; font-size: 13px">{{ f.name }} <b style="{{ f.style }}">{{ f.pct }}</b></div>
+                  <div style="border-radius: 10px; background: #F5F7FA; padding: 6px 10px; font-size: 13px">{{ f.name }} <b style="{{ f.style }}; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ f.pct }}</b></div>
                 </sc-for>
               </div>
-              <div style="text-align: center; font-size: 16px; color: #8A9AB0; margin: 6px 0">↓</div>
-              <div style="font-size: 12px; font-weight: 700; color: #33445A">제품</div>
+              <div style="text-align: center; font-size: 16px; color: #98A2B3; margin: 6px 0">↓</div>
+              <div style="font-size: 12px; font-weight: 700; color: #344054">제품</div>
               <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px">
                 <sc-for list="{{ rp.product }}" as="f" hint-placeholder-count="3">
-                  <div style="border-radius: 10px; background: #F5F8FC; padding: 6px 10px; font-size: 13px">{{ f.name }} <b style="{{ f.style }}">{{ f.pct }}</b></div>
+                  <div style="border-radius: 10px; background: #F5F7FA; padding: 6px 10px; font-size: 13px">{{ f.name }} <b style="{{ f.style }}; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ f.pct }}</b></div>
                 </sc-for>
               </div>
               <sc-for list="{{ rp.extra }}" as="x" hint-placeholder-count="2">
-                <div style="display: flex; justify-content: space-between; gap: 10px; margin-top: 10px; font-size: 13px; border-top: 1px solid #EEF2F7; padding-top: 8px"><div style="color: #33445A">{{ x.name }}</div><div style="font-weight: 700">{{ x.value }} <span style="{{ x.style }}">{{ x.pct }}</span></div></div>
+                <div style="display: flex; justify-content: space-between; gap: 10px; margin-top: 10px; font-size: 13px; border-top: 1px solid #F2F4F7; padding-top: 8px"><div style="color: #344054">{{ x.name }}</div><div style="font-weight: 700; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ x.value }} <span style="{{ x.style }}; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ x.pct }}</span></div></div>
               </sc-for>
             </div>
           </sc-if>
 
           <sc-if value="{{ rp.secRegion }}" hint-placeholder-val="{{ true }}">
-            <div style="background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 14px 16px">
-              <div style="font-size: 13px; font-weight: 700; color: #55657A">나라별 대표 철강재 전월비</div>
-              <div style="font-size: 12px; color: #55657A">열연 기준(미국은 철강재 전체 물가지수). 기준이 나라마다 달라 방향 위주로 보세요.</div>
+            <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
+              <div style="font-size: 13px; font-weight: 700; color: #667085">나라별 대표 철강재 전월비</div>
+              <div style="font-size: 12px; color: #667085">열연 기준(미국은 철강재 전체 물가지수). 기준이 나라마다 달라 방향 위주로 보세요.</div>
               <sc-for list="{{ rp.chart }}" as="c" hint-placeholder-count="7">
                 <div style="display: grid; grid-template-columns: 52px 1fr 64px; align-items: center; gap: 8px; margin-top: 8px; font-size: 13px">
                   <div style="font-weight: 600">{{ c.name }}</div>
-                  <div style="position: relative; height: 14px; background: #F5F8FC; border-radius: 7px">
-                    <div style="position: absolute; left: 50%; top: -2px; bottom: -2px; width: 1px; background: #B8C4D4"></div>
+                  <div style="position: relative; height: 14px; background: #F5F7FA; border-radius: 7px">
+                    <div style="position: absolute; left: 50%; top: -2px; bottom: -2px; width: 1px; background: #C4CAD4"></div>
                     <div style="position: absolute; top: 2px; height: 10px; border-radius: 5px; {{ c.bar }}"></div>
                   </div>
-                  <div style="text-align: right; font-weight: 700; {{ c.style }}">{{ c.pct }}</div>
+                  <div style="text-align: right; font-weight: 700; {{ c.style }}; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ c.pct }}</div>
                 </div>
               </sc-for>
-              <div style="margin-top: 8px; font-size: 11px; color: #8A9AB0">{{ rp.chartNote }}</div>
+              <div style="margin-top: 8px; font-size: 11px; color: #98A2B3">{{ rp.chartNote }}</div>
             </div>
 
-            <div style="background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 14px 16px">
-              <div style="font-size: 13px; font-weight: 700; color: #55657A">지역별 브리핑</div>
-              <div style="display: flex; gap: 6px; overflow-x: auto; margin-top: 10px; padding-bottom: 2px">
+            <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
+              <div style="font-size: 13px; font-weight: 700; color: #667085">지역별 브리핑</div>
+              <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; padding-bottom: 2px">
                 <sc-for list="{{ rp.regionTabs }}" as="rt" hint-placeholder-count="5">
                   <button onClick="{{ rt.pick }}" style="flex: none; min-height: 36px; padding: 0 12px; border-radius: 18px; font-size: 13px; font-weight: 600; {{ rt.style }}">{{ rt.label }}</button>
                 </sc-for>
@@ -554,7 +571,7 @@ a{color:#1570EF}a:hover{color:#0B4FB3}
               <div style="margin-top: 12px; font-size: 15px; line-height: 1.65">{{ rp.regionText }}</div>
               <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px">
                 <sc-for list="{{ rp.regionNums }}" as="rn" hint-placeholder-count="3">
-                  <div style="border-radius: 10px; background: #F5F8FC; padding: 6px 10px; font-size: 12px"><span style="color: #33445A">{{ rn.name }}</span> <b>{{ rn.value }}</b> <b style="{{ rn.style }}">{{ rn.pct }}</b><div style="font-size: 11px; color: #8A9AB0">{{ rn.sub }}</div></div>
+                  <div style="border-radius: 10px; background: #F5F7FA; padding: 6px 10px; font-size: 12px"><span style="color: #344054">{{ rn.name }}</span> <b>{{ rn.value }}</b> <b style="{{ rn.style }}; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ rn.pct }}</b><div style="font-size: 11px; color: #98A2B3">{{ rn.sub }}</div></div>
                 </sc-for>
               </div>
             </div>
@@ -562,32 +579,32 @@ a{color:#1570EF}a:hover{color:#0B4FB3}
 
           <sc-if value="{{ rp.secIssue }}" hint-placeholder-val="{{ true }}">
             <div>
-              <div style="font-size: 13px; font-weight: 700; color: #55657A">세계 이슈와 영향</div>
-              <div style="font-size: 12px; color: #55657A">눌러서 펼치세요. 기사는 제목과 링크만 소개하고, 해석은 Felix가 썼습니다.</div>
+              <div style="font-size: 13px; font-weight: 700; color: #667085">세계 이슈와 영향</div>
+              <div style="font-size: 12px; color: #667085">눌러서 펼치세요. 기사는 제목과 링크만 소개하고, 해석은 Felix가 썼습니다.</div>
             </div>
             <sc-for list="{{ rp.issues }}" as="n" hint-placeholder-count="3">
-              <div style="background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 4px 16px 6px">
+              <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 4px 16px 6px">
                 <button onClick="{{ n.toggle }}" aria-expanded="{{ n.open }}" style="display: flex; width: 100%; min-height: 56px; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 0; text-align: left">
                   <div>
-                    <div style="font-size: 12px; font-weight: 700; color: #1570EF">{{ n.type }} <span style="font-weight: 500; color: #8A9AB0">· {{ n.where }}</span></div>
+                    <div style="font-size: 12px; font-weight: 700; color: #0072F5">{{ n.type }} <span style="font-weight: 500; color: #98A2B3">· {{ n.where }}</span></div>
                     <div style="font-size: 15px; font-weight: 700; line-height: 1.45">{{ n.title }}</div>
                   </div>
-                  <div style="flex: none; text-align: right"><div style="font-size: 13px; font-weight: 700; {{ n.dirStyle }}">{{ n.dir }}</div><div style="font-size: 11px; color: #8A9AB0">확실성 {{ n.confShort }}</div></div>
+                  <div style="flex: none; text-align: right"><div style="font-size: 13px; font-weight: 700; {{ n.dirStyle }}">{{ n.dir }}</div><div style="font-size: 11px; color: #98A2B3">확실성 {{ n.confShort }}</div></div>
                 </button>
                 <sc-if value="{{ n.open }}" hint-placeholder-val="{{ false }}">
-                  <div style="display: flex; flex-direction: column; gap: 10px; border-top: 1px solid #EEF2F7; padding: 12px 0 10px">
-                    <div><div style="font-size: 12px; font-weight: 700; color: #55657A">1. 무슨 일인가</div><div style="font-size: 14px; line-height: 1.6">{{ n.what }}</div></div>
-                    <div><div style="font-size: 12px; font-weight: 700; color: #55657A">2. 어떤 경로로 오나</div><div style="font-size: 14px; line-height: 1.6">{{ n.path }}</div></div>
-                    <div><div style="font-size: 12px; font-weight: 700; color: #55657A">3. 어느 품목에, 어느 방향으로, 언제</div><div style="font-size: 14px; line-height: 1.6">{{ n.impact }}</div></div>
-                    <div><div style="font-size: 12px; font-weight: 700; color: #55657A">4. 무엇을 보면 확인되나</div><div style="font-size: 14px; line-height: 1.6">{{ n.watch }}</div>
+                  <div style="display: flex; flex-direction: column; gap: 10px; border-top: 1px solid #F2F4F7; padding: 12px 0 10px">
+                    <div><div style="font-size: 12px; font-weight: 700; color: #667085">1. 무슨 일인가</div><div style="font-size: 14px; line-height: 1.6">{{ n.what }}</div></div>
+                    <div><div style="font-size: 12px; font-weight: 700; color: #667085">2. 어떤 경로로 오나</div><div style="font-size: 14px; line-height: 1.6">{{ n.path }}</div></div>
+                    <div><div style="font-size: 12px; font-weight: 700; color: #667085">3. 어느 품목에, 어느 방향으로, 언제</div><div style="font-size: 14px; line-height: 1.6">{{ n.impact }}</div></div>
+                    <div><div style="font-size: 12px; font-weight: 700; color: #667085">4. 무엇을 보면 확인되나</div><div style="font-size: 14px; line-height: 1.6">{{ n.watch }}</div>
                       <sc-if value="{{ n.hasItem }}" hint-placeholder-val="{{ false }}">
-                        <button onClick="{{ n.openItem }}" style="margin-top: 6px; min-height: 44px; padding: 0 14px; border-radius: 22px; border: 1px solid #1570EF; color: #1570EF; font-size: 13px; font-weight: 600">{{ n.itemLabel }} 시세 보기</button>
+                        <button onClick="{{ n.openItem }}" style="margin-top: 6px; min-height: 44px; padding: 0 14px; border-radius: 22px; border: 1px solid #0072F5; color: #0072F5; font-size: 13px; font-weight: 600">{{ n.itemLabel }} 시세 보기</button>
                       </sc-if>
                     </div>
-                    <div><div style="font-size: 12px; font-weight: 700; color: #55657A">5. 얼마나 확실한가</div><div style="font-size: 14px; line-height: 1.6">{{ n.conf }}</div></div>
-                    <div><div style="font-size: 12px; font-weight: 700; color: #55657A">출처</div>
+                    <div><div style="font-size: 12px; font-weight: 700; color: #667085">5. 얼마나 확실한가</div><div style="font-size: 14px; line-height: 1.6">{{ n.conf }}</div></div>
+                    <div><div style="font-size: 12px; font-weight: 700; color: #667085">출처</div>
                       <sc-for list="{{ n.sources }}" as="sc" hint-placeholder-count="2">
-                        <a href="{{ sc.href }}" target="_blank" rel="noopener noreferrer" style="display: block; margin-top: 4px; font-size: 13px; line-height: 1.45; color: #0B4FB3">{{ sc.title }} <span style="color: #8A9AB0">· {{ sc.meta }}</span></a>
+                        <a href="{{ sc.href }}" target="_blank" rel="noopener noreferrer" style="display: block; margin-top: 4px; font-size: 13px; line-height: 1.45; color: #0058CC">{{ sc.title }} <span style="color: #98A2B3">· {{ sc.meta }}</span></a>
                       </sc-for>
                     </div>
                   </div>
@@ -597,38 +614,38 @@ a{color:#1570EF}a:hover{color:#0B4FB3}
           </sc-if>
 
           <sc-if value="{{ rp.secCal }}" hint-placeholder-val="{{ true }}">
-            <div style="background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 14px 16px">
-              <div style="font-size: 13px; font-weight: 700; color: #55657A">앞으로 2주 일정</div>
+            <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
+              <div style="font-size: 13px; font-weight: 700; color: #667085">앞으로 2주 일정</div>
               <sc-for list="{{ rp.calendar }}" as="cl" hint-placeholder-count="4">
                 <div style="display: grid; grid-template-columns: 56px 1fr; gap: 10px; margin-top: 10px">
-                  <div><div style="font-size: 14px; font-weight: 700">{{ cl.md }}</div><div style="font-size: 11px; color: #8A9AB0">{{ cl.wd }}</div></div>
-                  <div><div style="font-size: 14px; font-weight: 600; line-height: 1.45"><span style="display: inline-block; font-size: 11px; font-weight: 700; border-radius: 8px; padding: 1px 6px; margin-right: 4px; {{ cl.tagStyle }}">{{ cl.tag }}</span>{{ cl.title }}</div><div style="font-size: 13px; color: #55657A; line-height: 1.5">{{ cl.why }}</div></div>
+                  <div><div style="font-size: 14px; font-weight: 700">{{ cl.md }}</div><div style="font-size: 11px; color: #98A2B3">{{ cl.wd }}</div></div>
+                  <div><div style="font-size: 14px; font-weight: 600; line-height: 1.45"><span style="display: inline-block; font-size: 11px; font-weight: 700; border-radius: 8px; padding: 1px 6px; margin-right: 4px; {{ cl.tagStyle }}">{{ cl.tag }}</span>{{ cl.title }}</div><div style="font-size: 13px; color: #667085; line-height: 1.5">{{ cl.why }}</div></div>
                 </div>
               </sc-for>
             </div>
 
-            <div style="background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 14px 16px">
-              <div style="font-size: 13px; font-weight: 700; color: #55657A">{{ rp.pastTitle }}</div>
+            <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
+              <div style="font-size: 13px; font-weight: 700; color: #667085">{{ rp.pastTitle }}</div>
               <sc-for list="{{ rp.past }}" as="pc" hint-placeholder-count="2">
                 <div style="margin-top: 10px"><div style="font-size: 14px; line-height: 1.5">“{{ pc.label }}”</div><div style="margin-top: 2px; font-size: 13px; font-weight: 700; {{ pc.style }}">{{ pc.result }}</div></div>
               </sc-for>
-              <sc-if value="{{ rp.noPast }}" hint-placeholder-val="{{ false }}"><div style="margin-top: 6px; font-size: 13px; color: #55657A">첫 호라 점검할 지난 전망이 없습니다.</div></sc-if>
-              <div style="margin-top: 12px; font-size: 12px; font-weight: 700; color: #55657A">이번 호 전망 (다음 호에서 채점)</div>
+              <sc-if value="{{ rp.noPast }}" hint-placeholder-val="{{ false }}"><div style="margin-top: 6px; font-size: 13px; color: #667085">첫 호라 점검할 지난 전망이 없습니다.</div></sc-if>
+              <div style="margin-top: 12px; font-size: 12px; font-weight: 700; color: #667085">이번 호 전망 (다음 호에서 채점)</div>
               <sc-for list="{{ rp.checks }}" as="ck" hint-placeholder-count="2">
                 <div style="margin-top: 6px; font-size: 13px; line-height: 1.5">· {{ ck.label }}</div>
               </sc-for>
             </div>
           </sc-if>
 
-          <div style="font-size: 11px; color: #8A9AB0; line-height: 1.6">
+          <div style="font-size: 11px; color: #98A2B3; line-height: 1.6">
             <sc-for list="{{ rp.credits }}" as="cr" hint-placeholder-count="2"><div>{{ cr }}</div></sc-for>
           </div>
         </sc-if>
 
-        <div style="background: #E8F2FF; border-radius: 14px; padding: 16px">
+        <div style="background: #EEF6FF; border-radius: 16px; padding: 16px">
           <div style="font-size: 15px; font-weight: 700">이번 주 체감은 어땠습니까</div>
-          <div style="margin-top: 2px; font-size: 13px; color: #33445A">응답 분포는 다음 호에 공개합니다.</div>
-          <button onClick="{{ goTips }}" style="margin-top: 10px; min-height: 44px; padding: 0 18px; border-radius: 22px; background: #1570EF; color: #FFFFFF; font-size: 14px; font-weight: 600">5초 투표하기</button>
+          <div style="margin-top: 2px; font-size: 13px; color: #344054">응답 분포는 다음 호에 공개합니다.</div>
+          <button onClick="{{ goTips }}" style="margin-top: 10px; min-height: 44px; padding: 0 18px; border-radius: 22px; background: #0072F5; color: #FFFFFF; font-size: 14px; font-weight: 600">5초 투표하기</button>
         </div>
       </div>
     </sc-if>
@@ -636,18 +653,18 @@ a{color:#1570EF}a:hover{color:#0B4FB3}
     <sc-if value="{{ isTips }}" hint-placeholder-val="{{ false }}">
       <div style="display: flex; flex-direction: column; gap: 14px; padding: 18px 20px 28px">
         <div>
-          <h1 style="margin: 0; font-size: 22px; font-weight: 700">제보</h1>
-          <div style="font-size: 13px; color: #55657A">개별 응답은 공개하지 않습니다. 집계 결과만 돌려 드립니다.</div>
+          <h1 style="margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em">제보</h1>
+          <div style="font-size: 13px; color: #667085">개별 응답은 공개하지 않습니다. 집계 결과만 돌려 드립니다.</div>
         </div>
-        <div style="display: flex; gap: 6px; background: #E6ECF4; border-radius: 12px; padding: 4px">
+        <div style="display: flex; gap: 6px; background: #F2F4F7; border-radius: 12px; padding: 4px">
           <sc-for list="{{ stages }}" as="st" hint-placeholder-count="3">
             <button onClick="{{ st.pick }}" aria-pressed="{{ st.on }}" style="flex: 1; min-height: 44px; border-radius: 9px; font-size: 13px; font-weight: 700; text-align: center; {{ st.style }}">{{ st.label }}</button>
           </sc-for>
         </div>
-        <div style="font-size: 13px; color: #33445A">{{ stageNote }}</div>
+        <div style="font-size: 13px; color: #344054">{{ stageNote }}</div>
 
-        <div style="background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 14px 16px">
-          <div style="font-size: 13px; font-weight: 700; color: #55657A">품목</div>
+        <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
+          <div style="font-size: 13px; font-weight: 700; color: #667085">품목</div>
           <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px">
             <sc-for list="{{ tipItems }}" as="t" hint-placeholder-count="5">
               <button onClick="{{ t.pick }}" aria-pressed="{{ t.on }}" style="min-height: 44px; padding: 0 16px; border-radius: 22px; font-size: 14px; font-weight: 600; {{ t.style }}">{{ t.label }}</button>
@@ -657,98 +674,98 @@ a{color:#1570EF}a:hover{color:#0B4FB3}
 
         <sc-if value="{{ isStage1 }}" hint-placeholder-val="{{ true }}">
           <sc-if value="{{ voteOpen }}" hint-placeholder-val="{{ true }}">
-            <div style="background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 14px 16px">
+            <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
               <div style="font-size: 15px; font-weight: 700">이번 주 {{ tipItemLabel }} 거래 가격은 지난주보다</div>
               <div style="display: flex; gap: 8px; margin-top: 12px">
                 <sc-for list="{{ voteOpts }}" as="v" hint-placeholder-count="3">
-                  <button onClick="{{ v.pick }}" style="flex: 1; min-height: 64px; border-radius: 12px; border: 1px solid #C9D6E6; background: #F4F7FB; font-size: 15px; font-weight: 700; text-align: center">{{ v.label }}</button>
+                  <button onClick="{{ v.pick }}" style="flex: 1; min-height: 64px; border-radius: 12px; border: 1px solid #D0D5DD; background: #FFFFFF; font-size: 15px; font-weight: 700; text-align: center">{{ v.label }}</button>
                 </sc-for>
               </div>
             </div>
           </sc-if>
           <sc-if value="{{ voteDone }}" hint-placeholder-val="{{ false }}">
-            <div style="background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 14px 16px">
+            <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
               <div style="font-size: 15px; font-weight: 700">투표했습니다. 지금까지의 응답</div>
-              <div style="font-size: 12px; color: #55657A">{{ tipItemLabel }} · 응답 64명 · 예시 분포</div>
+              <div style="font-size: 12px; color: #667085">{{ tipItemLabel }} · 응답 64명 · 예시 분포</div>
               <sc-for list="{{ voteRows }}" as="vr" hint-placeholder-count="3">
                 <div style="margin-top: 12px">
-                  <div style="display: flex; justify-content: space-between; font-size: 14px"><div style="font-weight: 600">{{ vr.label }}</div><div style="font-weight: 700">{{ vr.pctText }}</div></div>
-                  <div style="margin-top: 4px; height: 10px; border-radius: 5px; background: #EEF2F7"><div style="height: 10px; border-radius: 5px; {{ vr.barStyle }}"></div></div>
+                  <div style="display: flex; justify-content: space-between; font-size: 14px"><div style="font-weight: 600">{{ vr.label }}</div><div style="font-weight: 700; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ vr.pctText }}</div></div>
+                  <div style="margin-top: 4px; height: 10px; border-radius: 5px; background: #F2F4F7"><div style="height: 10px; border-radius: 5px; {{ vr.barStyle }}"></div></div>
                 </div>
               </sc-for>
-              <button onClick="{{ resetVote }}" style="margin-top: 14px; min-height: 44px; font-size: 14px; font-weight: 600; color: #1570EF">다른 품목도 투표하기</button>
+              <button onClick="{{ resetVote }}" style="margin-top: 14px; min-height: 44px; font-size: 14px; font-weight: 600; color: #0072F5">다른 품목도 투표하기</button>
             </div>
           </sc-if>
         </sc-if>
 
         <sc-if value="{{ isStage2 }}" hint-placeholder-val="{{ false }}">
           <sc-if value="{{ bandOpen }}" hint-placeholder-val="{{ true }}">
-            <div style="background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 14px 16px">
+            <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
               <div style="font-size: 15px; font-weight: 700">이번 주 {{ tipItemLabel }} 거래 가격대 (만원/t)</div>
               <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 12px">
                 <sc-for list="{{ bands }}" as="b" hint-placeholder-count="5">
-                  <button onClick="{{ b.pick }}" style="min-height: 48px; padding: 0 16px; border-radius: 12px; border: 1px solid #C9D6E6; background: #F4F7FB; font-size: 15px; font-weight: 600">{{ b.label }}</button>
+                  <button onClick="{{ b.pick }}" style="min-height: 48px; padding: 0 16px; border-radius: 12px; border: 1px solid #D0D5DD; background: #FFFFFF; font-size: 15px; font-weight: 600">{{ b.label }}</button>
                 </sc-for>
               </div>
             </div>
           </sc-if>
           <sc-if value="{{ bandDone }}" hint-placeholder-val="{{ false }}">
-            <div style="background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 14px 16px">
+            <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
               <div style="font-size: 15px; font-weight: 700">제출했습니다. 가격대 분포</div>
-              <div style="font-size: 12px; color: #55657A">{{ tipItemLabel }} · 응답 11곳 · 예시 분포 · 진한 막대가 내 응답</div>
+              <div style="font-size: 12px; color: #667085">{{ tipItemLabel }} · 응답 11곳 · 예시 분포 · 진한 막대가 내 응답</div>
               <sc-for list="{{ bandRows }}" as="br" hint-placeholder-count="5">
                 <div style="display: flex; align-items: center; gap: 10px; margin-top: 10px">
                   <div style="width: 92px; font-size: 13px; font-weight: 600">{{ br.label }}</div>
-                  <div style="flex: 1; height: 12px; border-radius: 6px; background: #EEF2F7"><div style="height: 12px; border-radius: 6px; {{ br.barStyle }}"></div></div>
+                  <div style="flex: 1; height: 12px; border-radius: 6px; background: #F2F4F7"><div style="height: 12px; border-radius: 6px; {{ br.barStyle }}"></div></div>
                   <div style="width: 30px; text-align: right; font-size: 13px; font-weight: 700">{{ br.count }}</div>
                 </div>
               </sc-for>
-              <button onClick="{{ resetBand }}" style="margin-top: 14px; min-height: 44px; font-size: 14px; font-weight: 600; color: #1570EF">다시 제출하기</button>
+              <button onClick="{{ resetBand }}" style="margin-top: 14px; min-height: 44px; font-size: 14px; font-weight: 600; color: #0072F5">다시 제출하기</button>
             </div>
           </sc-if>
         </sc-if>
 
         <sc-if value="{{ isStage3 }}" hint-placeholder-val="{{ false }}">
           <sc-if value="{{ priceOpen }}" hint-placeholder-val="{{ true }}">
-            <div style="display: flex; flex-direction: column; gap: 14px; background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 14px 16px">
+            <div style="display: flex; flex-direction: column; gap: 14px; background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
               <div style="font-size: 15px; font-weight: 700">{{ tipItemLabel }} 실거래가 제출</div>
               <div style="display: flex; flex-direction: column; gap: 4px">
-                <label for="tip-price" style="font-size: 13px; font-weight: 600; color: #33445A">가격 (만원/t)</label>
-                <input id="tip-price" inputMode="decimal" value="{{ price }}" onChange="{{ setPrice }}" placeholder="예: 90.5" style="min-height: 48px; box-sizing: border-box; border: 1px solid #9DB0C8; border-radius: 10px; padding: 0 14px; font-size: 17px; font-weight: 600; background: #FFFFFF">
+                <label for="tip-price" style="font-size: 13px; font-weight: 600; color: #344054">가격 (만원/t)</label>
+                <input id="tip-price" inputMode="decimal" value="{{ price }}" onChange="{{ setPrice }}" placeholder="예: 90.5" style="min-height: 48px; box-sizing: border-box; border: 1px solid #98A2B3; border-radius: 10px; padding: 0 14px; font-size: 17px; font-weight: 600; background: #FFFFFF">
               </div>
               <div style="display: flex; flex-direction: column; gap: 4px">
-                <label for="tip-ton" style="font-size: 13px; font-weight: 600; color: #33445A">물량 (t)</label>
-                <input id="tip-ton" inputMode="numeric" value="{{ ton }}" onChange="{{ setTon }}" placeholder="예: 50" style="min-height: 48px; box-sizing: border-box; border: 1px solid #9DB0C8; border-radius: 10px; padding: 0 14px; font-size: 17px; font-weight: 600; background: #FFFFFF">
+                <label for="tip-ton" style="font-size: 13px; font-weight: 600; color: #344054">물량 (t)</label>
+                <input id="tip-ton" inputMode="numeric" value="{{ ton }}" onChange="{{ setTon }}" placeholder="예: 50" style="min-height: 48px; box-sizing: border-box; border: 1px solid #98A2B3; border-radius: 10px; padding: 0 14px; font-size: 17px; font-weight: 600; background: #FFFFFF">
               </div>
               <div>
-                <div style="font-size: 13px; font-weight: 600; color: #33445A">가격의 종류</div>
+                <div style="font-size: 13px; font-weight: 600; color: #344054">가격의 종류</div>
                 <div style="display: flex; gap: 8px; margin-top: 6px">
                   <sc-for list="{{ dealOpts }}" as="dl" hint-placeholder-count="2">
                     <button onClick="{{ dl.pick }}" aria-pressed="{{ dl.on }}" style="flex: 1; min-height: 44px; border-radius: 10px; font-size: 14px; font-weight: 600; text-align: center; {{ dl.style }}">{{ dl.label }}</button>
                   </sc-for>
                 </div>
               </div>
-              <div style="font-size: 13px; color: #33445A">{{ priceHint }}</div>
+              <div style="font-size: 13px; color: #344054; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ priceHint }}</div>
               <button onClick="{{ submitPrice }}" style="min-height: 48px; border-radius: 24px; font-size: 15px; font-weight: 700; text-align: center; {{ submitStyle }}">제출하고 내 위치 보기</button>
             </div>
           </sc-if>
           <sc-if value="{{ priceDone }}" hint-placeholder-val="{{ false }}">
-            <div style="background: #FFFFFF; border: 1px solid #1570EF; border-radius: 14px; padding: 16px">
-              <div style="font-size: 12px; font-weight: 700; color: #1570EF">기여자 슬라이스 · 제출한 품목만 보입니다</div>
+            <div style="background: #FFFFFF; border: 1px solid #0072F5; border-radius: 16px; padding: 16px">
+              <div style="font-size: 12px; font-weight: 700; color: #0072F5">기여자 슬라이스 · 제출한 품목만 보입니다</div>
               <div style="margin-top: 6px; font-size: 15px; font-weight: 700">{{ tipItemLabel }} 이번 주 평가가</div>
               <div style="display: flex; align-items: baseline; gap: 8px">
-                <div style="font-size: 32px; font-weight: 700; line-height: 1.2">90.2</div>
-                <div style="font-size: 14px; color: #55657A">만원/t · 표본 5개사 · 예시</div>
+                <div style="font-size: 32px; font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">90.2</div>
+                <div style="font-size: 14px; color: #667085">만원/t · 표본 5개사 · 예시</div>
               </div>
               <div style="margin-top: 16px; position: relative; height: 34px">
-                <div style="position: absolute; left: 0; right: 0; top: 14px; height: 8px; border-radius: 4px; background: #D6E6FB"></div>
-                <div style="position: absolute; left: 49%; top: 8px; width: 2px; height: 20px; background: #0F1B2D"></div>
-                <div style="position: absolute; top: 8px; width: 20px; height: 20px; margin-left: -10px; box-sizing: border-box; border-radius: 10px; background: #1570EF; border: 3px solid #FFFFFF; box-shadow: 0 0 0 1px #1570EF; {{ myLeft }}"></div>
+                <div style="position: absolute; left: 0; right: 0; top: 14px; height: 8px; border-radius: 4px; background: #DCEBFF"></div>
+                <div style="position: absolute; left: 49%; top: 8px; width: 2px; height: 20px; background: #0B0D12"></div>
+                <div style="position: absolute; top: 8px; width: 20px; height: 20px; margin-left: -10px; box-sizing: border-box; border-radius: 10px; background: #0072F5; border: 3px solid #FFFFFF; box-shadow: 0 0 0 1px #0072F5; {{ myLeft }}"></div>
               </div>
-              <div style="display: flex; justify-content: space-between; font-size: 12px; color: #55657A"><div>최저 88.0</div><div>평가가 90.2</div><div>최고 92.5</div></div>
+              <div style="display: flex; justify-content: space-between; font-size: 12px; color: #667085"><div>최저 88.0</div><div>평가가 90.2</div><div>최고 92.5</div></div>
               <div style="margin-top: 12px; font-size: 15px; font-weight: 700">{{ myPosText }}</div>
-              <div style="margin-top: 4px; font-size: 13px; color: #33445A">다른 제출자의 개별 가격과 이름은 보이지 않습니다. 표본이 3개사 미만인 주에는 평가가를 발행하지 않습니다.</div>
-              <button onClick="{{ resetPrice }}" style="margin-top: 12px; min-height: 44px; font-size: 14px; font-weight: 600; color: #1570EF">다시 제출하기</button>
+              <div style="margin-top: 4px; font-size: 13px; color: #344054">다른 제출자의 개별 가격과 이름은 보이지 않습니다. 표본이 3개사 미만인 주에는 평가가를 발행하지 않습니다.</div>
+              <button onClick="{{ resetPrice }}" style="margin-top: 12px; min-height: 44px; font-size: 14px; font-weight: 600; color: #0072F5">다시 제출하기</button>
             </div>
           </sc-if>
         </sc-if>
@@ -757,12 +774,12 @@ a{color:#1570EF}a:hover{color:#0B4FB3}
 
     <sc-if value="{{ isMe }}" hint-placeholder-val="{{ false }}">
       <div style="display: flex; flex-direction: column; gap: 14px; padding: 18px 20px 28px">
-        <h1 style="margin: 0; font-size: 22px; font-weight: 700">내 정보</h1>
+        <h1 style="margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em">내 정보</h1>
 
-        <div style="background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 6px 16px">
-          <div style="padding: 10px 0 4px; font-size: 13px; font-weight: 700; color: #55657A">알림</div>
+        <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 6px 16px">
+          <div style="padding: 10px 0 4px; font-size: 13px; font-weight: 700; color: #667085">알림</div>
           <sc-for list="{{ notis }}" as="nt" hint-placeholder-count="3">
-            <div style="display: flex; min-height: 56px; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid #EEF2F7">
+            <div style="display: flex; min-height: 56px; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid #F2F4F7">
               <div style="font-size: 15px; font-weight: 600">{{ nt.label }}</div>
               <button onClick="{{ nt.toggle }}" aria-pressed="{{ nt.on }}" style="min-width: 64px; min-height: 44px; border-radius: 22px; font-size: 13px; font-weight: 700; text-align: center; {{ nt.style }}">{{ nt.text }}</button>
             </div>
@@ -770,45 +787,45 @@ a{color:#1570EF}a:hover{color:#0B4FB3}
         </div>
 
         <div>
-          <div style="font-size: 13px; font-weight: 700; color: #55657A">요금제</div>
-          <div style="font-size: 13px; color: #33445A">1단계는 전부 무료 베타입니다. 금액은 검증 전 제안값입니다.</div>
+          <div style="font-size: 13px; font-weight: 700; color: #667085">요금제</div>
+          <div style="font-size: 13px; color: #344054">1단계는 전부 무료 베타입니다. 금액은 검증 전 제안값입니다.</div>
         </div>
         <sc-for list="{{ plans }}" as="p" hint-placeholder-count="4">
-          <button onClick="{{ p.pick }}" aria-pressed="{{ p.on }}" style="display: block; width: 100%; box-sizing: border-box; border-radius: 14px; padding: 14px 16px; {{ p.style }}">
+          <button onClick="{{ p.pick }}" aria-pressed="{{ p.on }}" style="display: block; width: 100%; box-sizing: border-box; border-radius: 16px; padding: 14px 16px; {{ p.style }}">
             <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px">
               <div style="font-size: 16px; font-weight: 700">{{ p.name }}</div>
-              <div style="font-size: 14px; font-weight: 700; color: #1570EF">{{ p.price }}</div>
+              <div style="font-size: 14px; font-weight: 700; color: #0072F5; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ p.price }}</div>
             </div>
-            <div style="font-size: 13px; color: #55657A">{{ p.who }}</div>
+            <div style="font-size: 13px; color: #667085">{{ p.who }}</div>
             <div style="margin-top: 6px; font-size: 14px">{{ p.feats }}</div>
           </button>
         </sc-for>
-        <div style="font-size: 13px; color: #33445A">{{ planMsg }}</div>
+        <div style="font-size: 13px; color: #344054">{{ planMsg }}</div>
 
-        <button onClick="{{ openSources }}" style="display: flex; width: 100%; min-height: 56px; box-sizing: border-box; align-items: center; justify-content: space-between; background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 0 16px; font-size: 15px; font-weight: 600"><span>데이터 출처와 등급</span><span style="color: #1570EF">→</span></button>
+        <button onClick="{{ openSources }}" style="display: flex; width: 100%; min-height: 56px; box-sizing: border-box; align-items: center; justify-content: space-between; background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 0 16px; font-size: 15px; font-weight: 600"><span>데이터 출처와 등급</span><span style="color: #0072F5">→</span></button>
       </div>
     </sc-if>
 
     <sc-if value="{{ isSources }}" hint-placeholder-val="{{ false }}">
       <div style="display: flex; flex-direction: column; gap: 12px; padding: 8px 20px 28px">
-        <button onClick="{{ back }}" style="min-height: 44px; font-size: 14px; font-weight: 600; color: #1570EF">← 내 정보</button>
+        <button onClick="{{ back }}" style="min-height: 44px; font-size: 14px; font-weight: 600; color: #0072F5">← 내 정보</button>
         <div>
-          <h1 style="margin: 0; font-size: 22px; font-weight: 700">데이터 출처와 등급</h1>
-          <div style="font-size: 13px; color: #55657A">A는 자유 이용이 확인된 데이터, B는 출처 표시 조건으로 인용하는 데이터입니다. 약관을 아직 확인하지 못한 소스는 따로 표시했습니다.</div>
+          <h1 style="margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em">데이터 출처와 등급</h1>
+          <div style="font-size: 13px; color: #667085">A는 자유 이용이 확인된 데이터, B는 출처 표시 조건으로 인용하는 데이터입니다. 약관을 아직 확인하지 못한 소스는 따로 표시했습니다.</div>
         </div>
         <sc-for list="{{ sources }}" as="so" hint-placeholder-count="8">
-          <div style="background: #FFFFFF; border: 1px solid #E3EAF3; border-radius: 14px; padding: 12px 16px">
-            <div style="display: flex; justify-content: space-between; gap: 12px"><div style="font-size: 15px; font-weight: 700">{{ so.label }}</div><div style="font-size: 13px; font-weight: 700; color: #1570EF">{{ so.grade }}</div></div>
-            <div style="font-size: 13px; color: #33445A">{{ so.src }} · {{ so.cycle }} · {{ so.count }}개 항목</div>
+          <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 12px 16px">
+            <div style="display: flex; justify-content: space-between; gap: 12px"><div style="font-size: 15px; font-weight: 700">{{ so.label }}</div><div style="font-size: 13px; font-weight: 700; color: #0072F5">{{ so.grade }}</div></div>
+            <div style="font-size: 13px; color: #344054">{{ so.src }} · {{ so.cycle }} · {{ so.count }}개 항목</div>
           </div>
         </sc-for>
-        <div style="font-size: 13px; color: #33445A">유료 매체의 가격, LME 일일 가격, 거래소 선물 가격은 라이선스 없이 표시하지 않습니다.</div>
+        <div style="font-size: 13px; color: #344054">유료 매체의 가격, LME 일일 가격, 거래소 선물 가격은 라이선스 없이 표시하지 않습니다.</div>
       </div>
     </sc-if>
 
   </div>
 
-  <div style="display: flex; background: #FFFFFF; border-top: 1px solid #E3EAF3; padding: 6px 8px 10px">
+  <div style="display: flex; background: #FFFFFF; border-top: 1px solid #EAECF0; padding: 6px 8px 10px">
     <button onClick="{{ goHome }}" aria-label="오늘" style="flex: 1; min-height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 11px; font-weight: 600; {{ tabHome }}">
       <svg viewBox="0 0 24 24" width="22" height="22" style="fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"><path d="M4 11l8-7 8 7v8a1 1 0 0 1-1 1h-4v-6h-6v6H5a1 1 0 0 1-1-1z"></path></svg>
       <span>오늘</span>
@@ -884,9 +901,9 @@ class Component extends DCLogic {
     }, this.state || {});
     var set = function (o) { self.setState(o); };
 
-    var UP = 'color:#C4320A', DOWN = 'color:#175CD3', FLAT = 'color:#55657A';
-    var onChip = 'background:#1570EF;color:#FFFFFF;border:1px solid #1570EF';
-    var offChip = 'background:#FFFFFF;color:#0F1B2D;border:1px solid #C9D6E6';
+    var UP = 'color:#F04452', DOWN = 'color:#1B64DA', FLAT = 'color:#667085';
+    var onChip = 'background:rgba(0,114,245,0.08);color:#0072F5;border:1px solid rgba(0,114,245,0.45)';
+    var offChip = 'background:#FFFFFF;color:#344054;border:1px solid #EAECF0';
     var chip = function (on) { return on ? onChip : offChip; };
 
     var G = {
@@ -961,11 +978,11 @@ class Component extends DCLogic {
       d = Object.assign({}, it, {
         src: gi.src, cycle: gi.cycle, date: gi.date, grade: gi.grade,
         realText: it.real ? '실제 발표값' : '예시 값 (목업용)',
-        realStyle: it.real ? 'color:#0B6B3A' : 'color:#7A4B00',
+        realStyle: it.real ? 'color:#12B76A' : 'color:#B54708',
         points: pts.join(' '), area: '6,116 ' + pts.join(' ') + ' 320,116',
         endX: 320, endY: pts[11].split(',')[1],
         watched: watched, watchLabel: watched ? '관심 품목에서 빼기' : '관심 품목에 추가',
-        watchStyle: watched ? 'background:#FFFFFF;color:#1570EF;border:1px solid #1570EF' : 'background:#1570EF;color:#FFFFFF;border:1px solid #1570EF',
+        watchStyle: watched ? 'background:#FFFFFF;color:#0072F5;border:1px solid #0072F5' : 'background:rgba(0,114,245,0.08);color:#0072F5;border:1px solid rgba(0,114,245,0.45)',
         toggleWatch: function () { set({ watch: watched ? s.watch.filter(function (x) { return x !== it.id; }) : s.watch.concat([it.id]) }); }
       });
     }
@@ -1007,8 +1024,8 @@ class Component extends DCLogic {
     var openRep = function (no) { return function () { if (no) loadIssue(no); set({ tab: 'reports', sub: 'report', repNo: no || null, repOpen: null, repSec: 'all', repRegion: null }); }; };
     var SAMPLE_LIST = [['예시 · 제12호 · 10월 1주', '중국 판재가 내리고 코크스가 올랐다. 수입재 원가는 어디로 가나', '발행 전 화면 예시입니다'], ['예시 · 제11호 · 9월 4주', '환율 반등이 수입재 도착 원가에 주는 영향', '예시'], ['예시 · 제10호 · 9월 3주', '8월 통관 단가로 본 중국산 열연 흐름', '예시']];
     var repList = repOk
-      ? rd.j.list.map(function (x, i) { return { tag: (i === 0 ? '최신 · ' : '') + '제' + x.no + '호 · ' + x.weekLabel, title: x.title, sub: x.date, border: i === 0 ? '#1570EF' : '#E3EAF3', tagColor: i === 0 ? '#1570EF' : '#55657A', open: openRep(x.no) }; })
-      : SAMPLE_LIST.map(function (x, i) { return { tag: x[0], title: x[1], sub: x[2], border: i === 0 ? '#1570EF' : '#E3EAF3', tagColor: i === 0 ? '#1570EF' : '#55657A', open: openRep(null) }; });
+      ? rd.j.list.map(function (x, i) { return { tag: (i === 0 ? '최신 · ' : '') + '제' + x.no + '호 · ' + x.weekLabel, title: x.title, sub: x.date, border: i === 0 ? '#0072F5' : '#EAECF0', tagColor: i === 0 ? '#0072F5' : '#667085', open: openRep(x.no) }; })
+      : SAMPLE_LIST.map(function (x, i) { return { tag: x[0], title: x[1], sub: x[2], border: i === 0 ? '#0072F5' : '#EAECF0', tagColor: i === 0 ? '#0072F5' : '#667085', open: openRep(null) }; });
     var repListNote = repOk ? '지난 호는 눌러서 볼 수 있습니다.' : (rd ? '아직 발행된 리포트가 없어 예시를 보여 드립니다.' : '리포트를 불러오는 중입니다.');
     var homeRepTag = repLatest ? '주간 리포트 제' + repLatest.no + '호 · ' + repLatest.weekLabel.replace(/^\d+년 /, '') : '주간 리포트 예시';
     var homeRepLine = repLatest ? (repLatest.oneLiner || repLatest.title) : '중국 내수가는 판재 중심으로 내렸고 코크스만 올랐다. 수입재 하락 압력은 이어지고, 환율이 그 폭을 일부 상쇄한다.';
@@ -1029,8 +1046,8 @@ class Component extends DCLogic {
       var maxAbs = Math.max.apply(null, [3].concat(A.chart.filter(function (c) { return c.pct != null; }).map(function (c) { return Math.abs(c.pct); })));
       var chart = A.chart.map(function (c) {
         var w = c.pct == null ? 0 : Math.min(50, Math.abs(c.pct) / maxAbs * 50);
-        return { name: c.regionName, pct: c.pct == null ? '자료 없음' : pctTxt(c.pct), style: c.pct == null ? 'color:#8A9AB0;font-weight:500;font-size:11px' : pctSty(c.pct),
-          bar: c.pct == null ? 'display:none' : (c.pct >= 0 ? 'left:50%;' : 'right:50%;') + 'width:' + w.toFixed(1) + '%;background:' + (c.pct >= 0 ? '#F04438' : '#2E90FA') };
+        return { name: c.regionName, pct: c.pct == null ? '자료 없음' : pctTxt(c.pct), style: c.pct == null ? 'color:#98A2B3;font-weight:500;font-size:11px' : pctSty(c.pct),
+          bar: c.pct == null ? 'display:none' : (c.pct >= 0 ? 'left:50%;' : 'right:50%;') + 'width:' + w.toFixed(1) + '%;background:' + (c.pct >= 0 ? '#F04452' : '#1B64DA') };
       });
       var regs = (repCur.regions || []).filter(function (r) { return r.text; });
       var rgSel = regs.filter(function (r) { return r.region === s.repRegion; })[0] || regs[0] || null;
@@ -1047,7 +1064,7 @@ class Component extends DCLogic {
       var WD = ['일', '월', '화', '수', '목', '금', '토'];
       var past = repCur.pastCheck ? repCur.pastCheck.checks.map(function (c) {
         var res = { hit: '맞음', miss: '틀림', pending: '아직 새 값 발표 전', nodata: '판단할 데이터 없음' }[c.result] || '';
-        return { label: c.label, result: res + (c.pct != null ? ' · ' + (c.itemLabel || '') + ' ' + pctTxt(c.pct) + ' (' + shortPer(c.basePeriod) + ' → ' + shortPer(c.nowPeriod) + ')' : ''), style: c.result === 'hit' ? 'color:#0B6B3A' : c.result === 'miss' ? 'color:#C4320A' : 'color:#55657A' };
+        return { label: c.label, result: res + (c.pct != null ? ' · ' + (c.itemLabel || '') + ' ' + pctTxt(c.pct) + ' (' + shortPer(c.basePeriod) + ' → ' + shortPer(c.nowPeriod) + ')' : ''), style: c.result === 'hit' ? 'color:#12B76A' : c.result === 'miss' ? 'color:#F04452' : 'color:#667085' };
       }) : [];
       rp = {
         tag: '주간 리포트 제' + repCur.no + '호 · ' + repCur.weekLabel, title: repCur.title,
@@ -1069,7 +1086,7 @@ class Component extends DCLogic {
             sources: (n.sources || []).map(function (x) { return { title: x.title, href: /^https?:\/\//i.test(x.url) ? x.url : '#', meta: (x.source || '') + (x.date ? ' · ' + x.date : '') }; }),
             open: s.repOpen === n.id, toggle: function () { set({ repOpen: s.repOpen === n.id ? null : n.id }); } };
         }),
-        calendar: (repCur.calendar || []).map(function (c) { var d = new Date(c.date + 'T00:00:00Z'); return { md: (d.getUTCMonth() + 1) + '/' + d.getUTCDate(), wd: WD[d.getUTCDay()] + (c.approx ? ' 경' : ''), title: c.title, why: c.why, tag: c.kind === 'release' ? '통계' : '이슈', tagStyle: c.kind === 'release' ? 'background:#EEF2F7;color:#33445A' : 'background:#FFF1E7;color:#B54708' }; }),
+        calendar: (repCur.calendar || []).map(function (c) { var d = new Date(c.date + 'T00:00:00Z'); return { md: (d.getUTCMonth() + 1) + '/' + d.getUTCDate(), wd: WD[d.getUTCDay()] + (c.approx ? ' 경' : ''), title: c.title, why: c.why, tag: c.kind === 'release' ? '통계' : '이슈', tagStyle: c.kind === 'release' ? 'background:#F2F4F7;color:#344054' : 'background:#FEF3E2;color:#DC6803' }; }),
         pastTitle: repCur.pastCheck ? '지난 전망 점검 (제' + repCur.pastCheck.no + '호)' : '지난 전망 점검', past: past, noPast: !past.length,
         checks: repCur.checks || [], credits: repCur.credits || []
       };
@@ -1080,7 +1097,7 @@ class Component extends DCLogic {
     var TIP = [['hr', '열연'], ['cr', '냉연'], ['gi', '도금강판'], ['rb', '철근'], ['hb', 'H형강']];
     var tipLabel = (TIP.filter(function (t) { return t[0] === s.tipItem; })[0] || TIP[0])[1];
     var tipItems = TIP.map(function (t) { return { label: t[1], on: s.tipItem === t[0], style: chip(s.tipItem === t[0]), pick: function () { set({ tipItem: t[0], vote: null, band: null, priceDone: false }); } }; });
-    var segOn = 'background:#FFFFFF;color:#1570EF;box-shadow:0 1px 2px rgba(15,27,45,0.15)', segOff = 'background:transparent;color:#33445A';
+    var segOn = 'background:#EAECF0;color:#0072F5;box-shadow:0 1px 2px rgba(16,24,40,0.10)', segOff = 'background:transparent;color:#344054';
     var stages = [[1, '1. 체감 방향'], [2, '2. 가격대'], [3, '3. 실거래가']].map(function (x) {
       return { label: x[1], on: s.stage === x[0], style: s.stage === x[0] ? segOn : segOff, pick: function () { set({ stage: x[0] }); } };
     });
@@ -1088,11 +1105,11 @@ class Component extends DCLogic {
 
     var VO = [['up', '올랐다', 22], ['flat', '그대로다', 51], ['down', '내렸다', 27]];
     var voteOpts = VO.map(function (v) { return { label: v[1], pick: function () { set({ vote: v[0] }); } }; });
-    var voteRows = VO.map(function (v) { return { label: v[1] + (s.vote === v[0] ? ' · 내 응답' : ''), pctText: v[2] + '%', barStyle: 'width:' + v[2] + '%;background:' + (s.vote === v[0] ? '#1570EF' : '#9CC2F7') }; });
+    var voteRows = VO.map(function (v) { return { label: v[1] + (s.vote === v[0] ? ' · 내 응답' : ''), pctText: v[2] + '%', barStyle: 'width:' + v[2] + '%;background:' + (s.vote === v[0] ? '#0072F5' : '#9CC3FF') }; });
 
     var BD = [['b1', '86 미만', 1], ['b2', '86 ~ 88', 2], ['b3', '88 ~ 90', 3], ['b4', '90 ~ 92', 4], ['b5', '92 이상', 1]];
     var bands = BD.map(function (b) { return { label: b[1], pick: function () { set({ band: b[0] }); } }; });
-    var bandRows = BD.map(function (b) { return { label: b[1], count: b[2] + '곳', barStyle: 'width:' + (b[2] / 4 * 100) + '%;background:' + (s.band === b[0] ? '#1570EF' : '#9CC2F7') }; });
+    var bandRows = BD.map(function (b) { return { label: b[1], count: b[2] + '곳', barStyle: 'width:' + (b[2] / 4 * 100) + '%;background:' + (s.band === b[0] ? '#0072F5' : '#9CC3FF') }; });
 
     var priceNum = parseFloat(s.price), tonNum = parseFloat(s.ton);
     var priceOk = priceNum >= 60 && priceNum <= 150 && tonNum > 0;
@@ -1105,7 +1122,7 @@ class Component extends DCLogic {
     var NT = [['report', '리포트 발행'], ['price', '관심 품목 가격 급변'], ['policy', '정책·무역 일정']];
     var notis = NT.map(function (n) {
       var on = !!s.noti[n[0]];
-      return { label: n[1], on: on, text: on ? '켜짐' : '꺼짐', style: on ? onChip : 'background:#EEF2F7;color:#33445A;border:1px solid #C9D6E6', toggle: function () { var o = Object.assign({}, s.noti); o[n[0]] = !on; set({ noti: o }); } };
+      return { label: n[1], on: on, text: on ? '켜짐' : '꺼짐', style: on ? onChip : 'background:#F2F4F7;color:#344054;border:1px solid #D0D5DD', toggle: function () { var o = Object.assign({}, s.noti); o[n[0]] = !on; set({ noti: o }); } };
     });
     var PL = [
       ['beta', '무료 베타', '0원', '지금 모든 사용자', '시세 44개 항목, 주간 리포트, 알림, 제보 참여'],
@@ -1115,7 +1132,7 @@ class Component extends DCLogic {
     ];
     var plans = PL.map(function (p) {
       var on = s.plan === p[0];
-      return { name: p[1], price: p[2], who: p[3], feats: p[4], on: on, style: on ? 'background:#E8F2FF;border:2px solid #1570EF' : 'background:#FFFFFF;border:1px solid #E3EAF3', pick: function () { set({ plan: p[0] }); } };
+      return { name: p[1], price: p[2], who: p[3], feats: p[4], on: on, style: on ? 'background:#EEF6FF;border:2px solid #0072F5' : 'background:#FFFFFF;border:1px solid #EAECF0', pick: function () { set({ plan: p[0] }); } };
     });
     var planMsg = s.plan === 'beta' ? '현재 등급: 무료 베타.' : '유료 등급은 제보 데이터로 평가가를 발행한 뒤에 엽니다. 지금은 관심 등록만 됩니다.';
 
@@ -1124,12 +1141,12 @@ class Component extends DCLogic {
     });
 
     var noop = function () {};
-    var CELL_EMPTY = 'background:#F4F7FB';
+    var CELL_EMPTY = 'background:#FFFFFF';
     var cell = function (k) {
-      if (k.status) return { main: k.status, sub: k.sub || '', label: k.status, mainStyle: 'color:#55657A;font-weight:600', boxStyle: CELL_EMPTY, open: noop };
+      if (k.status) return { main: k.status, sub: k.sub || '', label: k.status, mainStyle: 'color:#667085;font-weight:600', boxStyle: CELL_EMPTY, open: noop };
       var arrow = k.pct > 0 ? '▲' : (k.pct < 0 ? '▼' : '');
       var txt = k.pct === 0 ? '0.0%' : arrow + fmt(Math.abs(k.pct), 1) + '%';
-      return { main: txt, sub: k.sub, label: k.sub + ' ' + txt, mainStyle: k.pct > 0 ? UP : (k.pct < 0 ? DOWN : FLAT), boxStyle: k.id ? 'background:#FFFFFF;border:1px solid #E3EAF3' : 'background:#FFFFFF', open: k.id ? openItem(k.id) : noop };
+      return { main: txt, sub: k.sub, label: k.sub + ' ' + txt, mainStyle: k.pct > 0 ? UP : (k.pct < 0 ? DOWN : FLAT), boxStyle: k.id ? 'background:#FFFFFF;border:1px solid #EAECF0' : 'background:#FFFFFF', open: k.id ? openItem(k.id) : noop };
     };
     var pctOf = function (id) { return byId[id].pct; };
     var NA = { status: '없음' }, TBD = { status: '확인 전' }, LINK = { status: '연동 전' };
@@ -1199,7 +1216,7 @@ class Component extends DCLogic {
       ['철강 제품', [['hr', '열연', '7208', 950], ['cr', '냉연', '7209', 1150], ['coated', '도금강판', '7210', 1250], ['plate', '후판', '7208.51', 1100], ['wire_rod', '선재', '7213', 900], ['rebar', '철근', '7214.20', 820], ['pipe', '강관', '7304·7305·7306 합산', 1600]]],
       ['비철', [['al', '알루미늄 괴', '7601', 4600], ['cu', '정련동', '7403', 14900], ['ni', '니켈 (순니켈)', '7502.10', 17200], ['zn', '아연 괴', '7901', 4100]]]
     ];
-    var REAL = 'color:#0B6B3A', EX = 'color:#7A4B00', MUTED = 'color:#55657A';
+    var REAL = 'color:#12B76A', EX = 'color:#B54708', MUTED = 'color:#667085';
     var ii = 0;
     var usSections = US_ITEMS.map(function (sec) {
       return { label: sec[0], rows: sec[1].map(function (it) {
@@ -1230,7 +1247,7 @@ class Component extends DCLogic {
       : (usStatus === 'nomonth' ? '조회 가능한 월을 찾지 못했습니다. 값을 만들어 넣지 않고 ‘자료 없음’으로 표시합니다.'
       : (usStatus === 'error' ? '데이터 서버에 연결하지 못해 예시 값을 보여 줍니다. 실제 값은 Census 프록시 서버를 통해서만 표시됩니다.'
       : '미국 인구조사국 자료를 불러오는 중입니다.'));
-    var usBannerStyle = usStatus === 'ok' ? 'background:#E3F4EA;color:#0B4F2B' : 'background:#FFF3D6;color:#5C3A00';
+    var usBannerStyle = usStatus === 'ok' ? 'background:#E7F8EF;color:#12B76A' : 'background:#FEF3E2;color:#B54708';
     var usRetry = function () { var st2 = usState; delete self._usReq[st2]; var o = Object.assign({}, self.state && self.state.usData); delete o[st2]; self.setState({ usData: o }); };
 
 
@@ -1295,7 +1312,7 @@ class Component extends DCLogic {
     var jpBanner = jpStatus === 'ok' ? '실제 값: ' + jpMonthLabel + ' 기준, 일본 재무성 무역통계.' + (jpSrc['import'] && jpSrc['import'].preliminary ? ' 수입 품목은 9자리 속보치라 확정 때 바뀔 수 있습니다.' : '')
       : (jpStatus === 'error' ? '데이터 서버에 연결하지 못해 예시 값을 보여 줍니다. 실제 값은 Felix 서버를 통해서만 표시됩니다.'
       : '일본 재무성 무역통계를 불러오는 중입니다. 처음 조회는 30초쯤 걸릴 수 있습니다.');
-    var jpBannerStyle = jpStatus === 'ok' ? 'background:#E3F4EA;color:#0B4F2B' : 'background:#FFF3D6;color:#5C3A00';
+    var jpBannerStyle = jpStatus === 'ok' ? 'background:#E7F8EF;color:#12B76A' : 'background:#FEF3E2;color:#B54708';
     var jpRetry = function () { self._jpReq = false; self.setState({ jpData: null }); };
 
     // 한국: 관세청 품목별 국가별 수출입실적 → 수입 통관 단가 (달러/t). 서버 /api/kr-trade 경유.
@@ -1350,7 +1367,7 @@ class Component extends DCLogic {
       : (krStatus === 'nomonth' ? '조회 가능한 월을 찾지 못했습니다. 값을 만들어 넣지 않고 ‘자료 없음’으로 표시합니다.'
       : (krStatus === 'error' ? '데이터 서버에 연결하지 못해 예시 값을 보여 줍니다. 실제 값은 Felix 서버를 통해서만 표시됩니다.'
       : '관세청 수출입실적을 불러오는 중입니다.'));
-    var krBannerStyle = krStatus === 'ok' ? 'background:#E3F4EA;color:#0B4F2B' : 'background:#FFF3D6;color:#5C3A00';
+    var krBannerStyle = krStatus === 'ok' ? 'background:#E7F8EF;color:#12B76A' : 'background:#FEF3E2;color:#B54708';
     var krRetry = function () { self._krReq = false; self.setState({ krData: null }); };
 
     // 관세청 데이터로 일반 그룹 항목 덮어쓰기: 원료(raw3·raw4), 수급(sd1)
@@ -1676,10 +1693,18 @@ class Component extends DCLogic {
       { name: '멕시코', sub: mxd && mxd.status === 'ok' && mxd.j.month ? dmon(mxd.j.month) + '·대미수출' : '대미 수출' }, { name: '일본', sub: jpSrc0 ? dmon(jpSrc0.month) + '·전월비' : '무역통계' }, { name: '유럽', sub: eud && eud.status === 'ok' && eud.j.month ? dmon(eud.j.month) + '·역외수입' : 'Eurostat' }, { name: '세계', sub: wbMonth ? dmon(wbMonth) + ' 평균' : '8월 평균' }
     ];
 
-    var tabOn = 'color:#1570EF', tabOff = 'color:#55657A';
+    // 국가 비교: 품목 하나를 골라 나라별 세로 목록 + 한눈에 보기 점 지도(가로 스크롤 없음)
+    var cmpSelIdx = Math.max(0, cmpRows.map(function (r) { return r.name; }).indexOf(s.cmpItem));
+    var cmpSel = cmpRows[cmpSelIdx] || { name: '', cells: [] };
+    var cmpItems = cmpRows.map(function (r, i) { return { name: r.name, on: i === cmpSelIdx, style: chip(i === cmpSelIdx), pick: function () { set({ cmpItem: r.name }); } }; });
+    var cmpList = cmpCols.map(function (c, i) { var cc = cmpSel.cells[i] || {}; return { name: c.name, colSub: c.sub, main: cc.main, sub: cc.sub, mainStyle: (cc.mainStyle || '') + (/^[▲▼0-9+-]/.test(String(cc.main || '')) ? ";font-family:'JetBrains Mono','Pretendard Variable',monospace" : ';color:#98A2B3;font-weight:600;font-size:13px'), open: cc.open, label: cc.label }; });
+    var dotOf = function (cc) { var t = String(cc && cc.main || ''); return t.charAt(0) === '▲' ? 'background:#F04452' : t.charAt(0) === '▼' ? 'background:#1B64DA' : /^[0-9]|^0\.0/.test(t) || t === '보합' ? 'background:#667085' : 'border:1px solid #C4CAD4'; };
+    var cmpMatrix = cmpRows.map(function (r, i) { return { name: r.name, dots: r.cells.map(dotOf), rowStyle: i === cmpSelIdx ? 'background:#F5F7FA' : '', pick: function () { set({ cmpItem: r.name }); } }; });
+    var tabOn = 'color:#0072F5', tabOff = 'color:#667085';
     var go = function (t) { return function () { set({ tab: t, sub: null }); }; };
     var top = !s.sub;
     return {
+      todayLabel: (function () { var d = new Date(); return d.getFullYear() + '년 ' + (d.getMonth() + 1) + '월 ' + d.getDate() + '일 ' + ['일', '월', '화', '수', '목', '금', '토'][d.getDay()] + '요일'; })(),
       isHome: top && s.tab === 'home', isBoard: top && s.tab === 'board', isReports: top && s.tab === 'reports',
       isTips: top && s.tab === 'tips', isMe: top && s.tab === 'me',
       isDetail: s.sub === 'detail', isReport: s.sub === 'report', isSources: s.sub === 'sources',
@@ -1691,9 +1716,9 @@ class Component extends DCLogic {
       tabHome: s.tab === 'home' ? tabOn : tabOff, tabBoard: s.tab === 'board' ? tabOn : tabOff, tabReports: s.tab === 'reports' ? tabOn : tabOff,
       tabTips: s.tab === 'tips' ? tabOn : tabOff, tabMe: s.tab === 'me' ? tabOn : tabOff,
       movers: movers, watchItems: watchItems, noWatch: watchItems.length === 0,
-      groups: groups, rows: rows, isDataGroup: !isDom && !isCmp && !isUs && !isJp && !isKr, isKrGroup: isKr, krTitle: isNf ? '비철 수입 통관 단가' : '한국 수입 통관 단가', krIsSteel: !isNf, krIsNf: isNf, krRows: krRows, krBanner: krBanner, krBannerStyle: krBannerStyle, krShowRetry: krStatus === 'error', krRetry: krRetry, krMonthLabel: krMonthLabel, isJpGroup: isJp, jpSections: jpSections, jpBanner: jpBanner, jpBannerStyle: jpBannerStyle, jpShowRetry: jpStatus === 'error', jpRetry: jpRetry, jpMonthLabel: jpMonthLabel, isDomGroup: isDom, isCmpGroup: isCmp, cmpRows: cmpRows, cmpCols: cmpCols, cmpTabs: cmpTabs, cmpTitle: ct.title, isUsGroup: isUs, usStates: usStates, usSections: usSections, usStateName: STATES.at(si)[1], usBanner: usBanner, usBannerStyle: usBannerStyle, usShowRetry: usStatus === 'error', usRetry: usRetry, usMonthLabel: usStatus === 'ok' ? monthLabel(ud.month) : (usStatus === 'error' ? '예시' : '확인 중'),
+      groups: groups, rows: rows, isDataGroup: !isDom && !isCmp && !isUs && !isJp && !isKr, isKrGroup: isKr, krTitle: isNf ? '비철 수입 통관 단가' : '한국 수입 통관 단가', krIsSteel: !isNf, krIsNf: isNf, krRows: krRows, krBanner: krBanner, krBannerStyle: krBannerStyle, krShowRetry: krStatus === 'error', krRetry: krRetry, krMonthLabel: krMonthLabel, isJpGroup: isJp, jpSections: jpSections, jpBanner: jpBanner, jpBannerStyle: jpBannerStyle, jpShowRetry: jpStatus === 'error', jpRetry: jpRetry, jpMonthLabel: jpMonthLabel, isDomGroup: isDom, isCmpGroup: isCmp, cmpRows: cmpRows, cmpCols: cmpCols, cmpItems: cmpItems, cmpList: cmpList, cmpMatrix: cmpMatrix, cmpTabs: cmpTabs, cmpTitle: ct.title, isUsGroup: isUs, usStates: usStates, usSections: usSections, usStateName: STATES.at(si)[1], usBanner: usBanner, usBannerStyle: usBannerStyle, usShowRetry: usStatus === 'error', usRetry: usRetry, usMonthLabel: usStatus === 'ok' ? monthLabel(ud.month) : (usStatus === 'error' ? '예시' : '확인 중'),
       groupSrc: g.src, groupCycle: g.cycle, groupDate: g.date, groupNote: g.note,
-      groupTag: s.group === 'sd' ? '일부 실제 값' : (g.real ? '실제 발표값' : '예시 값'), groupTagStyle: g.real ? 'color:#0B6B3A' : 'color:#7A4B00',
+      groupTag: s.group === 'sd' ? '일부 실제 값' : (g.real ? '실제 발표값' : '예시 값'), groupTagStyle: g.real ? 'color:#12B76A' : 'color:#B54708',
       domRows: [{ name: '열연 유통가', status: '제보 대기' }, { name: '냉연 유통가', status: '제보 대기' }, { name: '도금강판 유통가', status: '제보 대기' }, { name: '철근 유통가', status: '제보 대기' }],
       d: d, alertOpts: alertOpts,
       alertMsg: s.alert === 'off' ? '알림이 꺼져 있습니다.' : '±' + s.alert + '% 이상 움직이면 발표 직후 알림을 보냅니다.',
@@ -1704,7 +1729,7 @@ class Component extends DCLogic {
       bandOpen: !s.band, bandDone: !!s.band, bands: bands, bandRows: bandRows, resetBand: function () { set({ band: null }); },
       price: s.price, ton: s.ton, setPrice: function (e) { set({ price: e.target.value }); }, setTon: function (e) { set({ ton: e.target.value }); },
       dealOpts: dealOpts, priceHint: priceHint,
-      submitStyle: priceOk ? 'background:#1570EF;color:#FFFFFF' : 'background:#D5DEEA;color:#33445A',
+      submitStyle: priceOk ? 'background:#0072F5;color:#FFFFFF' : 'background:#EAECF0;color:#344054',
       submitPrice: function () { if (priceOk) set({ priceDone: true }); },
       priceOpen: !s.priceDone, priceDone: !!s.priceDone, resetPrice: function () { set({ priceDone: false }); },
       myLeft: 'left:' + (pos * 100).toFixed(1) + '%', myPosText: myPosText,
