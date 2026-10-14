@@ -58,12 +58,16 @@ a{color:#0072F5}a:hover{color:#0058CC}
         <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
           <div style="font-size: 13px; font-weight: 700; color: #667085">크게 움직인 항목 · 실제 발표값 기준</div>
           <sc-for list="{{ movers }}" as="m" hint-placeholder-count="3">
-            <button onClick="{{ m.open }}" style="display: flex; width: 100%; min-height: 52px; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid #F2F4F7; margin-top: 8px; padding-top: 8px">
-              <div>
-                <div style="font-size: 15px; font-weight: 600">{{ m.name }}</div>
-                <div style="font-size: 12px; color: #667085">{{ m.groupLabel }} · {{ m.valText }} {{ m.unit }}</div>
+            <button onClick="{{ m.open }}" style="display: flex; width: 100%; min-height: 60px; align-items: center; gap: 12px; border-top: 1px solid #F2F4F7; margin-top: 8px; padding-top: 8px">
+              <div style="flex: 1; min-width: 0">
+                <div style="font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ m.name }}</div>
+                <div style="font-size: 12px; color: #667085; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ m.groupLabel }} · <span style="font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ m.valText }}</span> {{ m.unit }}</div>
+                <sc-if value="{{ m.hasWhy }}" hint-placeholder-val="{{ false }}"><div style="font-size: 12px; font-weight: 600; color: #0058CC; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ m.whyLine }}</div></sc-if>
               </div>
-              <div style="font-size: 16px; font-weight: 700; {{ m.chgStyle }}; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ m.pctText }}</div>
+              <sc-if value="{{ m.hasSpark }}" hint-placeholder-val="{{ true }}">
+                <svg viewBox="0 0 64 24" width="64" height="24" style="flex: none" role="img" aria-label="{{ m.sparkLabel }} 추이"><polyline points="{{ m.spark }}" style="fill: none; stroke: {{ m.sparkColor }}; stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round"></polyline></svg>
+              </sc-if>
+              <div style="flex: none; min-width: 64px; text-align: right; white-space: nowrap; font-size: 16px; font-weight: 700; {{ m.chgStyle }}; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ m.pctText }}</div>
             </button>
           </sc-for>
         </div>
@@ -90,22 +94,27 @@ a{color:#0072F5}a:hover{color:#0058CC}
           </sc-if>
         </div>
 
-        <div style="background: #EEF6FF; border-radius: 16px; padding: 16px 18px">
-          <div style="font-size: 15px; font-weight: 700">국내 유통가 칸은 아직 비어 있습니다</div>
-          <div style="margin-top: 4px; font-size: 14px; color: #344054">공개된 숫자로는 방향만 알 수 있습니다. 이번 주 체감을 5초 투표로 알려 주세요.</div>
-          <button onClick="{{ goTips }}" style="margin-top: 12px; min-height: 44px; padding: 0 18px; border-radius: 22px; background: #0072F5; color: #FFFFFF; font-size: 14px; font-weight: 600">이번 주 방향 투표하기</button>
+        <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px"><div style="font-size: 13px; font-weight: 700; color: #667085">이번 주 유통 현장 체감</div><div style="font-size: 11px; color: #98A2B3">{{ vh.meta }}</div></div>
+          <sc-for list="{{ vh.rows }}" as="vh1" hint-placeholder-count="3">
+            <div style="display: grid; grid-template-columns: 64px 1fr 100px; gap: 10px; align-items: center; margin-top: 10px">
+              <div style="font-size: 14px; font-weight: 600">{{ vh1.name }}</div>
+              <div style="display: flex; height: 8px; border-radius: 4px; overflow: hidden; background: #F2F4F7"><div style="{{ vh1.upBar }}"></div><div style="{{ vh1.flatBar }}"></div><div style="{{ vh1.downBar }}"></div></div>
+              <div style="text-align: right; font-size: 12px; font-weight: 700; white-space: nowrap; {{ vh1.style }}">{{ vh1.text }}</div>
+            </div>
+          </sc-for>
+          <div style="margin-top: 10px; font-size: 12px; color: #667085">{{ vh.note }}</div>
+          <button onClick="{{ goTips }}" style="margin-top: 10px; min-height: 40px; padding: 0 16px; border-radius: 20px; background: #0072F5; color: #FFFFFF; font-size: 14px; font-weight: 600">5초 투표하기</button>
         </div>
 
         <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
-          <div style="font-size: 13px; font-weight: 700; color: #667085">다가오는 일정</div>
-          <div style="display: flex; gap: 12px; margin-top: 10px">
-            <div style="width: 58px; font-size: 13px; font-weight: 700; color: #0072F5">10월 14일경</div>
-            <div style="flex: 1; font-size: 14px">중국 국가통계국 10월 상순 생산재 가격 발표</div>
-          </div>
-          <div style="display: flex; gap: 12px; margin-top: 10px">
-            <div style="width: 58px; font-size: 13px; font-weight: 700; color: #0072F5">10월 15일경</div>
-            <div style="flex: 1; font-size: 14px">관세청 9월 품목별 수출입 실적 공개. 수입 통관 단가 9개 항목 갱신</div>
-          </div>
+          <div style="font-size: 13px; font-weight: 700; color: #667085">다가오는 발표</div>
+          <sc-for list="{{ upcoming }}" as="up" hint-placeholder-count="3">
+            <div style="display: grid; grid-template-columns: 52px 1fr; gap: 12px; align-items: baseline; margin-top: 12px">
+              <div style="white-space: nowrap"><span style="font-size: 15px; font-weight: 700; color: #0072F5; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ up.md }}</span><div style="font-size: 11px; color: #98A2B3">{{ up.wd }}요일 경</div></div>
+              <div><div style="font-size: 14px; font-weight: 600">{{ up.title }}</div><div style="font-size: 12px; color: #667085">{{ up.why }}</div></div>
+            </div>
+          </sc-for>
         </div>
       </div>
     </sc-if>
@@ -351,7 +360,14 @@ a{color:#0072F5}a:hover{color:#0058CC}
             <div style="font-size: 14px; color: #667085">{{ d.unit }}</div>
           </div>
           <div style="margin-top: 2px; font-size: 15px; font-weight: 600; {{ d.chgStyle }}">{{ d.chgLine }}</div>
-          <svg viewBox="0 0 326 120" style="display: block; width: 100%; margin-top: 14px" role="img" aria-label="최근 12회 추이">
+          <sc-if value="{{ d.hasRange }}" hint-placeholder-val="{{ true }}">
+            <div style="display: flex; gap: 6px; margin-top: 12px">
+              <sc-for list="{{ d.rangeTabs }}" as="rg" hint-placeholder-count="3">
+                <button onClick="{{ rg.pick }}" aria-pressed="{{ rg.on }}" style="min-height: 32px; padding: 0 12px; border-radius: 16px; font-size: 12px; font-weight: 600; {{ rg.style }}">{{ rg.label }}</button>
+              </sc-for>
+            </div>
+          </sc-if>
+          <svg viewBox="0 0 326 120" style="display: block; width: 100%; margin-top: 14px" role="img" aria-label="추이 차트">
             <line x1="0" y1="20" x2="326" y2="20" style="stroke: #F2F4F7; stroke-width: 1"></line>
             <line x1="0" y1="60" x2="326" y2="60" style="stroke: #F2F4F7; stroke-width: 1"></line>
             <line x1="0" y1="100" x2="326" y2="100" style="stroke: #F2F4F7; stroke-width: 1"></line>
@@ -360,10 +376,21 @@ a{color:#0072F5}a:hover{color:#0058CC}
             <circle cx="{{ d.endX }}" cy="{{ d.endY }}" r="4.5" style="fill: #0072F5; stroke: #FFFFFF; stroke-width: 2"></circle>
           </svg>
           <div style="display: flex; justify-content: space-between; font-size: 12px; color: #667085">
-            <div>12회 전</div>
-            <div>최근 12회 추이 · 예시 곡선</div>
+            <div>{{ d.chartFrom }}</div>
+            <div>{{ d.chartNote }}</div>
             <div>최신</div>
           </div>
+          <sc-if value="{{ d.hasStats }}" hint-placeholder-val="{{ true }}">
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 1px solid #F2F4F7">
+              <div><div style="font-size: 11px; color: #667085">기간 최고</div><div style="font-size: 14px; font-weight: 700; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ d.hiText }}</div><div style="font-size: 11px; color: #98A2B3">{{ d.hiWhen }}</div></div>
+              <div><div style="font-size: 11px; color: #667085">기간 최저</div><div style="font-size: 14px; font-weight: 700; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ d.loText }}</div><div style="font-size: 11px; color: #98A2B3">{{ d.loWhen }}</div></div>
+              <div><div style="font-size: 11px; color: #667085">기간 변동</div><div style="font-size: 14px; font-weight: 700; {{ d.rngChgStyle }}; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ d.rngChg }}</div><div style="font-size: 11px; color: #98A2B3">{{ d.rngFrom }}부터</div></div>
+            </div>
+            <div style="margin-top: 12px">
+              <div style="display: flex; justify-content: space-between; font-size: 11px; color: #667085"><span>최저</span><span>지금은 기간 범위의 {{ d.posText }} 지점</span><span>최고</span></div>
+              <div style="position: relative; height: 6px; border-radius: 3px; background: #F2F4F7; margin: 6px 6px 0"><div style="position: absolute; top: -4px; width: 14px; height: 14px; margin-left: -7px; box-sizing: border-box; border-radius: 7px; background: #0072F5; border: 3px solid #FFFFFF; box-shadow: 0 0 0 1px #0072F5; {{ d.posStyle }}"></div></div>
+            </div>
+          </sc-if>
         </div>
 
         <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 6px 16px">
@@ -372,6 +399,37 @@ a{color:#0072F5}a:hover{color:#0058CC}
           <div style="display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-top: 1px solid #F2F4F7; font-size: 14px"><div style="color: #667085">기준 시점</div><div style="font-weight: 600">{{ d.date }}</div></div>
           <div style="display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-top: 1px solid #F2F4F7; font-size: 14px"><div style="color: #667085">소스 등급</div><div style="font-weight: 600">{{ d.grade }}</div></div>
           <div style="display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-top: 1px solid #F2F4F7; font-size: 14px"><div style="color: #667085">이 숫자의 성격</div><div style="font-weight: 600; text-align: right; {{ d.realStyle }}">{{ d.realText }}</div></div>
+        </div>
+
+        <sc-if value="{{ d.hasWhy }}" hint-placeholder-val="{{ false }}">
+          <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 16px">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px"><div style="font-size: 15px; font-weight: 700">왜 움직였나</div><div style="font-size: 12px; color: #667085">{{ d.whySrc }}</div></div>
+            <sc-for list="{{ d.why }}" as="w" hint-placeholder-count="2">
+              <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #F2F4F7">
+                <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center">
+                  <span style="font-size: 11px; font-weight: 700; border-radius: 8px; padding: 2px 8px; background: #EEF6FF; color: #0058CC">{{ w.type }}</span>
+                  <span style="font-size: 11px; font-weight: 700; border-radius: 8px; padding: 2px 8px; {{ w.relStyle }}">{{ w.rel }}</span>
+                  <span style="font-size: 12px; font-weight: 700; {{ w.dirStyle }}">{{ w.dirText }}</span>
+                </div>
+                <div style="margin-top: 6px; font-size: 15px; font-weight: 700; line-height: 1.45">{{ w.title }}</div>
+                <div style="margin-top: 4px; font-size: 14px; line-height: 1.6; color: #344054">{{ w.impact }}</div>
+                <div style="margin-top: 6px; font-size: 12px; font-weight: 600; {{ w.matchStyle }}">{{ w.match }}</div>
+                <sc-for list="{{ w.sources }}" as="sc" hint-placeholder-count="1">
+                  <a href="{{ sc.href }}" target="_blank" rel="noopener noreferrer" style="display: block; margin-top: 4px; font-size: 12px; line-height: 1.45; color: #0058CC">{{ sc.title }} <span style="color: #98A2B3">· {{ sc.meta }}</span></a>
+                </sc-for>
+                <button onClick="{{ w.openReport }}" style="margin-top: 6px; min-height: 36px; font-size: 13px; font-weight: 600; color: #0072F5">리포트에서 전체 분석 보기 →</button>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ d.whyEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="background: #F5F7FA; border-radius: 16px; padding: 14px 16px; font-size: 13px; line-height: 1.55; color: #667085">{{ d.whyEmptyText }}</div>
+        </sc-if>
+        <div style="display: flex; gap: 10px">
+          <button onClick="{{ d.openCompare }}" style="flex: 1; min-height: 48px; border-radius: 24px; border: 1px solid #D0D5DD; background: #FFFFFF; font-size: 14px; font-weight: 600; text-align: center">다른 품목과 겹쳐 보기</button>
+          <sc-if value="{{ d.canCalc }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ d.openCalc }}" style="flex: 1; min-height: 48px; border-radius: 24px; border: 1px solid #D0D5DD; background: #FFFFFF; font-size: 14px; font-weight: 600; text-align: center">도착 원가 계산</button>
+          </sc-if>
         </div>
 
         <div style="display: flex; gap: 10px">
@@ -393,6 +451,84 @@ a{color:#0072F5}a:hover{color:#0058CC}
           <div style="font-size: 14px; font-weight: 700">프로 등급에서 열리는 기능</div>
           <div style="margin-top: 2px; font-size: 13px; color: #344054">전체 시계열, 고시가·수입재와의 스프레드, 엑셀 내려받기. 1단계 무료 베타에서는 제공하지 않습니다.</div>
         </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isCompare }}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-direction: column; gap: 14px; padding: 8px 20px 28px">
+        <button onClick="{{ backDetail }}" style="min-height: 44px; font-size: 14px; font-weight: 600; color: #0072F5">← 뒤로</button>
+        <div>
+          <div style="font-size: 13px; color: #667085">겹쳐 보기</div>
+          <h1 style="margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em">두 품목의 흐름 비교</h1>
+        </div>
+        <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 16px">
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <div style="display: flex; justify-content: space-between; gap: 10px; font-size: 14px"><div style="display: flex; align-items: center; gap: 8px; min-width: 0"><span style="flex: none; width: 14px; height: 3px; border-radius: 2px; background: #0072F5"></span><span style="font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ cp.aName }}</span></div><div style="flex: none; font-weight: 700; {{ cp.aStyle }}; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ cp.aChg }}</div></div>
+            <div style="display: flex; justify-content: space-between; gap: 10px; font-size: 14px"><div style="display: flex; align-items: center; gap: 8px; min-width: 0"><span style="flex: none; width: 14px; height: 3px; border-radius: 2px; background: #F79009"></span><span style="font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ cp.bName }}</span></div><div style="flex: none; font-weight: 700; {{ cp.bStyle }}; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ cp.bChg }}</div></div>
+          </div>
+          <sc-if value="{{ cp.hasChart }}" hint-placeholder-val="{{ true }}">
+            <svg viewBox="0 0 326 160" style="display: block; width: 100%; margin-top: 14px" role="img" aria-label="두 품목 비교 차트">
+              <line x1="0" y1="{{ cp.baseY }}" x2="326" y2="{{ cp.baseY }}" style="stroke: #D0D5DD; stroke-width: 1; stroke-dasharray: 3 3"></line>
+              <polyline points="{{ cp.bPts }}" style="fill: none; stroke: #F79009; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round"></polyline>
+              <polyline points="{{ cp.aPts }}" style="fill: none; stroke: #0072F5; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round"></polyline>
+            </svg>
+            <div style="display: flex; justify-content: space-between; font-size: 11px; color: #667085"><div>{{ cp.from }}</div><div>시작점 = 100 (점선)</div><div>{{ cp.to }}</div></div>
+          </sc-if>
+          <sc-if value="{{ cp.noChart }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top: 12px; font-size: 13px; color: #667085">{{ cp.noChartText }}</div>
+          </sc-if>
+          <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #F2F4F7; font-size: 13px; line-height: 1.6; color: #344054">{{ cp.insight }}</div>
+          <div style="margin-top: 6px; font-size: 11px; color: #98A2B3">단위가 달라 두 품목 모두 같은 시작일의 값을 100으로 맞춰 그립니다. 같은 방향 비율은 월 단위로 맞춘 변동 방향을 셉니다.</div>
+        </div>
+        <div>
+          <div style="font-size: 13px; font-weight: 700; color: #667085">비교할 품목</div>
+          <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px">
+            <sc-for list="{{ cp.cands }}" as="cb" hint-placeholder-count="6">
+              <button onClick="{{ cb.pick }}" aria-pressed="{{ cb.on }}" style="min-height: 34px; padding: 0 12px; border-radius: 17px; font-size: 13px; font-weight: 600; {{ cb.style }}">{{ cb.name }}</button>
+            </sc-for>
+          </div>
+          <div style="margin-top: 8px; font-size: 12px; color: #98A2B3">추이가 3개 이상 쌓인 품목만 고를 수 있습니다. Felix가 매일 값을 저장하므로 고를 수 있는 품목은 점점 늘어납니다.</div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isCalc }}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-direction: column; gap: 14px; padding: 8px 20px 28px">
+        <button onClick="{{ backDetail }}" style="min-height: 44px; font-size: 14px; font-weight: 600; color: #0072F5">← 뒤로</button>
+        <div>
+          <div style="font-size: 13px; color: #667085">도착 원가 계산기</div>
+          <h1 style="margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em">{{ cc.title }}</h1>
+        </div>
+        <div style="background: #EEF6FF; border-radius: 16px; padding: 18px">
+          <div style="font-size: 12px; font-weight: 700; color: #0058CC">톤당 도착 원가 (부가세 제외)</div>
+          <div style="margin-top: 4px; display: flex; align-items: baseline; gap: 6px"><span style="font-size: 32px; font-weight: 700; letter-spacing: -0.02em; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ cc.totalText }}</span><span style="font-size: 14px; color: #344054">원/t</span></div>
+          <div style="margin-top: 2px; font-size: 13px; color: #344054">만원 단위 {{ cc.totalMan }} · 단가 {{ cc.priceText }} × 환율 {{ cc.fxText }}</div>
+        </div>
+        <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 6px 16px">
+          <sc-for list="{{ cc.fields }}" as="f" hint-placeholder-count="6">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 56px; border-top: 1px solid #F2F4F7">
+              <div><div style="font-size: 14px; font-weight: 600">{{ f.label }}</div><div style="font-size: 11px; color: #98A2B3">{{ f.hint }}</div></div>
+              <div style="display: flex; align-items: center; gap: 6px"><input id="{{ f.id }}" inputmode="decimal" value="{{ f.value }}" onChange="{{ f.set }}" style="width: 104px; min-height: 40px; box-sizing: border-box; border: 1px solid #D0D5DD; border-radius: 10px; padding: 0 10px; text-align: right; font-size: 15px; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace"><span style="width: 34px; font-size: 12px; color: #667085">{{ f.unit }}</span></div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
+          <div style="font-size: 13px; font-weight: 700; color: #667085">구성</div>
+          <sc-for list="{{ cc.parts }}" as="pt" hint-placeholder-count="4">
+            <div style="margin-top: 10px">
+              <div style="display: flex; justify-content: space-between; font-size: 14px"><div>{{ pt.label }}</div><div style="font-weight: 700; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ pt.text }}</div></div>
+              <div style="margin-top: 4px; height: 6px; border-radius: 3px; background: #F2F4F7"><div style="height: 6px; border-radius: 3px; {{ pt.bar }}"></div></div>
+            </div>
+          </sc-for>
+          <div style="margin-top: 12px; padding-top: 10px; border-top: 1px solid #F2F4F7; font-size: 13px; color: #344054">참고: 부가세 10% {{ cc.vatText }}원/t (매입세액 공제 대상)</div>
+        </div>
+        <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
+          <div style="font-size: 13px; font-weight: 700; color: #667085">민감도</div>
+          <sc-for list="{{ cc.sens }}" as="se" hint-placeholder-count="2">
+            <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 14px"><div>{{ se.label }}</div><div style="font-weight: 700; color: #F04452; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ se.text }}</div></div>
+          </sc-for>
+        </div>
+        <div style="font-size: 12px; line-height: 1.6; color: #667085">관세청 수입 단가는 신고 가격(CIF, 운임·보험 포함) 기준이라 운임 기본값을 0으로 둡니다. FOB 오퍼라면 운임을 넣으세요. 철강재 기본관세는 대부분 0%이지만 품목·원산지별로 다르고, 반덤핑관세는 대상 품목·업체에만 붙습니다. 실제 통관 전 관세율은 관세청 품목분류로 확인하세요.</div>
       </div>
     </sc-if>
 
@@ -685,8 +821,8 @@ a{color:#0072F5}a:hover{color:#0058CC}
           </sc-if>
           <sc-if value="{{ voteDone }}" hint-placeholder-val="{{ false }}">
             <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
-              <div style="font-size: 15px; font-weight: 700">투표했습니다. 지금까지의 응답</div>
-              <div style="font-size: 12px; color: #667085">{{ tipItemLabel }} · 응답 64명 · 예시 분포</div>
+              <div style="font-size: 15px; font-weight: 700">투표했습니다. 이번 주 응답</div>
+              <div style="font-size: 12px; color: #667085">{{ voteMeta }}</div>
               <sc-for list="{{ voteRows }}" as="vr" hint-placeholder-count="3">
                 <div style="margin-top: 12px">
                   <div style="display: flex; justify-content: space-between; font-size: 14px"><div style="font-weight: 600">{{ vr.label }}</div><div style="font-weight: 700; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ vr.pctText }}</div></div>
@@ -775,6 +911,30 @@ a{color:#0072F5}a:hover{color:#0058CC}
     <sc-if value="{{ isMe }}" hint-placeholder-val="{{ false }}">
       <div style="display: flex; flex-direction: column; gap: 14px; padding: 18px 20px 28px">
         <h1 style="margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em">내 정보</h1>
+        <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 16px">
+          <div style="display: flex; justify-content: space-between; align-items: baseline"><div style="font-size: 15px; font-weight: 700">내 재고 평가</div><div style="font-size: 11px; color: #98A2B3">이 기기에만 저장</div></div>
+          <sc-if value="{{ inv.has }}" hint-placeholder-val="{{ true }}">
+            <div style="margin-top: 10px; display: flex; align-items: baseline; gap: 6px"><span style="font-size: 26px; font-weight: 700; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ inv.totalText }}</span><span style="font-size: 13px; color: #667085">만원</span></div>
+            <div style="font-size: 13px; font-weight: 600; {{ inv.chgStyle }}">{{ inv.chgText }}</div>
+            <sc-for list="{{ inv.rows }}" as="ir" hint-placeholder-count="2">
+              <div style="display: flex; justify-content: space-between; gap: 10px; align-items: center; min-height: 52px; border-top: 1px solid #F2F4F7; margin-top: 8px">
+                <div style="min-width: 0"><div style="font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ ir.name }}</div><div style="font-size: 12px; color: #667085">{{ ir.sub }}</div></div>
+                <div style="flex: none; text-align: right"><div style="font-size: 14px; font-weight: 700; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ ir.valText }}</div><div style="font-size: 12px; font-weight: 600; {{ ir.chgStyle }}">{{ ir.chgText }}</div></div>
+                <button onClick="{{ ir.remove }}" aria-label="삭제" style="flex: none; min-width: 32px; min-height: 32px; font-size: 16px; color: #98A2B3; text-align: center">×</button>
+              </div>
+            </sc-for>
+          </sc-if>
+          <div style="margin-top: 12px; font-size: 12px; font-weight: 700; color: #667085">품목 추가</div>
+          <select id="invSel" onChange="{{ inv.pickSel }}" style="width: 100%; margin-top: 6px; min-height: 44px; box-sizing: border-box; border: 1px solid #D0D5DD; border-radius: 10px; padding: 0 10px; font: inherit; font-size: 14px; background: #FFFFFF">
+            <sc-for list="{{ inv.opts }}" as="io" hint-placeholder-count="6"><option value="{{ io.id }}" selected="{{ io.sel }}">{{ io.name }}</option></sc-for>
+          </select>
+          <div style="display: flex; gap: 8px; margin-top: 10px; align-items: center">
+            <input id="invTon" inputmode="decimal" placeholder="톤 수" value="{{ inv.ton }}" onChange="{{ inv.setTon }}" style="flex: 1; min-height: 44px; box-sizing: border-box; border: 1px solid #D0D5DD; border-radius: 10px; padding: 0 12px; font-size: 15px; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">
+            <button onClick="{{ inv.add }}" style="min-height: 44px; padding: 0 18px; border-radius: 22px; font-size: 14px; font-weight: 600; {{ inv.addStyle }}">추가</button>
+          </div>
+          <div style="margin-top: 8px; font-size: 11px; line-height: 1.5; color: #98A2B3">달러·위안 단가 품목만 원화로 환산합니다(원/달러·원/위안 최신값). 공개 시세 기준 참고값이며 실제 매입가·유통가와 다를 수 있습니다.</div>
+        </div>
+
 
         <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 6px 16px">
           <div style="padding: 10px 0 4px; font-size: 13px; font-weight: 700; color: #667085">알림</div>
@@ -977,6 +1137,7 @@ class Component extends DCLogic {
       var watched = s.watch.indexOf(it.id) >= 0;
       d = Object.assign({}, it, {
         src: gi.src, cycle: gi.cycle, date: gi.date, grade: gi.grade,
+        chartNote: '최근 12회 추이 · 예시 곡선', chartFrom: '12회 전',
         realText: it.real ? '실제 발표값' : '예시 값 (목업용)',
         realStyle: it.real ? 'color:#12B76A' : 'color:#B54708',
         points: pts.join(' '), area: '6,116 ' + pts.join(' ') + ' 320,116',
@@ -1001,7 +1162,7 @@ class Component extends DCLogic {
 
     // ---------- 주간 리포트 (/api/report) ----------
     var rd = s.repData;
-    if ((s.tab === 'reports' || s.tab === 'home') && !rd && !self._repReq) {
+    if ((s.tab === 'reports' || s.tab === 'home' || s.sub === 'detail') && !rd && !self._repReq) {
       self._repReq = true;
       setTimeout(function () {
         if (typeof fetch !== 'function') { self.setState({ repData: { status: 'error' } }); return; }
@@ -1371,15 +1532,18 @@ class Component extends DCLogic {
     var krRetry = function () { self._krReq = false; self.setState({ krData: null }); };
 
     // 관세청 데이터로 일반 그룹 항목 덮어쓰기: 원료(raw3·raw4), 수급(sd1)
-    var liveSet = function (id, val, d, unit, prevVal, chgSuffix) {
+    var liveSet = function (id, val, d, unit, prevVal, chgSuffix, hist) {
       var it = byId[id]; if (!it) return;
-      it.valText = fmt(val, d); it.unit = unit; it.real = true;
+      it.valText = fmt(val, d); it.val = val; it.unit = unit; it.real = true;
       if (prevVal != null && prevVal > 0) {
-        var c = val - prevVal, pc = c / prevVal * 100;
-        it.chgText = (c > 0 ? '▲' : (c < 0 ? '▼' : '')) + fmt(Math.abs(c), d) + ' (' + fmt(Math.abs(pc), 1) + '%)' + (chgSuffix || '');
-        it.chgStyle = c > 0 ? UP : (c < 0 ? DOWN : FLAT); it.pct = pc;
-      } else { it.chgText = '전월 자료 없음'; it.chgStyle = FLAT; }
-      it.pctText = it.chgText; it.chgLine = it.chgText;
+        var c = val - prevVal, pc = c / prevVal * 100, ar = c > 0 ? '▲' : (c < 0 ? '▼' : '');
+        it.chgText = ar + fmt(Math.abs(c), d) + ' (' + fmt(Math.abs(pc), 1) + '%)' + (chgSuffix || '');
+        it.pctText = c === 0 ? '0.0%' : ar + fmt(Math.abs(pc), 1) + '%';
+        it.chgStyle = c > 0 ? UP : (c < 0 ? DOWN : FLAT); it.pct = pc; it.chg = c; it.rank = Math.abs(pc);
+      } else { it.chgText = '전월 자료 없음'; it.pctText = '—'; it.chgStyle = FLAT; it.rank = -1; }
+      it.chgLine = it.chgText;
+      if (hist && hist.length) it.histP = hist;
+      if (hist && hist.length >= 3) it.hist = hist.map(function (x) { return Number(x.v); }).filter(function (v) { return isFinite(v); });
     };
     if (krStatus === 'ok' && kd.items) {
       var ml = monthLabel(kd.month) + ' 통관분';
@@ -1451,7 +1615,7 @@ class Component extends DCLogic {
       (pd.j.items || []).forEach(function (d) {
         if (d.status !== 'ok') { var it0 = byId[d.id]; if (it0) { it0.valText = '자료 없음'; it0.unit = '지수 2020=100 · 품목 확인 중'; it0.chgText = ''; } return; }
         anyPpi = true;
-        liveSet(d.id, d.value, 1, '지수 2020=100 · ' + monthLabel(d.period) + (d.matchedName && byId[d.id] && byId[d.id].name !== d.matchedName ? ' · ' + d.matchedName : ''), d.prev, ' 전월비');
+        liveSet(d.id, d.value, 1, '지수 2020=100 · ' + monthLabel(d.period) + (d.matchedName && byId[d.id] && byId[d.id].name !== d.matchedName ? ' · ' + d.matchedName : ''), d.prev, ' 전월비', d.hist);
       });
       if (anyPpi) { G.kr.real = true; G.kr.date = monthLabel(pd.j.period); G.kr.note = '가격이 아니라 지수(2020=100)입니다. 전월 대비 변동입니다. 출처: 한국은행, 「생산자물가조사」, KOSIS.'; }
     }
@@ -1473,7 +1637,7 @@ class Component extends DCLogic {
       (ud2.j.items || []).forEach(function (d) {
         if (d.status !== 'ok') return;
         anyUs = true; usPeriod = d.period;
-        liveSet(d.id, d.value, 3, '지수 1982=100 · ' + monthLabel(d.period) + (d.preliminary ? ' (예비)' : '') + ' · ' + d.seriesId, d.prev, ' 전월비');
+        liveSet(d.id, d.value, 3, '지수 1982=100 · ' + monthLabel(d.period) + (d.preliminary ? ' (예비)' : '') + ' · ' + d.seriesId, d.prev, ' 전월비', d.hist);
       });
       if (anyUs) { G.gl.real = true; G.gl.date = monthLabel(usPeriod); G.gl.note = '가격이 아니라 지수(1982=100)입니다. 최근 4개월 값은 예비치라 바뀔 수 있습니다. 출처: U.S. Bureau of Labor Statistics.'; }
     }
@@ -1518,8 +1682,8 @@ class Component extends DCLogic {
     if (wd && wd.status === 'ok') {
       var wi = wd.j.items || {};
       wbMonth = wd.j.period;
-      if (wi.iron_ore) liveSet('raw1', wi.iron_ore.value, 1, '달러/t · 세계은행 ' + monthLabel(wi.iron_ore.period) + ' 평균', wi.iron_ore.prev, '');
-      if (wi.coal_au) liveSet('raw2', wi.coal_au.value, 1, '달러/t · 세계은행 ' + monthLabel(wi.coal_au.period) + ' 평균', wi.coal_au.prev, '');
+      if (wi.iron_ore) liveSet('raw1', wi.iron_ore.value, 1, '달러/t · 세계은행 ' + monthLabel(wi.iron_ore.period) + ' 평균', wi.iron_ore.prev, '', wi.iron_ore.hist);
+      if (wi.coal_au) liveSet('raw2', wi.coal_au.value, 1, '달러/t · 세계은행 ' + monthLabel(wi.coal_au.period) + ' 평균', wi.coal_au.prev, '', wi.coal_au.hist);
     }
 
     // 인도: 경제자문관실 WPI 품목별 (/api/in-wpi)
@@ -1693,6 +1857,227 @@ class Component extends DCLogic {
       { name: '멕시코', sub: mxd && mxd.status === 'ok' && mxd.j.month ? dmon(mxd.j.month) + '·대미수출' : '대미 수출' }, { name: '일본', sub: jpSrc0 ? dmon(jpSrc0.month) + '·전월비' : '무역통계' }, { name: '유럽', sub: eud && eud.status === 'ok' && eud.j.month ? dmon(eud.j.month) + '·역외수입' : 'Eurostat' }, { name: '세계', sub: wbMonth ? dmon(wbMonth) + ' 평균' : '8월 평균' }
     ];
 
+    // 실데이터 반영 후 다시 계산: 추이(발표처 이력 + Felix 자체 시계열), 크게 움직인 항목, 상세 차트·통계·이유
+    var sparkPts = function (h, w, ht, pad) {
+      var lo = Math.min.apply(null, h), hi = Math.max.apply(null, h), sp = (hi - lo) || 1;
+      return h.map(function (v, k) { return (pad + k * (w - 2 * pad) / Math.max(1, h.length - 1)).toFixed(1) + ',' + (ht - pad - (v - lo) / sp * (ht - 2 * pad)).toFixed(1); });
+    };
+    var ITEM2KEY = { cn1: 'cn:rebar', cn2: 'cn:wire_rod', cn3: 'cn:plate', cn4: 'cn:hr', cn5: 'cn:pipe', cn6: 'cn:section', cn7: 'cn:coking_coal', cn8: 'cn:coke',
+      kr1: 'kr:rebar', kr2: 'kr:section', kr3: 'kr:hr', kr4: 'kr:cr', kr5: 'kr:coated', kr6: 'kr:plate', kr7: 'kr:pipe', kr8: 'kr:sts',
+      imp1: 'krimp:hr', imp2: 'krimp:cr', imp3: 'krimp:coated', imp4: 'krimp:alloy_flat', imp5: 'krimp:wire_rod', imp6: 'krimp:rebar', imp7: 'krimp:section', imp8: 'krimp:sts', imp9: 'krimp:scrap',
+      nf1: 'krimp:al', nf2: 'krimp:cu', nf3: 'krimp:zn', nf4: 'krimp:pb', nf5: 'krimp:sn', nf6: 'krimp:ni', raw1: 'world:iron_ore', raw2: 'world:coal', raw3: 'krimp:iron_ore', raw4: 'krimp:coking_coal',
+      gl1: 'us:steel', gl2: 'us:cr', gl3: 'us:scrap', gl4: 'us:plate', gl5: 'us:pipe', fx1: 'fx:usdkrw', sd1: 'kr:cn_supply' };
+    // Felix 자체 시계열 (/api/history)
+    var hd = s.histData;
+    if (!hd && !self._histReq && (s.tab === 'home' || s.tab === 'board' || s.tab === 'me' || s.sub)) {
+      self._histReq = true;
+      setTimeout(function () {
+        if (typeof fetch !== 'function') { self.setState({ histData: { status: 'error' } }); return; }
+        fetch('/api/history').then(function (r) { return r.json(); }).then(function (j) { self.setState({ histData: j && j.series ? { status: 'ok', j: j } : { status: 'error' } }); })
+          .catch(function () { self.setState({ histData: { status: 'error' } }); });
+      }, 0);
+    }
+    var HS = hd && hd.status === 'ok' ? hd.j.series : {};
+    var pDate = function (p) { var m = String(p).match(/^(\d{4})-(\d{2})(?:-(\d{2}))?(?: (상순|중순|하순))?/); if (!m) return null; return Date.UTC(+m[1], +m[2] - 1, m[3] ? +m[3] : ({ '상순': 5, '중순': 15, '하순': 25 }[m[4]] || 15)); };
+    var pLabel = function (p) { var m = String(p).match(/^(\d{4})-(\d{2})(?:-(\d{2}))?(?: (상순|중순|하순))?/); if (!m) return String(p); return String(m[1]).slice(2) + '.' + m[2] + (m[3] ? '.' + m[3] : '') + (m[4] ? ' ' + m[4] : ''); };
+    items.forEach(function (it) {
+      var map = {}, key = ITEM2KEY[it.id];
+      (key && HS[key] ? HS[key].pts : []).forEach(function (x) { map[x[0]] = Number(x[1]); });
+      (it.histP || []).forEach(function (x) { map[x.p] = Number(x.v); });
+      it.series = Object.keys(map).map(function (p) { return { p: p, v: map[p], t: pDate(p) }; }).filter(function (x) { return x.t != null && isFinite(x.v); }).sort(function (a, b) { return a.t - b.t; });
+      if (it.series.length >= 3) it.hist = it.series.map(function (x) { return x.v; });
+    });
+
+    // 세계 이슈 연결: 발행된 최신 리포트의 이슈 중 이 품목과 관련된 것
+    var STEELK = ['hr', 'cr', 'coated', 'plate', 'wire_rod', 'rebar', 'section', 'pipe', 'sts', 'steel', 'alloy_flat'];
+    var repIssues = repLatest ? (repLatest.issues || []) : [];
+    var whyFor = function (it) {
+      var key = ITEM2KEY[it.id]; if (!key || !repIssues.length) return [];
+      var pr = key.split(':'), rg = pr[0] === 'krimp' ? 'kr' : pr[0], itm = pr[1];
+      return repIssues.map(function (x) {
+        var its = x.items || [], rgs = x.regions || [];
+        var hit = its.indexOf(itm) >= 0 || (itm === 'steel' && its.some(function (k) { return STEELK.indexOf(k) >= 0; })) || (itm === 'coal' && its.indexOf('coking_coal') >= 0) || (itm === 'coking_coal' && its.indexOf('coal') >= 0);
+        var sc = x.watchKey === key ? 3 : (hit && (rgs.indexOf(rg) >= 0 || rg === 'world' || !rgs.length) ? 2 : (hit ? 1 : 0));
+        return { x: x, sc: sc };
+      }).filter(function (o) { return o.sc > 0; }).sort(function (a, b) { return b.sc - a.sc; }).slice(0, 2);
+    };
+
+    movers = items.slice().sort(function (a, b) { return b.rank - a.rank; }).slice(0, 3).map(function (it) {
+      var h = it.hist && it.hist.length >= 3 ? it.hist.slice(-12) : null, w = whyFor(it).filter(function (o) { return o.sc >= 2; })[0];
+      return Object.assign({}, it, { hasSpark: !!h, spark: h ? sparkPts(h, 64, 24, 2).join(' ') : '', sparkColor: it.pct > 0 ? '#F04452' : (it.pct < 0 ? '#1B64DA' : '#98A2B3'), sparkLabel: h ? '최근 ' + h.length + '회' : '',
+        hasWhy: !!w, whyLine: w ? '이슈 · ' + w.x.title : '' });
+    });
+
+    if (s.sub === 'detail' && byId[s.itemId]) {
+      var itd = byId[s.itemId], ser = itd.series || [];
+      Object.assign(d, { valText: itd.valText, unit: itd.unit, chgLine: itd.chgLine, chgStyle: itd.chgStyle, real: itd.real });
+      var nAll = ser.length, RN = [['6', 6], ['12', 12], ['36', 36], ['all', 9999]].filter(function (r) { return r[0] === 'all' ? nAll > 12 : r[1] < nAll || (r[1] === 12 && nAll >= 3 && nAll <= 12); });
+      var rsel = s.histN && RN.some(function (r) { return r[0] === s.histN; }) ? s.histN : (RN.some(function (r) { return r[0] === '12'; }) ? '12' : (RN[0] ? RN[0][0] : '12'));
+      var win = ser.slice(-(rsel === 'all' ? 9999 : Number(rsel)));
+      if (win.length >= 3) {
+        var vals = win.map(function (x) { return x.v; });
+        var hp = sparkPts(vals, 326, 120, 8);
+        var hiI = vals.indexOf(Math.max.apply(null, vals)), loI = vals.indexOf(Math.min.apply(null, vals));
+        var hiV = vals[hiI], loV = vals[loI], curV = vals[vals.length - 1], firstV = vals[0];
+        var pos = hiV === loV ? 50 : (curV - loV) / (hiV - loV) * 100, rc = firstV ? (curV - firstV) / firstV * 100 : 0;
+        var dg = Math.abs(curV) >= 1000 ? 0 : (Math.abs(curV) >= 100 ? 1 : 2);
+        Object.assign(d, { points: hp.join(' '), area: '8,116 ' + hp.join(' ') + ' 318,116', endX: hp[hp.length - 1].split(',')[0], endY: hp[hp.length - 1].split(',')[1],
+          chartNote: '실제 발표값 ' + win.length + '개', chartFrom: pLabel(win[0].p), hasStats: true,
+          hiText: fmt(hiV, dg), hiWhen: pLabel(win[hiI].p), loText: fmt(loV, dg), loWhen: pLabel(win[loI].p),
+          rngChg: (rc > 0 ? '▲' : rc < 0 ? '▼' : '') + fmt(Math.abs(rc), 1) + '%', rngChgStyle: rc > 0 ? UP : (rc < 0 ? DOWN : FLAT), rngFrom: pLabel(win[0].p),
+          posText: Math.round(pos) + '%', posStyle: 'left:' + Math.max(0, Math.min(100, pos)).toFixed(1) + '%' });
+      }
+      Object.assign(d, { hasRange: RN.length > 1, rangeTabs: RN.map(function (r) { return { label: r[0] === 'all' ? '전체 ' + nAll + '개' : '최근 ' + r[1] + '개', on: r[0] === rsel, style: chip(r[0] === rsel), pick: function () { set({ histN: r[0] }); } }; }) });
+      var ws = whyFor(itd);
+      var DIRS2 = { '상승': [UP, '상승 요인'], '하락': [DOWN, '하락 요인'], '혼조': [FLAT, '방향 엇갈림'], '중립': [FLAT, '중립'] };
+      d.why = ws.map(function (o) {
+        var x = o.x, dd2 = DIRS2[x.dir] || DIRS2['중립'], mv = itd.pct || 0;
+        var same = (x.dir === '상승' && mv > 0) || (x.dir === '하락' && mv < 0), opp = (x.dir === '상승' && mv < 0) || (x.dir === '하락' && mv > 0);
+        return { type: x.type, rel: o.sc >= 2 ? '직접 관련' : '같은 품목 · 다른 지역', relStyle: o.sc >= 2 ? 'background:#E7F8EF;color:#067647' : 'background:#F2F4F7;color:#475467',
+          dirText: dd2[1], dirStyle: dd2[0], title: x.title, impact: x.impact || x.what,
+          match: same ? '이번 발표 방향(' + itd.pctText + ')과 같은 쪽입니다.' : (opp ? '이번 발표(' + itd.pctText + ')는 반대 방향입니다. 아직 반영 전이거나 다른 요인이 더 큽니다.' : '확실성 ' + (x.conf || '-') + ' · ' + (x.confWhy || '')),
+          matchStyle: same ? 'color:#067647' : (opp ? 'color:#B54708' : 'color:#667085'),
+          sources: (x.sources || []).slice(0, 2).map(function (q) { return { title: q.title, href: /^https?:\/\//i.test(q.url) ? q.url : '#', meta: (q.source || '') + (q.date ? ' · ' + q.date : '') }; }),
+          openReport: function () { set({ tab: 'reports', sub: 'report', repNo: repLatest.no, repOpen: x.id, repSec: 'issue' }); } };
+      });
+      d.hasWhy = d.why.length > 0;
+      d.whySrc = repLatest ? '주간 리포트 제' + repLatest.no + '호 · ' + repLatest.date : '';
+      d.whyEmpty = !d.hasWhy && !!rd;
+      d.whyEmptyText = repLatest ? '이번 주 리포트에는 이 품목과 직접 연결된 세계 이슈가 없습니다. 숫자만 움직인 경우 수급·환율 등 일상 요인일 가능성이 큽니다.' : '주간 리포트가 발행되면 이 품목과 관련된 세계 이슈가 여기에 연결됩니다.';
+      d.openCompare = function () { set({ sub: 'compare' }); };
+      d.canCalc = /달러\/t/.test(itd.unit || '');
+      d.openCalc = function () { set({ sub: 'calc', calc: { price: String(Math.round(itd.val)), fx: null, duty: '0', ad: '0', freight: '0', other: '15000', from: itd.id } }); };
+    }
+    // 겹쳐 보기
+    var josa = function (w) { var c = String(w).replace(/[^가-힣]+$/, '').slice(-1).charCodeAt(0); return w + (c >= 0xAC00 && c <= 0xD7A3 && (c - 0xAC00) % 28 ? '이' : '가'); };
+    var cp = {};
+    if (s.sub === 'compare' && byId[s.itemId]) {
+      var A = byId[s.itemId];
+      var candI = items.filter(function (x) { return x.id !== A.id && x.series && x.series.length >= 3; });
+      var ovl = function (x) { if (!(A.series || []).length) return 0; return Math.min(A.series[A.series.length - 1].t, x.series[x.series.length - 1].t) - Math.max(A.series[0].t, x.series[0].t); };
+      candI.sort(function (x, y) { return ovl(y) - ovl(x); });
+      var B = byId[s.cmpB] && s.cmpB !== A.id ? byId[s.cmpB] : (candI[0] || null);
+      cp = { aName: A.groupLabel + ' · ' + A.name, bName: B ? B.groupLabel + ' · ' + B.name : '비교할 품목을 고르세요', aChg: '—', bChg: '—', aStyle: FLAT, bStyle: FLAT,
+        cands: candI.map(function (x) { return { name: x.name, on: B && x.id === B.id, style: chip(B && x.id === B.id), pick: function () { set({ cmpB: x.id }); } }; }),
+        hasChart: false, noChart: true, noChartText: (A.series || []).length < 3 ? '이 품목은 아직 추이가 3개 미만이라 그릴 수 없습니다. Felix가 매일 값을 저장하므로 곧 그릴 수 있습니다.' : '비교할 품목을 고르세요.', insight: '' };
+      if (B && (A.series || []).length >= 3) {
+        var t0 = Math.max(A.series[0].t, B.series[0].t), t1 = Math.max(A.series[A.series.length - 1].t, B.series[B.series.length - 1].t);
+        // 시작일 직전 값이 있으면 그 값을 출발점으로 쓴다(발표 주기가 달라도 겹치게)
+        var clip = function (arr) { var o = arr.filter(function (x) { return x.t >= t0; }), before = arr.filter(function (x) { return x.t < t0; }); if (before.length) o.unshift(before[before.length - 1]); return o; };
+        var inA = clip(A.series), inB = clip(B.series);
+        if (inA.length && inB.length) t0 = Math.min(inA[0].t, inB[0].t);
+        cp.noChartText = '두 품목의 기록 기간이 거의 겹치지 않아 그릴 수 없습니다. 다른 품목을 고르세요.';
+        if (inA.length >= 2 && inB.length >= 2 && t1 > t0) {
+          var reb = function (arr) { var b0 = arr[0].v; return arr.map(function (x) { return { t: x.t, v: x.v / b0 * 100 }; }); };
+          var ra = reb(inA), rb = reb(inB), allV = ra.concat(rb).map(function (x) { return x.v; }).concat([100]);
+          var lo2 = Math.min.apply(null, allV), hi2 = Math.max.apply(null, allV), sp2 = (hi2 - lo2) || 1;
+          var X = function (t) { return (8 + (t - t0) / (t1 - t0) * 310).toFixed(1); }, Y = function (v) { return (150 - (v - lo2) / sp2 * 140).toFixed(1); };
+          var line = function (arr) { return arr.map(function (x) { return X(x.t) + ',' + Y(x.v); }).join(' '); };
+          var ch = function (arr) { var c = arr[arr.length - 1].v - 100; return { t: (c > 0 ? '▲' : c < 0 ? '▼' : '') + fmt(Math.abs(c), 1) + '%', s: c > 0 ? UP : (c < 0 ? DOWN : FLAT), c: c }; };
+          var ca = ch(ra), cb = ch(rb);
+          // 월 단위로 맞춘 방향 일치 비율
+          var byM = function (arr) { var o = {}; arr.forEach(function (x) { o[new Date(x.t).toISOString().slice(0, 7)] = x.v; }); return o; };
+          var mA = byM(inA), mB = byM(inB), ms = Object.keys(mA).filter(function (k) { return k in mB; }).sort(), same = 0, tot = 0;
+          for (var q = 1; q < ms.length; q++) { var da = mA[ms[q]] - mA[ms[q - 1]], db = mB[ms[q]] - mB[ms[q - 1]]; if (da && db) { tot++; if ((da > 0) === (db > 0)) same++; } }
+          var gap = ca.c - cb.c;
+          Object.assign(cp, { hasChart: true, noChart: false, aPts: line(ra), bPts: line(rb), baseY: Y(100), from: new Date(t0).toISOString().slice(0, 7), to: new Date(t1).toISOString().slice(0, 7),
+            aChg: ca.t, aStyle: ca.s, bChg: cb.t, bStyle: cb.s,
+            insight: '같은 기간 ' + A.name + ' ' + ca.t + ', ' + B.name + ' ' + cb.t + '. ' + (Math.abs(gap) < 1 ? '두 품목이 거의 같은 폭으로 움직였습니다.' : josa(gap > 0 ? A.name : B.name) + ' ' + fmt(Math.abs(gap), 1) + '%p 더 강했습니다.') + (tot >= 3 ? ' 월별로 맞춰 보면 ' + tot + '개월 중 ' + same + '개월 같은 방향이었습니다.' : '') });
+        }
+      }
+    }
+
+    // 도착 원가 계산기
+    var cc = {};
+    if (s.sub === 'calc') {
+      var cv = s.calc || {}, src = byId[cv.from];
+      var fxLive = byId.fx1 ? byId.fx1.val : 1380;
+      var num = function (v, dft) { var n = parseFloat(String(v == null ? '' : v).replace(/,/g, '')); return isFinite(n) ? n : dft; };
+      var price = num(cv.price, 500), fxv = num(cv.fx == null ? fxLive : cv.fx, fxLive), duty = num(cv.duty, 0), ad = num(cv.ad, 0), freight = num(cv.freight, 0), other = num(cv.other, 0);
+      var cif = (price + freight) * fxv, dutyW = cif * duty / 100, adW = cif * ad / 100, total = cif + dutyW + adW + other;
+      var upd = function (k) { return function (e) { var o = Object.assign({}, s.calc); o[k] = e.target.value; set({ calc: o }); }; };
+      var part = function (label, v, color) { return { label: label, text: fmt(Math.round(v), 0) + '원', bar: 'width:' + (total ? Math.max(0, v / total * 100) : 0).toFixed(1) + '%;background:' + color }; };
+      cc = { title: src ? src.name : '수입 철강재', totalText: fmt(Math.round(total), 0), totalMan: fmt(total / 10000, 1) + '만원', priceText: '$' + fmt(price, 0), fxText: fmt(fxv, 1) + '원',
+        vatText: fmt(Math.round((cif + dutyW + adW) * 0.1), 0),
+        fields: [['cPrice', '수입 단가', src ? '관세청 최신 통관 단가' : '오퍼 가격', 'price', price, '$/t'], ['cFx', '원/달러 환율', '매매기준율 최신값', 'fx', cv.fx == null ? fxLive : cv.fx, '원'], ['cFreight', '해상운임·보험', 'CIF면 0', 'freight', cv.freight, '$/t'], ['cDuty', '기본관세', '철강재 대부분 0%', 'duty', cv.duty, '%'], ['cAd', '반덤핑관세', '대상 품목만', 'ad', cv.ad, '%'], ['cOther', '통관·하역·내륙운송', '톤당 부대비용', 'other', cv.other, '원/t']]
+          .map(function (f) { return { id: f[0], label: f[1], hint: f[2], value: f[4] == null ? '' : String(f[4]), set: upd(f[3]), unit: f[5] }; }),
+        parts: [part('물품가(운임 포함) × 환율', cif, '#0072F5'), part('기본관세', dutyW, '#9CC3FF'), part('반덤핑관세', adW, '#F04452'), part('부대비용', other, '#98A2B3')],
+        sens: [{ label: '환율이 10원 오르면', text: '+' + fmt(Math.round((price + freight) * 10 * (1 + (duty + ad) / 100)), 0) + '원/t' }, { label: '단가가 $10 오르면', text: '+' + fmt(Math.round(10 * fxv * (1 + (duty + ad) / 100)), 0) + '원/t' }] };
+    }
+
+    // 체감 투표 집계 (/api/votes)
+    var vd = s.voteData;
+    if (!vd && !self._voteReq && (s.tab === 'home' || s.tab === 'tips')) {
+      self._voteReq = true;
+      setTimeout(function () {
+        if (typeof fetch !== 'function') { self.setState({ voteData: { status: 'error' } }); return; }
+        fetch('/api/votes').then(function (r) { return r.json(); }).then(function (j) { self.setState({ voteData: j && j.items ? { status: 'ok', j: j } : { status: 'error' } }); })
+          .catch(function () { self.setState({ voteData: { status: 'error' } }); });
+      }, 0);
+    }
+    var VI = vd && vd.status === 'ok' ? vd.j.items : null, MINN = vd && vd.status === 'ok' ? vd.j.minN : 5;
+    var TIPN = { hr: '열연', cr: '냉연', gi: '도금강판', rb: '철근', hb: 'H형강' };
+    var vh = { rows: [], meta: '', note: '' };
+    if (VI) {
+      var tot2 = 0;
+      vh.rows = Object.keys(TIPN).map(function (k) {
+        var c = VI[k] || { up: 0, flat: 0, down: 0, n: 0 }; tot2 += c.n;
+        if (c.n < MINN) return { name: TIPN[k], text: '응답 ' + c.n + '명', style: 'color:#98A2B3', upBar: 'width:0', flatBar: 'width:0', downBar: 'width:0' };
+        var pu = c.up / c.n * 100, pf = c.flat / c.n * 100, pdn = c.down / c.n * 100, top = pu >= pdn && pu >= pf ? ['오름', pu, UP] : (pdn >= pf ? ['내림', pdn, DOWN] : ['보합', pf, FLAT]);
+        return { name: TIPN[k], text: top[0] + ' ' + Math.round(top[1]) + '% · ' + c.n, style: top[2], upBar: 'width:' + pu.toFixed(1) + '%;background:#F04452', flatBar: 'width:' + pf.toFixed(1) + '%;background:#D0D5DD', downBar: 'width:' + pdn.toFixed(1) + '%;background:#1B64DA' };
+      });
+      vh.meta = vd.j.week + ' · 응답 ' + tot2 + '건';
+      vh.note = '공개 통계로는 국내 유통가를 알 수 없어 현장 체감을 모읍니다. 품목별 ' + MINN + '명 이상 응답하면 비율을 공개합니다.';
+    } else { vh.note = vd ? '집계를 불러오지 못했습니다.' : '집계를 불러오는 중입니다.'; }
+    var myVotes = s.votes || {};
+    var cidOf = function () { var c = null; try { c = localStorage.getItem('felix.cid'); } catch (e) {} if (!c) { c = (Date.now().toString(36) + Math.random().toString(36).slice(2, 12)).replace(/[^a-z0-9]/g, ''); try { localStorage.setItem('felix.cid', c); } catch (e) {} } self._cid = self._cid || c; return self._cid; };
+    voteOpts = VO.map(function (v) { return { label: v[1], pick: function () {
+      var mv2 = Object.assign({}, s.votes); mv2[s.tipItem] = v[0]; set({ votes: mv2 });
+      if (typeof fetch === 'function') fetch('/api/vote', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ item: s.tipItem, dir: v[0], cid: cidOf() }) })
+        .then(function (r) { return r.json(); }).then(function () { self._voteReq = false; self.setState({ voteData: null }); }).catch(function () {});
+    } }; });
+    var cur2 = VI && VI[s.tipItem] ? VI[s.tipItem] : { up: 0, flat: 0, down: 0, n: 0 };
+    var showPct = cur2.n >= MINN;
+    voteRows = VO.map(function (v) { var pc2 = cur2.n ? cur2[v[0]] / cur2.n * 100 : 0; return { label: v[1] + (myVotes[s.tipItem] === v[0] ? ' · 내 응답' : ''), pctText: showPct ? Math.round(pc2) + '%' : '—', barStyle: 'width:' + (showPct ? pc2.toFixed(1) : 0) + '%;background:' + (myVotes[s.tipItem] === v[0] ? '#0072F5' : '#9CC3FF') }; });
+    var voteMeta = TIPN[s.tipItem] + ' · 이번 주 응답 ' + cur2.n + '명' + (showPct ? '' : ' · ' + MINN + '명 이상 모이면 비율을 공개합니다');
+
+    // 내 재고 평가 (이 기기에만 저장)
+    if (!self._invLoaded) { self._invLoaded = true; try { var sv = JSON.parse(localStorage.getItem('felix.inv') || '[]'); if (Array.isArray(sv) && sv.length) setTimeout(function () { self.setState({ inv: sv }); }, 0); } catch (e) {} }
+    var invList = s.inv || [];
+    var saveInv = function (l) { try { localStorage.setItem('felix.inv', JSON.stringify(l)); } catch (e) {} set({ inv: l }); };
+    var rateOf = function (it) { var u = it.unit || ''; return /^달러\/t/.test(u) && byId.fx1 ? byId.fx1.val : (/^위안\/t/.test(u) && byId.fx2 ? byId.fx2.val : null); };
+    var invOpts = items.filter(function (it) { return rateOf(it) != null; });
+    var invSel = s.invItem && byId[s.invItem] ? s.invItem : (invOpts[0] ? invOpts[0].id : null);
+    var invTotal = 0, invChg = 0;
+    var invRows = invList.map(function (e2, k) {
+      var it = byId[e2.id]; if (!it || rateOf(it) == null) return null;
+      var r2 = rateOf(it), v2 = e2.tons * it.val * r2, c2 = e2.tons * (it.chg || 0) * r2; invTotal += v2; invChg += c2;
+      return { name: it.name, sub: it.groupLabel + ' · ' + fmt(e2.tons, 0) + 't · ' + it.valText + ' ' + String(it.unit).split(' ·')[0], valText: fmt(Math.round(v2 / 10000), 0) + '만원',
+        chgText: c2 === 0 ? '변동 없음' : (c2 > 0 ? '▲' : '▼') + fmt(Math.abs(Math.round(c2 / 10000)), 0) + '만원', chgStyle: c2 > 0 ? UP : (c2 < 0 ? DOWN : FLAT),
+        remove: function () { saveInv(invList.filter(function (_, j) { return j !== k; })); } };
+    }).filter(Boolean);
+    var tonOk = parseFloat(s.invTon) > 0;
+    var inv = { has: invRows.length > 0, rows: invRows, totalText: fmt(Math.round(invTotal / 10000), 0),
+      chgText: '직전 발표 대비 ' + (invChg === 0 ? '변동 없음' : (invChg > 0 ? '▲' : '▼') + fmt(Math.abs(Math.round(invChg / 10000)), 0) + '만원'), chgStyle: invChg > 0 ? UP : (invChg < 0 ? DOWN : FLAT),
+      opts: invOpts.map(function (it) { return { id: it.id, name: it.groupLabel + ' · ' + it.name, sel: it.id === invSel ? 'selected' : null }; }), pickSel: function (e) { set({ invItem: e.target.value }); },
+      ton: s.invTon || '', setTon: function (e) { set({ invTon: e.target.value }); },
+      addStyle: tonOk ? 'background:#0072F5;color:#FFFFFF' : 'background:#F2F4F7;color:#98A2B3',
+      add: function () { if (!tonOk || !invSel) return; saveInv(invList.concat([{ id: invSel, tons: parseFloat(s.invTon) }])); set({ invTon: '' }); } };
+    // 다가오는 정기 발표(오늘 이후 2주, 대략 날짜)
+    var upcoming = (function () {
+      var out = [], now = new Date();
+      for (var k = 1; k <= 14 && out.length < 4; k++) {
+        var dd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + k), day = dd.getDate(), lab = (dd.getMonth() + 1) + '/' + day;
+        var wd = ['일', '월', '화', '수', '목', '금', '토'][dd.getDay()];
+        if ([4, 14, 24].indexOf(day) >= 0) out.push({ md: lab, wd: wd, title: '중국 국가통계국 열흘 유통가격', why: '중국 열연·철근·원료탄·코크스' });
+        if (day === 14) out.push({ md: lab, wd: wd, title: '인도 도매물가(WPI)', why: '인도 철강재·원료' });
+        if (day === 15) out.push({ md: lab, wd: wd, title: '관세청 전월 수입 통관 단가', why: '수입 철강재·원료·비철 단가' });
+        if (day === 16) out.push({ md: lab, wd: wd, title: '미국 BLS 생산자물가', why: '미국 철강재·고철' });
+        if (day === 21) out.push({ md: lab, wd: wd, title: '한국은행 생산자물가', why: '국내 철강재 출고가' });
+        if (day === 3) out.push({ md: lab, wd: wd, title: '세계은행 월평균 국제가격', why: '철광석·석탄·비철' });
+      }
+      return out.slice(0, 4);
+    })();
     // 국가 비교: 품목 하나를 골라 나라별 세로 목록 + 한눈에 보기 점 지도(가로 스크롤 없음)
     var cmpSelIdx = Math.max(0, cmpRows.map(function (r) { return r.name; }).indexOf(s.cmpItem));
     var cmpSel = cmpRows[cmpSelIdx] || { name: '', cells: [] };
@@ -1709,13 +2094,14 @@ class Component extends DCLogic {
       isTips: top && s.tab === 'tips', isMe: top && s.tab === 'me',
       isDetail: s.sub === 'detail', isReport: s.sub === 'report', isSources: s.sub === 'sources',
       goHome: go('home'), goBoard: go('board'), goReports: go('reports'), goTips: go('tips'), goMe: go('me'),
-      back: function () { set({ sub: null }); },
+      back: function () { set({ sub: null }); }, backDetail: function () { set({ sub: 'detail' }); },
+      isCompare: s.sub === 'compare', isCalc: s.sub === 'calc', cp: cp, cc: cc, vh: vh, inv: inv, voteMeta: voteMeta,
       openReport: openRep(repLatest ? repLatest.no : null),
       repList: repList, repListNote: repListNote, homeRepTag: homeRepTag, homeRepLine: homeRepLine, rp: rp || {}, repLive: !!rp, repLoading: repLoading, repSample: repSample,
       openSources: function () { set({ sub: 'sources' }); },
       tabHome: s.tab === 'home' ? tabOn : tabOff, tabBoard: s.tab === 'board' ? tabOn : tabOff, tabReports: s.tab === 'reports' ? tabOn : tabOff,
       tabTips: s.tab === 'tips' ? tabOn : tabOff, tabMe: s.tab === 'me' ? tabOn : tabOff,
-      movers: movers, watchItems: watchItems, noWatch: watchItems.length === 0,
+      movers: movers, upcoming: upcoming, watchItems: watchItems, noWatch: watchItems.length === 0,
       groups: groups, rows: rows, isDataGroup: !isDom && !isCmp && !isUs && !isJp && !isKr, isKrGroup: isKr, krTitle: isNf ? '비철 수입 통관 단가' : '한국 수입 통관 단가', krIsSteel: !isNf, krIsNf: isNf, krRows: krRows, krBanner: krBanner, krBannerStyle: krBannerStyle, krShowRetry: krStatus === 'error', krRetry: krRetry, krMonthLabel: krMonthLabel, isJpGroup: isJp, jpSections: jpSections, jpBanner: jpBanner, jpBannerStyle: jpBannerStyle, jpShowRetry: jpStatus === 'error', jpRetry: jpRetry, jpMonthLabel: jpMonthLabel, isDomGroup: isDom, isCmpGroup: isCmp, cmpRows: cmpRows, cmpCols: cmpCols, cmpItems: cmpItems, cmpList: cmpList, cmpMatrix: cmpMatrix, cmpTabs: cmpTabs, cmpTitle: ct.title, isUsGroup: isUs, usStates: usStates, usSections: usSections, usStateName: STATES.at(si)[1], usBanner: usBanner, usBannerStyle: usBannerStyle, usShowRetry: usStatus === 'error', usRetry: usRetry, usMonthLabel: usStatus === 'ok' ? monthLabel(ud.month) : (usStatus === 'error' ? '예시' : '확인 중'),
       groupSrc: g.src, groupCycle: g.cycle, groupDate: g.date, groupNote: g.note,
       groupTag: s.group === 'sd' ? '일부 실제 값' : (g.real ? '실제 발표값' : '예시 값'), groupTagStyle: g.real ? 'color:#12B76A' : 'color:#B54708',
@@ -1725,7 +2111,7 @@ class Component extends DCLogic {
       news: news,
       stages: stages, stageNote: stageNote, tipItems: tipItems, tipItemLabel: tipLabel,
       isStage1: s.stage === 1, isStage2: s.stage === 2, isStage3: s.stage === 3,
-      voteOpen: !s.vote, voteDone: !!s.vote, voteOpts: voteOpts, voteRows: voteRows, resetVote: function () { set({ vote: null }); },
+      voteOpen: !myVotes[s.tipItem], voteDone: !!myVotes[s.tipItem], voteOpts: voteOpts, voteRows: voteRows, resetVote: function () { var o = Object.assign({}, s.votes); delete o[s.tipItem]; set({ votes: o }); },
       bandOpen: !s.band, bandDone: !!s.band, bands: bands, bandRows: bandRows, resetBand: function () { set({ band: null }); },
       price: s.price, ton: s.ton, setPrice: function (e) { set({ price: e.target.value }); }, setTon: function (e) { set({ ton: e.target.value }); },
       dealOpts: dealOpts, priceHint: priceHint,

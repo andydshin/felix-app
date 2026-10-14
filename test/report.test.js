@@ -163,3 +163,34 @@ test('API 없이: 숫자 초안, 요청문 복사, Claude 답 붙여넣기', asy
   await assert.rejects(r.importAnswer('죄송합니다'), e => e.code === 'bad_answer');
   assert.deepStrictEqual(await r.publish(), { no: 1, weekLabel: '2026년 10월 2주' });
 });
+
+test('자체 시계열: 같은 기간은 한 번, 직전 기간 보탬, 정정 반영', async () => {
+  const { createHistory, merge, prevPeriodOf } = require('../lib/history');
+  assert.strictEqual(prevPeriodOf('2026-10 상순'), '2026-09 하순');
+  const kv = createKv(), h = createHistory({ kv, now: () => new Date('2026-10-14T01:00:00Z') });
+  const rows = [{ key: 'cn:hr', regionName: '중국', label: '열연', unit: '위안/t', basis: 'b', value: 3266, prev: 3309, period: '2026-10 상순' }, { key: 'mx:plate', value: 900, period: '2026-08', low: true }];
+  let r = await h.snapshot(rows);
+  assert.deepStrictEqual([r.added, r.updated], [2, 0]);
+  r = await h.snapshot(rows);
+  assert.deepStrictEqual([r.added, r.updated], [0, 0]);
+  rows[0] = Object.assign({}, rows[0], { value: 3240, prev: 3266, period: '2026-10 중순' });
+  await h.snapshot(rows);
+  const g = await createHistory({ kv }).get('cn:hr,mx:plate');
+  assert.deepStrictEqual(g.series['cn:hr'].pts, [['2026-09 하순', 3309], ['2026-10 상순', 3266], ['2026-10 중순', 3240]]);
+  assert.ok(!g.series['mx:plate']);
+  assert.strictEqual(merge({}, [{ key: 'a', value: 1, period: '2026-08' }], 'x').store.a.pts.length, 1);
+});
+
+test('체감 투표: 기기당 주 1회, 잘못된 값 거절, 합계만', async () => {
+  const { createVotes, weekId } = require('../lib/votes');
+  assert.strictEqual(weekId(new Date('2026-10-14T01:00:00Z')), '2026-W42');
+  const v = createVotes({ kv: createKv(), now: () => new Date('2026-10-14T01:00:00Z') });
+  assert.strictEqual((await v.vote({ item: 'hr', dir: 'down', cid: 'abcdefgh1' })).counted, true);
+  assert.strictEqual((await v.vote({ item: 'hr', dir: 'up', cid: 'abcdefgh1' })).counted, false);
+  await v.vote({ item: 'hr', dir: 'up', cid: 'zzzzzzzz2' });
+  assert.strictEqual((await v.vote({ item: 'xx', dir: 'up', cid: 'zzzzzzzz2' })).ok, false);
+  assert.strictEqual((await v.vote({ item: 'hr', dir: 'up', cid: 'x' })).ok, false);
+  const r = await v.results();
+  assert.deepStrictEqual(r.items.hr, { up: 1, flat: 0, down: 1, n: 2 });
+  assert.strictEqual(r.items.cr.n, 0);
+});

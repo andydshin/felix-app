@@ -18,7 +18,7 @@ test('BLS: 시리즈 선택(제목으로 냉연 찾기), 최신·전월, 예비�
   const fetch = async (url, init) => { bodies.push(JSON.parse(init.body)); return { ok: true, status: 200, text: async () => JSON.stringify({ status: 'REQUEST_SUCCEEDED', message: [], Results: { series: SERIES } }) }; };
   const r = await createBls({ fetch, now: () => new Date(Date.UTC(2026, 9, 13)), log: () => {} }).latest();
   assert.strictEqual(bodies[0].registrationkey, KEY);
-  assert.deepStrictEqual([bodies[0].startyear, bodies[0].endyear], ['2025', '2026']);
+  assert.deepStrictEqual([bodies[0].startyear, bodies[0].endyear], ['2024', '2026']);
   const [g1, g2, g3, g4] = r.items;
   assert.strictEqual(g4.status, 'nodata');
   assert.deepStrictEqual([g1.value, g1.prev, g1.preliminary, g1.period], [381.162, 374.793, true, '2026-08']);
