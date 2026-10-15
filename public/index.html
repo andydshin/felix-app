@@ -514,27 +514,7 @@ a{color:#0072F5}a:hover{color:#0058CC}
           </div>
           </sc-if>
           <div style="font-size: 13px; color: #344054">{{ hs.title }}</div>
-          <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 16px">
-            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px"><div style="font-size: 15px; font-weight: 700">데이터로 본 핵심</div><div style="font-size: 11px; color: #98A2B3">통계에서 계산한 사실만</div></div>
-            <sc-if value="{{ hs.noFacts }}" hint-placeholder-val="{{ false }}"><div style="margin-top: 10px; font-size: 13px; line-height: 1.6; color: #667085">{{ hs.noFactsText }}</div></sc-if>
-            <sc-for list="{{ hs.facts }}" as="hf" hint-placeholder-count="4">
-              <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #F2F4F7"><div style="font-size: 13px; font-weight: 700; color: #0058CC">{{ hf.title }}</div><div style="margin-top: 4px; font-size: 14px; line-height: 1.65; color: #344054">{{ hf.text }}</div></div>
-            </sc-for>
-          </div>
-          <sc-if value="{{ hs.hasNotes }}" hint-placeholder-val="{{ false }}">
-            <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 16px">
-              <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px"><div style="font-size: 15px; font-weight: 700">통상 환경</div><div style="font-size: 11px; color: #98A2B3">편집부 확인 정보</div></div>
-              <sc-for list="{{ hs.notes }}" as="hn" hint-placeholder-count="2">
-                <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #F2F4F7">
-                  <div style="font-size: 14px; font-weight: 700">{{ hn.title }}</div>
-                  <div style="margin-top: 4px; font-size: 13px; line-height: 1.65; color: #344054">{{ hn.body }}</div>
-                  <div style="margin-top: 4px; font-size: 11px; color: #98A2B3">확인일 {{ hn.checkedAt }}</div>
-                  <sc-for list="{{ hn.sources }}" as="hns" hint-placeholder-count="1"><a href="{{ hns.href }}" target="_blank" rel="noopener noreferrer" style="display: block; margin-top: 4px; font-size: 12px; line-height: 1.45; color: #0058CC">{{ hns.title }}</a></sc-for>
-                </div>
-              </sc-for>
-              <div style="margin-top: 12px; font-size: 11px; line-height: 1.5; color: #98A2B3">관세·특례 제도는 자주 바뀝니다. 실제 거래 전에는 관세사나 해당국 관세표로 세번별 세율을 확인하세요.</div>
-            </div>
-          </sc-if>
+          <sc-if value="{{ hs.hasHeadline }}" hint-placeholder-val="{{ false }}"><div style="background: #EEF6FF; border-radius: 12px; padding: 12px 14px; font-size: 14px; font-weight: 600; line-height: 1.55; color: #0B0D12">{{ hs.headline }}</div></sc-if>
           <sc-for list="{{ hs.cards }}" as="hc" hint-placeholder-count="2">
             <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 16px">
               <div style="display: flex; justify-content: space-between; align-items: baseline"><div style="display: flex; align-items: center; gap: 8px"><span style="width: 10px; height: 10px; border-radius: 5px; {{ hc.dot }}"></span><span style="font-size: 16px; font-weight: 700">{{ hc.name }}산</span></div><div style="font-size: 12px; color: #667085">{{ hc.month }}</div></div>
@@ -572,6 +552,27 @@ a{color:#0072F5}a:hover{color:#0058CC}
               <div style="font-size: 13px; font-weight: 700; color: #0058CC">교차 확인 · 한국 관세청 기준 대{{ hs.marketName }} 수출</div>
               <div style="margin-top: 6px; font-size: 14px; line-height: 1.6; color: #0B0D12">{{ hs.krText }}</div>
               <div style="margin-top: 4px; font-size: 12px; color: #344054">{{ hs.krGap }}</div>
+            </div>
+          </sc-if>
+          <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 16px">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px"><div style="font-size: 15px; font-weight: 700">데이터로 본 핵심</div><div style="font-size: 11px; color: #98A2B3">통계에서 계산한 사실만</div></div>
+            <sc-if value="{{ hs.noFacts }}" hint-placeholder-val="{{ false }}"><div style="margin-top: 10px; font-size: 13px; line-height: 1.6; color: #667085">{{ hs.noFactsText }}</div></sc-if>
+            <sc-for list="{{ hs.facts }}" as="hf" hint-placeholder-count="4">
+              <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #F2F4F7"><div style="font-size: 13px; font-weight: 700; color: #0058CC">{{ hf.title }}</div><div style="margin-top: 4px; font-size: 14px; line-height: 1.65; color: #344054">{{ hf.text }}</div></div>
+            </sc-for>
+          </div>
+          <sc-if value="{{ hs.hasNotes }}" hint-placeholder-val="{{ false }}">
+            <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 16px">
+              <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px"><div style="font-size: 15px; font-weight: 700">통상 환경</div><div style="font-size: 11px; color: #98A2B3">편집부 확인 정보</div></div>
+              <sc-for list="{{ hs.notes }}" as="hn" hint-placeholder-count="2">
+                <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #F2F4F7">
+                  <div style="font-size: 14px; font-weight: 700">{{ hn.title }}</div>
+                  <div style="margin-top: 4px; font-size: 13px; line-height: 1.65; color: #344054">{{ hn.body }}</div>
+                  <div style="margin-top: 4px; font-size: 11px; color: #98A2B3">확인일 {{ hn.checkedAt }}</div>
+                  <sc-for list="{{ hn.sources }}" as="hns" hint-placeholder-count="1"><a href="{{ hns.href }}" target="_blank" rel="noopener noreferrer" style="display: block; margin-top: 4px; font-size: 12px; line-height: 1.45; color: #0058CC">{{ hns.title }}</a></sc-for>
+                </div>
+              </sc-for>
+              <div style="margin-top: 12px; font-size: 11px; line-height: 1.5; color: #98A2B3">관세·특례 제도는 자주 바뀝니다. 실제 거래 전에는 관세사나 해당국 관세표로 세번별 세율을 확인하세요.</div>
             </div>
           </sc-if>
           <div style="font-size: 11px; line-height: 1.6; color: #98A2B3">{{ hs.srcNote }}</div>
@@ -2334,6 +2335,9 @@ class Component extends DCLogic {
         hs.title = J2.marketName + '의 ' + (J2.preset ? J2.preset.name + ' (' + J2.codes.join(', ') + ')' : 'HS ' + J2.codes.join(', ')) + ' 수입 · ' + (M.months.length ? M.months[0] + ' ~ ' + M.months[M.months.length - 1] : '자료 없음');
         hs.facts = J2.facts || [];
         hs.noFacts = !hs.facts.length;
+        var fv = hs.facts.filter(function (f) { return f.kind === 'volume'; })[0], fp = hs.facts.filter(function (f) { return f.kind === 'price'; })[0];
+        hs.headline = [fv ? fv.text.split('. ').slice(-1)[0].replace(/\.$/, '') : '', fp ? fp.text.split('. ').slice(-1)[0].replace(/\.$/, '') : ''].filter(Boolean).join(' · ');
+        hs.hasHeadline = !!hs.headline;
         hs.noFactsText = '분석하려면 상대국별로 최소 2~3개월 자료가 필요합니다. 지금 받은 자료는 ' + M.months.length + '개월입니다.';
         hs.multiCode = J2.codes.length > 1;
         var cm = J2.comtradeMeta || {};
