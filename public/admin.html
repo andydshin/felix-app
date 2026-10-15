@@ -127,7 +127,9 @@
     var head = el('div', { class: 'card' }, [el('h2', { text: '요약' }),
       field('제목 (35자 이내 권장)', d.title, function (v) { d.title = v; }),
       field('이번 주 한 줄', d.oneLiner, function (v) { d.oneLiner = v; }, true),
-      field('핵심 3가지 (한 줄에 하나)', (d.takeaways || []).join('\n'), function (v) { d.takeaways = v.split('\n').map(function (x) { return x.trim(); }).filter(Boolean); }, true)]);
+      field('핵심 3가지 (한 줄에 하나)', (d.takeaways || []).join('\n'), function (v) { d.takeaways = v.split('\n').map(function (x) { return x.trim(); }).filter(Boolean); }, true),
+      field('기사형 분석 · 리드 (결론 먼저, ~했다/~로 보인다)', (d.article && d.article.lede) || '', function (v) { d.article = d.article || { lede: '', body: [] }; d.article.lede = v.trim(); }, true),
+      field('기사형 분석 · 본문 (빈 줄로 문단 구분. 없는 인용 금지, 외신은 \u2018제목\u2019만)', ((d.article && d.article.body) || []).join('\n\n'), function (v) { d.article = d.article || { lede: '', body: [] }; d.article.body = v.split(/\n\s*\n/).map(function (x) { return x.trim(); }).filter(Boolean); }, true)]);
     box.appendChild(head);
 
     var reg = el('div', { class: 'card' }, [el('h2', { text: '지역별 브리핑' })]);

@@ -554,13 +554,28 @@ a{color:#0072F5}a:hover{color:#0058CC}
               <div style="margin-top: 4px; font-size: 12px; color: #344054">{{ hs.krGap }}</div>
             </div>
           </sc-if>
-          <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 16px">
-            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px"><div style="font-size: 15px; font-weight: 700">데이터로 본 핵심</div><div style="font-size: 11px; color: #98A2B3">회색: 통계 · 해석: 패턴에서 나온 추정</div></div>
-            <sc-if value="{{ hs.noFacts }}" hint-placeholder-val="{{ false }}"><div style="margin-top: 10px; font-size: 13px; line-height: 1.6; color: #667085">{{ hs.noFactsText }}</div></sc-if>
-            <sc-for list="{{ hs.facts }}" as="hf" hint-placeholder-count="4">
-              <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #F2F4F7"><div style="font-size: 13px; font-weight: 700; color: #0058CC">{{ hf.title }}</div><div style="margin-top: 4px; font-size: 13px; line-height: 1.6; color: #667085">{{ hf.text }}</div><sc-if value="{{ hf.insight }}" hint-placeholder-val="{{ true }}"><div style="margin-top: 8px; display: flex; gap: 8px; align-items: flex-start"><span style="flex: none; font-size: 11px; font-weight: 700; border-radius: 6px; padding: 2px 6px; background: #FEF3E2; color: #B54708">해석</span><div style="font-size: 14px; font-weight: 500; line-height: 1.6; color: #0B0D12">{{ hf.insight }}</div></div></sc-if></div>
-            </sc-for>
-          </div>
+          <sc-if value="{{ hs.hasArticle }}" hint-placeholder-val="{{ true }}">
+            <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 20px">
+              <div style="font-size: 12px; font-weight: 700; color: #0072F5">FELIX 분석</div>
+              <div style="margin-top: 6px; font-size: 20px; font-weight: 700; line-height: 1.4; letter-spacing: -0.02em">{{ hs.article.headline }}</div>
+              <div style="margin-top: 6px; font-size: 12px; color: #98A2B3">{{ hs.article.byline }}</div>
+              <div style="margin-top: 14px; font-size: 16px; font-weight: 600; line-height: 1.7; color: #0B0D12">{{ hs.article.lede }}</div>
+              <sc-for list="{{ hs.article.body }}" as="ap" hint-placeholder-count="4"><div style="margin-top: 12px; font-size: 15px; line-height: 1.75; color: #344054">{{ ap }}</div></sc-for>
+              <div style="margin-top: 14px; padding-top: 10px; border-top: 1px solid #F2F4F7; font-size: 11px; line-height: 1.5; color: #98A2B3">{{ hs.article.basis }}</div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ hs.hasNews }}" hint-placeholder-val="{{ false }}">
+            <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 16px">
+              <div style="display: flex; justify-content: space-between; align-items: baseline"><div style="font-size: 15px; font-weight: 700">관련 뉴스</div><div style="font-size: 11px; color: #98A2B3">최근 4개월 · 제목과 링크</div></div>
+              <sc-for list="{{ hs.news }}" as="hw" hint-placeholder-count="4">
+                <a href="{{ hw.href }}" target="_blank" rel="noopener noreferrer" style="display: block; margin-top: 10px; padding-top: 10px; border-top: 1px solid #F2F4F7; text-decoration: none">
+                  <div style="font-size: 14px; font-weight: 600; line-height: 1.45; color: #0B0D12">{{ hw.title }}</div>
+                  <div style="margin-top: 2px; font-size: 12px; color: #667085"><span style="font-size: 10px; font-weight: 700; border-radius: 4px; padding: 1px 5px; margin-right: 4px; background: #F2F4F7; color: #475467">{{ hw.lang }}</span>{{ hw.meta }}</div>
+                </a>
+              </sc-for>
+              <div style="margin-top: 10px; font-size: 11px; color: #98A2B3">뉴스 검색: GDELT Project. 기사 내용은 각 매체에 있습니다.</div>
+            </div>
+          </sc-if>
           <sc-if value="{{ hs.hasNotes }}" hint-placeholder-val="{{ false }}">
             <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 16px">
               <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px"><div style="font-size: 15px; font-weight: 700">통상 환경</div><div style="font-size: 11px; color: #98A2B3">편집부 확인 정보</div></div>
@@ -575,6 +590,15 @@ a{color:#0072F5}a:hover{color:#0058CC}
               <div style="margin-top: 12px; font-size: 11px; line-height: 1.5; color: #98A2B3">관세·특례 제도는 자주 바뀝니다. 실제 거래 전에는 관세사나 해당국 관세표로 세번별 세율을 확인하세요.</div>
             </div>
           </sc-if>
+          <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 16px">
+            <button onClick="{{ hs.toggleFacts }}" style="display: flex; width: 100%; justify-content: space-between; align-items: center; gap: 8px; min-height: 32px"><div style="font-size: 15px; font-weight: 700">근거 숫자와 해석</div><div style="font-size: 13px; font-weight: 600; color: #0072F5">{{ hs.factsBtn }}</div></button>
+            <sc-if value="{{ hs.factsOpen }}" hint-placeholder-val="{{ false }}">
+            <sc-if value="{{ hs.noFacts }}" hint-placeholder-val="{{ false }}"><div style="margin-top: 10px; font-size: 13px; line-height: 1.6; color: #667085">{{ hs.noFactsText }}</div></sc-if>
+            <sc-for list="{{ hs.facts }}" as="hf" hint-placeholder-count="4">
+              <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #F2F4F7"><div style="font-size: 13px; font-weight: 700; color: #0058CC">{{ hf.title }}</div><div style="margin-top: 4px; font-size: 13px; line-height: 1.6; color: #667085">{{ hf.text }}</div><sc-if value="{{ hf.insight }}" hint-placeholder-val="{{ true }}"><div style="margin-top: 8px; display: flex; gap: 8px; align-items: flex-start"><span style="flex: none; font-size: 11px; font-weight: 700; border-radius: 6px; padding: 2px 6px; background: #FEF3E2; color: #B54708">해석</span><div style="font-size: 14px; font-weight: 500; line-height: 1.6; color: #0B0D12">{{ hf.insight }}</div></div></sc-if></div>
+            </sc-for>
+          </sc-if>
+          </div>
           <div style="font-size: 11px; line-height: 1.6; color: #98A2B3">{{ hs.srcNote }}</div>
         </sc-if>
       </div>
@@ -797,6 +821,16 @@ a{color:#0072F5}a:hover{color:#0058CC}
             </sc-for>
           </div>
 
+          <sc-if value="{{ rp.hasArticle }}" hint-placeholder-val="{{ false }}">
+            <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 20px">
+              <div style="font-size: 12px; font-weight: 700; color: #0072F5">FELIX 분석</div>
+              <div style="margin-top: 4px; font-size: 12px; color: #98A2B3">{{ rp.article.byline }}</div>
+              <div style="margin-top: 12px; font-size: 16px; font-weight: 600; line-height: 1.7; color: #0B0D12">{{ rp.article.lede }}</div>
+              <sc-for list="{{ rp.article.body }}" as="rap" hint-placeholder-count="3"><div style="margin-top: 12px; font-size: 15px; line-height: 1.75; color: #344054">{{ rap }}</div></sc-for>
+              <div style="margin-top: 14px; padding-top: 10px; border-top: 1px solid #F2F4F7; font-size: 11px; line-height: 1.5; color: #98A2B3">숫자는 각 기관 발표값에서 계산했고, 인용은 기사 제목만 옮겼습니다. 편집부 검수 후 발행.</div>
+            </div>
+          </sc-if>
+
           <div style="display: flex; gap: 6px; flex-wrap: wrap; padding-bottom: 2px">
             <sc-for list="{{ rp.jump }}" as="jp" hint-placeholder-count="5">
               <button onClick="{{ jp.go }}" style="flex: none; min-height: 36px; padding: 0 12px; border-radius: 18px; font-size: 13px; font-weight: 600; {{ jp.style }}">{{ jp.label }}</button>
@@ -923,6 +957,18 @@ a{color:#0072F5}a:hover{color:#0058CC}
                 </sc-for>
               </div>
             </sc-if>
+          <sc-if value="{{ rp.hasNews }}" hint-placeholder-val="{{ false }}">
+            <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 16px">
+              <div style="display: flex; justify-content: space-between; align-items: baseline"><div style="font-size: 15px; font-weight: 700">관련 뉴스</div><div style="font-size: 11px; color: #98A2B3">이번 호 이슈의 출처 · 최신순</div></div>
+              <sc-for list="{{ rp.news }}" as="rw" hint-placeholder-count="4">
+                <a href="{{ rw.href }}" target="_blank" rel="noopener noreferrer" style="display: block; margin-top: 10px; padding-top: 10px; border-top: 1px solid #F2F4F7; text-decoration: none">
+                  <div style="font-size: 14px; font-weight: 600; line-height: 1.45; color: #0B0D12">{{ rw.title }}</div>
+                  <div style="margin-top: 2px; font-size: 12px; color: #667085"><span style="font-size: 10px; font-weight: 700; border-radius: 4px; padding: 1px 5px; margin-right: 4px; background: #F2F4F7; color: #475467">{{ rw.lang }}</span>{{ rw.meta }}</div>
+                </a>
+              </sc-for>
+              <div style="margin-top: 10px; font-size: 11px; color: #98A2B3">기사 내용은 각 매체에 있습니다. Felix는 제목과 링크만 보여 줍니다.</div>
+            </div>
+          </sc-if>
           <sc-if value="{{ rp.secCal }}" hint-placeholder-val="{{ true }}">
             <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
               <div style="font-size: 13px; font-weight: 700; color: #667085">앞으로 2주 일정</div>
@@ -1425,6 +1471,18 @@ class Component extends DCLogic {
         pastTitle: repCur.pastCheck ? '지난 전망 점검 (제' + repCur.pastCheck.no + '호)' : '지난 전망 점검', past: past, noPast: !past.length,
         checks: repCur.checks || [], credits: repCur.credits || []
       };
+      var art = repCur.article && repCur.article.lede ? repCur.article : null;
+      rp.hasArticle = !!art && rp.secNum;
+      rp.article = art ? { lede: art.lede, body: (art.body || []).filter(Boolean), byline: 'Felix 데이터룸 · ' + repCur.date } : { lede: '', body: [], byline: '' };
+      var seenN = {}, rnews = [];
+      (repCur.issues || []).forEach(function (n) { (n.sources || []).forEach(function (x) {
+        if (!x || !x.title || !/^https?:\/\//i.test(x.url || '')) return;
+        var k = String(x.url).replace(/[?#].*$/, '').toLowerCase(); if (seenN[k]) return; seenN[k] = 1;
+        var t = String(x.title), lang = /[가-힣]/.test(t) ? '국문' : (/[ñáéíóú¿¡]/i.test(t) || /\b(acero|precio|aranceles?|importaci[oó]n)\b/i.test(t) ? '스페인어' : (/[ぁ-んァ-ン一-龥]/.test(t) ? '외신' : '영문'));
+        rnews.push({ title: t, href: x.url, lang: lang, meta: (x.source || '') + (x.date ? ' · ' + x.date : '') + ' · ' + n.title, d: x.date || '' });
+      }); });
+      rnews.sort(function (a, b) { return a.d < b.d ? 1 : (a.d > b.d ? -1 : 0); });
+      rp.news = rnews.slice(0, 10); rp.hasNews = rp.news.length > 0 && (sec === 'all' || sec === 'issue');
     }
     var repLoading = s.sub === 'report' && !repCur && (!rd || (repOk && !!s.repNo));
     var repSample = s.sub === 'report' && !repCur && !repLoading;
@@ -2335,8 +2393,14 @@ class Component extends DCLogic {
         hs.title = J2.marketName + '의 ' + (J2.preset ? J2.preset.name + ' (' + J2.codes.join(', ') + ')' : 'HS ' + J2.codes.join(', ')) + ' 수입 · ' + (M.months.length ? M.months[0] + ' ~ ' + M.months[M.months.length - 1] : '자료 없음');
         hs.facts = J2.facts || [];
         hs.noFacts = !hs.facts.length;
+        hs.article = J2.article || {}; hs.hasArticle = !!J2.article;
+        var LANG = { English: '영문', Spanish: '스페인어', Korean: '국문' };
+        hs.news = (J2.news || []).slice(0, 6).map(function (w) { return { title: w.title, href: /^https?:\/\//i.test(w.url) ? w.url : '#', lang: LANG[w.lang] || (w.lang || '뉴스'), meta: (w.source || '') + (w.date ? ' · ' + w.date : '') }; });
+        hs.hasNews = hs.news.length > 0;
+        hs.factsOpen = !!s.hsFacts; hs.factsBtn = s.hsFacts ? '접기' : '펼치기'; hs.toggleFacts = function () { set({ hsFacts: !s.hsFacts }); };
         var fv = hs.facts.filter(function (f) { return f.kind === 'volume'; })[0], fp = hs.facts.filter(function (f) { return f.kind === 'price'; })[0];
         hs.headline = [fv ? fv.text.split('. ').slice(-1)[0].replace(/\.$/, '') : '', fp ? fp.text.split('. ').slice(-1)[0].replace(/\.$/, '') : ''].filter(Boolean).join(' · ');
+        if (J2.article) hs.headline = J2.article.headline;
         hs.hasHeadline = !!hs.headline;
         hs.noFactsText = '분석하려면 상대국별로 최소 2~3개월 자료가 필요합니다. 지금 받은 자료는 ' + M.months.length + '개월입니다.';
         hs.multiCode = J2.codes.length > 1;
