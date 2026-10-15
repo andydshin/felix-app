@@ -82,7 +82,7 @@ test('분석 문장: 규모·점유율·흐름·단가 격차·코드 구성·�
     rows.push({ ym: m, code: '721012', partner: 'KR', kg: 1000000, usd: 1000 * 1200 });
     rows.push({ ym: m, code: '721012', partner: 'WD', kg: 8000000, usd: 8000 * 1000 });
   });
-  const out = { marketName: '멕시코', codes: ['721011', '721012'], partners: [{ code: 'CN' }, { code: 'KR' }], main: shape(rows, ['CN', 'KR', 'WD'], ['721011', '721012']),
+  const out = { market: 'MX', marketName: '멕시코', codes: ['721011', '721012'], partners: [{ code: 'CN' }, { code: 'KR' }], main: shape(rows, ['CN', 'KR', 'WD'], ['721011', '721012']),
     koreaExport: shape(months.map(m => ({ ym: m, code: '721012', partner: 'KR', kg: 500000, usd: 500 * 1150 })), ['KR'], ['721012']) };
   const f = analyze(out), byK = k => f.find(x => x.kind === k).text;
   assert.ok(/48,000t \(연간 환산 약 96,000t\)/.test(byK('volume')));
@@ -90,7 +90,9 @@ test('분석 문장: 규모·점유율·흐름·단가 격차·코드 구성·�
   assert.ok(/중국산 물량 \+40%/.test(byK('trend')));
   assert.ok(/한국산이 중국산보다 톤당 \$\d+/.test(byK('price')));
   assert.ok(/721012 83%/.test(byK('mix')));
-  assert.ok(/물량 차이 \+100%/.test(byK('cross')) && /제3국 경유/.test(byK('cross')));
+  assert.ok(/물량 차이 \+100%/.test(byK('cross')));
+  const fx = k => f.find(x => x.kind === k).insight;
+  assert.ok(/다른 나라를 거쳐/.test(fx('cross')) && /물량↑ → 수요 증가/.test(fx('trend')) && /장기계약/.test(fx('price')) && /정기 계약/.test(fx('pattern')));
 });
 
 test('시장 노트: 수입국·코드로 고르고, 관리자 저장값이 기본값을 덮어씀', async () => {

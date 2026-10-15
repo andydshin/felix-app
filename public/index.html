@@ -555,10 +555,10 @@ a{color:#0072F5}a:hover{color:#0058CC}
             </div>
           </sc-if>
           <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 16px">
-            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px"><div style="font-size: 15px; font-weight: 700">데이터로 본 핵심</div><div style="font-size: 11px; color: #98A2B3">통계에서 계산한 사실만</div></div>
+            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px"><div style="font-size: 15px; font-weight: 700">데이터로 본 핵심</div><div style="font-size: 11px; color: #98A2B3">회색: 통계 · 해석: 패턴에서 나온 추정</div></div>
             <sc-if value="{{ hs.noFacts }}" hint-placeholder-val="{{ false }}"><div style="margin-top: 10px; font-size: 13px; line-height: 1.6; color: #667085">{{ hs.noFactsText }}</div></sc-if>
             <sc-for list="{{ hs.facts }}" as="hf" hint-placeholder-count="4">
-              <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #F2F4F7"><div style="font-size: 13px; font-weight: 700; color: #0058CC">{{ hf.title }}</div><div style="margin-top: 4px; font-size: 14px; line-height: 1.65; color: #344054">{{ hf.text }}</div></div>
+              <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #F2F4F7"><div style="font-size: 13px; font-weight: 700; color: #0058CC">{{ hf.title }}</div><div style="margin-top: 4px; font-size: 13px; line-height: 1.6; color: #667085">{{ hf.text }}</div><sc-if value="{{ hf.insight }}" hint-placeholder-val="{{ true }}"><div style="margin-top: 8px; display: flex; gap: 8px; align-items: flex-start"><span style="flex: none; font-size: 11px; font-weight: 700; border-radius: 6px; padding: 2px 6px; background: #FEF3E2; color: #B54708">해석</span><div style="font-size: 14px; font-weight: 500; line-height: 1.6; color: #0B0D12">{{ hf.insight }}</div></div></sc-if></div>
             </sc-for>
           </div>
           <sc-if value="{{ hs.hasNotes }}" hint-placeholder-val="{{ false }}">
