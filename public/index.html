@@ -505,12 +505,18 @@ a{color:#0072F5}a:hover{color:#0058CC}
         <sc-if value="{{ hs.err }}" hint-placeholder-val="{{ false }}"><div style="background: #FEF3E2; border-radius: 12px; padding: 12px 14px; font-size: 13px; color: #B54708">{{ hs.errText }}</div></sc-if>
 
         <sc-if value="{{ hs.has }}" hint-placeholder-val="{{ false }}">
+          <sc-if value="{{ hs.hasWarn }}" hint-placeholder-val="{{ false }}">
+            <div style="background: #FEF3E2; border-radius: 12px; padding: 12px 14px; font-size: 13px; line-height: 1.55; color: #B54708">{{ hs.warn }} <button onClick="{{ hs.retry }}" style="margin-left: 4px; font-size: 13px; font-weight: 700; color: #B54708; text-decoration: underline">다시 조회</button></div>
+          </sc-if>
+          <sc-if value="{{ hs.multiCode }}" hint-placeholder-val="{{ true }}">
           <div style="display: flex; gap: 6px; background: #F2F4F7; border-radius: 12px; padding: 4px">
             <sc-for list="{{ hs.views }}" as="hv" hint-placeholder-count="2"><button onClick="{{ hv.pick }}" aria-pressed="{{ hv.on }}" style="flex: 1; min-height: 40px; border-radius: 9px; font-size: 13px; font-weight: 700; text-align: center; {{ hv.style }}">{{ hv.label }}</button></sc-for>
           </div>
+          </sc-if>
           <div style="font-size: 13px; color: #344054">{{ hs.title }}</div>
           <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 16px">
             <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px"><div style="font-size: 15px; font-weight: 700">데이터로 본 핵심</div><div style="font-size: 11px; color: #98A2B3">통계에서 계산한 사실만</div></div>
+            <sc-if value="{{ hs.noFacts }}" hint-placeholder-val="{{ false }}"><div style="margin-top: 10px; font-size: 13px; line-height: 1.6; color: #667085">{{ hs.noFactsText }}</div></sc-if>
             <sc-for list="{{ hs.facts }}" as="hf" hint-placeholder-count="4">
               <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #F2F4F7"><div style="font-size: 13px; font-weight: 700; color: #0058CC">{{ hf.title }}</div><div style="margin-top: 4px; font-size: 14px; line-height: 1.65; color: #344054">{{ hf.text }}</div></div>
             </sc-for>
@@ -2323,10 +2329,19 @@ class Component extends DCLogic {
         var M = J2.main, ps = J2.partners.map(function (p) { return p.code; }).filter(function (p) { return M.series[p]; }), WDs = M.series.WD;
         var fmtT = function (t) { return t >= 100 ? fmt(Math.round(t), 0) : fmt(t, 1); };
         var lastIdx = function (arr) { for (var k = arr.length - 1; k >= 0; k--) if (arr[k].t > 0) return k; return -1; };
-        var codesV = view === 'code' ? J2.codes : [null];
+        var codesV = view === 'code' && J2.codes.length > 1 ? J2.codes : [null];
         hs.views = [['total', '합계'], ['code', '코드별']].map(function (v) { return { label: v[1], on: view === v[0], style: view === v[0] ? segOn : segOff, pick: function () { set({ hsView: v[0] }); } }; });
         hs.title = J2.marketName + '의 ' + (J2.preset ? J2.preset.name + ' (' + J2.codes.join(', ') + ')' : 'HS ' + J2.codes.join(', ')) + ' 수입 · ' + (M.months.length ? M.months[0] + ' ~ ' + M.months[M.months.length - 1] : '자료 없음');
         hs.facts = J2.facts || [];
+        hs.noFacts = !hs.facts.length;
+        hs.noFactsText = '분석하려면 상대국별로 최소 2~3개월 자료가 필요합니다. 지금 받은 자료는 ' + M.months.length + '개월입니다.';
+        hs.multiCode = J2.codes.length > 1;
+        var cm = J2.comtradeMeta || {};
+        hs.hasWarn = !!(cm.failed && cm.failed.length) || (M.months.length < 3);
+        hs.warn = cm.failed && cm.failed.length ? J2.marketName + ' 통계 중 ' + cm.failed.length + '개월(' + cm.failed.map(function (f) { return f.period.slice(2, 4) + '.' + f.period.slice(4); }).join(', ') + ')을 받지 못했습니다' + (cm.failed.some(function (f) { return f.status === '429'; }) ? '(요청 한도 초과)' : '') + '. 잠시 뒤' : '받은 자료가 ' + M.months.length + '개월뿐입니다. 수입국이 아직 신고하지 않았거나 일시적으로 일부만 받았을 수 있습니다.';
+        hs.retry = function () { self._hsReq = null; var q3 = hsQ; var key3 = hsKeyOf(q3); self._hsReq = key3; self.setState({ hsData: { status: 'loading', key: key3 } });
+          var qs3 = 'market=' + q3.market + '&partners=' + q3.partners.join(',') + (q3.codes ? '&codes=' + encodeURIComponent(q3.codes) : '&preset=' + q3.preset) + '&fresh=1';
+          fetch('/api/hs?' + qs3).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); }).then(function (x) { self.setState({ hsData: x.ok && x.j.status === 'ok' ? { status: 'ok', key: key3, j: x.j } : { status: 'error', key: key3, msg: (x.j && x.j.message) || '' } }); }).catch(function () { self.setState({ hsData: { status: 'error', key: key3, msg: '네트워크 오류' } }); }); };
         hs.notes = (J2.notes || []).map(function (n) { return { title: n.title, body: n.body, checkedAt: n.checkedAt, sources: (n.sources || []).map(function (x) { return { title: x.title || x.url, href: /^https?:\/\//i.test(x.url) ? x.url : '#' }; }) }; });
         hs.hasNotes = hs.notes.length > 0;
         hs.cards = ps.map(function (p) {

@@ -104,3 +104,22 @@ test('시장 노트: 수입국·코드로 고르고, 관리자 저장값이 기�
   const r = await n.forQuery('MX', ['721210']);
   assert.deepStrictEqual([r.length, r[0].sources.length, r[0].market], [1, 1, 'MX']);
 });
+
+test('일부 달이 빠진 결과는 저장하지 않고, 다음 조회에서 다시 묻는다', async () => {
+  process.env.COMTRADE_API_KEY = 'k';
+  const { createKv } = require('../lib/kv');
+  let full = 0;
+  const f = async (url) => {
+    if (!url.includes('comtrade')) return { ok: true, status: 200, text: async () => '<response><header><resultCode>00</resultCode></header><body><items></items></body></response>' };
+    const per = new URL(url).searchParams.get('period');
+    if (per.includes(',')) { full++; return { ok: false, status: 429, text: async () => 'rate' }; }
+    if (per === '202606') return { ok: false, status: 500, text: async () => 'x' };
+    return { ok: true, status: 200, text: async () => JSON.stringify({ data: [{ period: per, partnerCode: 156, cmdCode: '721012', netWgt: 1000, primaryValue: 900 }] }) };
+  };
+  const h = createHsTrade({ fetch: f, kv: createKv(), wait: () => Promise.resolve(), now: () => new Date('2026-10-15T00:00:00Z') });
+  const a = await h.search({ codes: '721012', market: 'MX', partners: 'CN' });
+  assert.deepStrictEqual([a.comtradeMeta.mode, a.comtradeMeta.failed.length, !!a.cache], ['perMonth', 1, false]);
+  const b = await h.search({ codes: '721012', market: 'MX', partners: 'CN' });
+  assert.ok(!b.cache && full === 2);
+  delete process.env.COMTRADE_API_KEY;
+});
