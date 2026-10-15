@@ -33,7 +33,7 @@ a{color:#0072F5}a:hover{color:#0058CC}
 <div id="stage"><div id="app"></div><div id="hint">Felix · 세계 철강 시세와 시장 분석</div></div>
 <template id="tpl">
 
-<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: #FFFFFF; color: #0B0D12; font-family: 'Inter', 'Pretendard Variable', Pretendard, -apple-system, 'Apple SD Gothic Neo', sans-serif; letter-spacing: -0.01em; font-size: 15px; line-height: 1.5; font-variant-numeric: tabular-nums; overflow: hidden">
+<div style="position: relative; width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: #FFFFFF; color: #0B0D12; font-family: 'Inter', 'Pretendard Variable', Pretendard, -apple-system, 'Apple SD Gothic Neo', sans-serif; letter-spacing: -0.01em; font-size: 15px; line-height: 1.5; font-variant-numeric: tabular-nums; overflow: hidden">
 
   <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 20px 12px; background: #FFFFFF; border-bottom: 1px solid #EAECF0">
     <div style="display: flex; align-items: center; gap: 8px"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="6" style="fill: #EEF6FF; stroke: #0072F5; stroke-opacity: 0.5"></rect><path d="M6 16 L10 11 L13 13.5 L18 7" style="fill: none; stroke: #0072F5; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"></path></svg><div style="font-size: 16px; font-weight: 700; letter-spacing: 0.18em; color: #0B0D12">FELIX</div></div>
@@ -47,6 +47,40 @@ a{color:#0072F5}a:hover{color:#0058CC}
         <div>
           <div style="font-size: 13px; color: #667085">{{ todayLabel }}</div>
           <h1 style="margin: 2px 0 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.35">이번 주 철강 시장</h1>
+        </div>
+
+        <sc-for list="{{ tg.hits }}" as="th" hint-placeholder-count="0">
+          <div style="display: flex; align-items: center; gap: 10px; background: #ECFDF3; border: 1px solid #ABEFC6; border-radius: 14px; padding: 12px 12px 12px 14px">
+            <button onClick="{{ th.open }}" style="flex: 1; min-width: 0; text-align: left"><div style="font-size: 12px; font-weight: 700; color: #067647">목표가 도달</div><div style="font-size: 14px; font-weight: 700">{{ th.text }}</div><div style="font-size: 12px; color: #475467">{{ th.sub }}</div></button>
+            <button onClick="{{ th.dismiss }}" aria-label="닫기" style="flex: none; min-width: 32px; min-height: 32px; font-size: 18px; color: #475467; text-align: center">×</button>
+          </div>
+        </sc-for>
+
+        <div style="border-radius: 20px; padding: 18px; background: linear-gradient(135deg, #0058CC 0%, #0072F5 55%, #3D9BFF 100%); color: #FFFFFF">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+            <div style="min-width: 0">
+              <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; letter-spacing: 0.02em; opacity: 0.9"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" style="fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round"><path d="M4 12a8 8 0 0 1 16 0"></path><path d="M7.5 12a4.5 4.5 0 0 1 9 0"></path><circle cx="12" cy="12" r="1.6" style="fill: currentColor; stroke: none"></circle></svg>FELIX 철강 라디오</div>
+              <div style="margin-top: 4px; font-size: 18px; font-weight: 700; line-height: 1.35">운전하면서 듣는 오늘의 시세</div>
+              <div style="margin-top: 2px; font-size: 12px; opacity: 0.85">{{ radio.meta }}</div>
+            </div>
+            <button onClick="{{ radio.main }}" aria-label="{{ radio.mainLabel }}" style="flex: none; width: 60px; height: 60px; border-radius: 30px; background: #FFFFFF; color: #0072F5; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 16px rgba(0,40,100,0.25)">
+              <sc-if value="{{ radio.playing }}" hint-placeholder-val="{{ false }}"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.2" style="fill: currentColor"></rect><rect x="14" y="5" width="4" height="14" rx="1.2" style="fill: currentColor"></rect></svg></sc-if>
+              <sc-if value="{{ radio.notPlaying }}" hint-placeholder-val="{{ true }}"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z" style="fill: currentColor"></path></svg></sc-if>
+            </button>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px">
+            <sc-for list="{{ radio.segs }}" as="rs" hint-placeholder-count="6"><button onClick="{{ rs.pick }}" style="min-height: 28px; padding: 0 10px; border-radius: 14px; font-size: 12px; font-weight: 600; {{ rs.style }}">{{ rs.label }}</button></sc-for>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; font-size: 12px">
+            <button onClick="{{ radio.toggleScript }}" style="min-height: 28px; color: #FFFFFF; opacity: 0.9; font-weight: 600">{{ radio.scriptLabel }}</button>
+            <button onClick="{{ radio.toggleRate }}" style="min-height: 28px; padding: 0 10px; border-radius: 14px; background: rgba(255,255,255,0.18); color: #FFFFFF; font-weight: 700">속도 {{ radio.rateText }}</button>
+          </div>
+          <sc-if value="{{ radio.showScript }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top: 10px; padding: 12px; border-radius: 12px; background: rgba(255,255,255,0.12); font-size: 13px; line-height: 1.6">
+              <sc-for list="{{ radio.script }}" as="sc" hint-placeholder-count="3"><div style="margin-top: 6px"><b>{{ sc.title }}</b> · {{ sc.text }}</div></sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ radio.unsupported }}" hint-placeholder-val="{{ false }}"><div style="margin-top: 10px; font-size: 12px; opacity: 0.9">이 브라우저에서는 음성 재생을 지원하지 않습니다. 대본 보기로 내용을 확인하세요.</div></sc-if>
         </div>
 
         <button onClick="{{ openReport }}" style="display: block; width: 100%; box-sizing: border-box; text-align: left; background: linear-gradient(135deg, #EEF6FF 0%, #FFFFFF 70%); border: 1px solid #CFE3FF; color: #0B0D12; border-radius: 16px; padding: 20px">
@@ -83,7 +117,7 @@ a{color:#0072F5}a:hover{color:#0058CC}
         </div>
 
         <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
-          <div style="font-size: 13px; font-weight: 700; color: #667085">크게 움직인 항목 · 직전 발표 대비</div>
+          <div style="display: flex; justify-content: space-between; align-items: center"><div style="font-size: 13px; font-weight: 700; color: #667085">크게 움직인 항목 · 직전 발표 대비</div><button onClick="{{ shareSummary }}" style="display: flex; align-items: center; gap: 4px; min-height: 30px; padding: 0 10px; border-radius: 15px; background: #EEF6FF; color: #0058CC; font-size: 12px; font-weight: 700"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" style="fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round"><path d="M12 15V3"></path><path d="M7 8l5-5 5 5"></path><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"></path></svg>공유</button></div>
           <sc-for list="{{ movers }}" as="m" hint-placeholder-count="3">
             <button onClick="{{ m.open }}" style="display: flex; width: 100%; min-height: 60px; align-items: center; gap: 12px; border-top: 1px solid #F2F4F7; margin-top: 8px; padding-top: 8px">
               <div style="flex: 1; min-width: 0">
@@ -516,6 +550,7 @@ a{color:#0072F5}a:hover{color:#0058CC}
         </div>
 
         <div style="display: flex; gap: 10px">
+          <button onClick="{{ shareItem }}" style="flex: none; min-height: 48px; padding: 0 18px; border-radius: 24px; border: 1px solid #D0D5DD; background: #FFFFFF; color: #344054; font-size: 15px; font-weight: 600; text-align: center">공유</button>
           <button onClick="{{ d.toggleWatch }}" aria-pressed="{{ d.watched }}" style="flex: 1; min-height: 48px; border-radius: 24px; font-size: 15px; font-weight: 600; text-align: center; {{ d.watchStyle }}">{{ d.watchLabel }}</button>
         </div>
 
@@ -1131,11 +1166,24 @@ a{color:#0072F5}a:hover{color:#0058CC}
           <sc-if value="{{ inv.has }}" hint-placeholder-val="{{ true }}">
             <div style="margin-top: 10px; display: flex; align-items: baseline; gap: 6px"><span style="font-size: 26px; font-weight: 700; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ inv.totalText }}</span><span style="font-size: 13px; color: #667085">만원</span></div>
             <div style="font-size: 13px; font-weight: 600; {{ inv.chgStyle }}">{{ inv.chgText }}</div>
+            <sc-if value="{{ inv.hasPnl }}" hint-placeholder-val="{{ false }}"><div style="margin-top: 8px; display: flex; justify-content: space-between; align-items: baseline; padding: 10px 12px; border-radius: 12px; background: #F7F9FC"><span style="font-size: 13px; font-weight: 600; color: #475467">매입가 대비 평가손익</span><span style="font-size: 17px; font-weight: 700; {{ inv.pnlStyle }}; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ inv.pnlText }}</span></div></sc-if>
             <sc-for list="{{ inv.rows }}" as="ir" hint-placeholder-count="2">
-              <div style="display: flex; justify-content: space-between; gap: 10px; align-items: center; min-height: 52px; border-top: 1px solid #F2F4F7; margin-top: 8px">
-                <div style="min-width: 0"><div style="font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ ir.name }}</div><div style="font-size: 12px; color: #667085">{{ ir.sub }}</div></div>
-                <div style="flex: none; text-align: right"><div style="font-size: 14px; font-weight: 700; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ ir.valText }}</div><div style="font-size: 12px; font-weight: 600; {{ ir.chgStyle }}">{{ ir.chgText }}</div></div>
-                <button onClick="{{ ir.remove }}" aria-label="삭제" style="flex: none; min-width: 32px; min-height: 32px; font-size: 16px; color: #98A2B3; text-align: center">×</button>
+              <div style="border-top: 1px solid #F2F4F7; margin-top: 8px; padding-top: 8px">
+                <div style="display: flex; justify-content: space-between; gap: 10px; align-items: center">
+                  <div style="min-width: 0"><div style="font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ ir.name }}</div><div style="font-size: 12px; color: #667085">{{ ir.sub }}</div></div>
+                  <div style="flex: none; text-align: right"><div style="font-size: 14px; font-weight: 700; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ ir.valText }}</div><div style="font-size: 12px; font-weight: 600; {{ ir.chgStyle }}">{{ ir.chgText }}</div></div>
+                  <button onClick="{{ ir.remove }}" aria-label="삭제" style="flex: none; min-width: 32px; min-height: 32px; font-size: 16px; color: #98A2B3; text-align: center">×</button>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px">
+                  <button onClick="{{ ir.edit }}" style="min-height: 28px; font-size: 12px; font-weight: 600; color: #0072F5; text-align: left">{{ ir.costText }}</button>
+                  <span style="font-size: 13px; font-weight: 700; {{ ir.pnlStyle }}; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ ir.pnlText }}</span>
+                </div>
+                <sc-if value="{{ ir.editing }}" hint-placeholder-val="{{ false }}">
+                  <div style="display: flex; gap: 8px; margin-top: 6px">
+                    <input id="invCostEdit" inputmode="decimal" placeholder="매입 단가 (만원/t)" value="{{ ir.costVal }}" onChange="{{ ir.setCost }}" style="flex: 1; min-height: 40px; box-sizing: border-box; border: 1px solid #D0D5DD; border-radius: 10px; padding: 0 12px; font-size: 14px">
+                    <button onClick="{{ ir.saveCost }}" style="min-height: 40px; padding: 0 14px; border-radius: 20px; background: #0072F5; color: #FFFFFF; font-size: 13px; font-weight: 600">저장</button>
+                  </div>
+                </sc-if>
               </div>
             </sc-for>
           </sc-if>
@@ -1144,12 +1192,36 @@ a{color:#0072F5}a:hover{color:#0058CC}
             <sc-for list="{{ inv.opts }}" as="io" hint-placeholder-count="6"><option value="{{ io.id }}" selected="{{ io.sel }}">{{ io.name }}</option></sc-for>
           </select>
           <div style="display: flex; gap: 8px; margin-top: 10px; align-items: center">
-            <input id="invTon" inputmode="decimal" placeholder="톤 수" value="{{ inv.ton }}" onChange="{{ inv.setTon }}" style="flex: 1; min-height: 44px; box-sizing: border-box; border: 1px solid #D0D5DD; border-radius: 10px; padding: 0 12px; font-size: 15px; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">
+            <input id="invCost" inputmode="decimal" placeholder="매입가 (만원/t)" value="{{ inv.cost }}" onChange="{{ inv.setCost }}" style="flex: 1.3; min-width: 0; min-height: 44px; box-sizing: border-box; border: 1px solid #D0D5DD; border-radius: 10px; padding: 0 12px; font-size: 14px">
+            <input id="invTon" inputmode="decimal" placeholder="톤 수" value="{{ inv.ton }}" onChange="{{ inv.setTon }}" style="flex: 1; min-width: 0; min-height: 44px; box-sizing: border-box; border: 1px solid #D0D5DD; border-radius: 10px; padding: 0 12px; font-size: 15px; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">
             <button onClick="{{ inv.add }}" style="min-height: 44px; padding: 0 18px; border-radius: 22px; font-size: 14px; font-weight: 600; {{ inv.addStyle }}">추가</button>
           </div>
-          <div style="margin-top: 8px; font-size: 11px; line-height: 1.5; color: #98A2B3">달러·위안 단가 품목을 최신 환율로 원화 환산합니다. 공개 통계 기준 참고값으로, 실제 매입가와 다를 수 있습니다.</div>
+          <div style="margin-top: 8px; font-size: 11px; line-height: 1.5; color: #98A2B3">달러·위안 단가 품목을 최신 환율로 원화 환산합니다. 매입가를 넣으면 평가손익을 함께 보여 드립니다. 공개 통계 기준 참고값입니다.</div>
         </div>
 
+
+        <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 16px">
+          <div style="display: flex; justify-content: space-between; align-items: baseline"><div style="font-size: 15px; font-weight: 700">목표가 알림</div><div style="font-size: 11px; color: #98A2B3">이 기기에만 저장</div></div>
+          <sc-for list="{{ tg.rows }}" as="tr" hint-placeholder-count="2">
+            <div style="display: flex; justify-content: space-between; gap: 10px; align-items: center; min-height: 52px; border-top: 1px solid #F2F4F7; margin-top: 8px">
+              <div style="min-width: 0"><div style="font-size: 14px; font-weight: 600">{{ tr.name }}</div><div style="font-size: 12px; color: #667085">{{ tr.sub }}</div></div>
+              <span style="flex: none; font-size: 12px; font-weight: 700; border-radius: 8px; padding: 3px 8px; {{ tr.chipStyle }}">{{ tr.chip }}</span>
+              <button onClick="{{ tr.remove }}" aria-label="삭제" style="flex: none; min-width: 28px; min-height: 32px; font-size: 16px; color: #98A2B3; text-align: center">×</button>
+            </div>
+          </sc-for>
+          <select id="tgSel" onChange="{{ tg.pickSel }}" style="width: 100%; margin-top: 12px; min-height: 44px; box-sizing: border-box; border: 1px solid #D0D5DD; border-radius: 10px; padding: 0 10px; font: inherit; font-size: 14px; background: #FFFFFF">
+            <sc-for list="{{ tg.opts }}" as="to" hint-placeholder-count="6"><option value="{{ to.id }}" selected="{{ to.sel }}">{{ to.name }}</option></sc-for>
+          </select>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px">
+            <sc-for list="{{ tg.dirs }}" as="td" hint-placeholder-count="2"><button onClick="{{ td.pick }}" style="min-height: 38px; border-radius: 10px; font-size: 13px; font-weight: 600; text-align: center; {{ td.style }}">{{ td.label }}</button></sc-for>
+          </div>
+          <div style="display: flex; gap: 8px; margin-top: 8px; align-items: center">
+            <input id="tgVal" inputmode="decimal" placeholder="목표 가격" value="{{ tg.val }}" onChange="{{ tg.setVal }}" style="flex: 1; min-width: 0; min-height: 44px; box-sizing: border-box; border: 1px solid #D0D5DD; border-radius: 10px; padding: 0 12px; font-size: 15px; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">
+            <span style="flex: none; font-size: 12px; color: #667085">{{ tg.unit }}</span>
+            <button onClick="{{ tg.add }}" style="flex: none; min-height: 44px; padding: 0 16px; border-radius: 22px; font-size: 14px; font-weight: 600; {{ tg.addStyle }}">추가</button>
+          </div>
+          <div style="margin-top: 8px; font-size: 11px; line-height: 1.5; color: #98A2B3">새 발표값이 목표에 닿으면 홈 화면 맨 위에 알려 드립니다. 앱 출시 후에는 푸시 알림으로도 받으실 수 있습니다.</div>
+        </div>
 
         <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 6px 16px">
           <div style="padding: 10px 0 4px; font-size: 13px; font-weight: 700; color: #667085">알림</div>
@@ -1200,6 +1272,18 @@ a{color:#0072F5}a:hover{color:#0058CC}
 
   </div>
 
+  <sc-if value="{{ radio.on }}" hint-placeholder-val="{{ false }}">
+    <div style="display: flex; align-items: center; gap: 10px; padding: 8px 12px 8px 16px; background: #0B1F3F; color: #FFFFFF">
+      <div style="flex: 1; min-width: 0"><div style="font-size: 11px; font-weight: 700; color: #9CC3FF">FELIX 철강 라디오 · {{ radio.pos }}</div><div style="font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ radio.cur }}</div></div>
+      <button onClick="{{ radio.prev }}" aria-label="이전 코너" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: #FFFFFF"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M7 5v14" style="stroke: currentColor; stroke-width: 2.2; stroke-linecap: round"></path><path d="M19 6.2v11.6a.8.8 0 0 1-1.25.66L9.5 12.66a.8.8 0 0 1 0-1.32l8.25-5.8A.8.8 0 0 1 19 6.2z" style="fill: currentColor"></path></svg></button>
+      <button onClick="{{ radio.main }}" aria-label="{{ radio.mainLabel }}" style="width: 40px; height: 40px; border-radius: 20px; background: #FFFFFF; color: #0B1F3F; display: flex; align-items: center; justify-content: center">
+        <sc-if value="{{ radio.playing }}" hint-placeholder-val="{{ false }}"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1" style="fill: currentColor"></rect><rect x="14" y="5" width="4" height="14" rx="1" style="fill: currentColor"></rect></svg></sc-if>
+        <sc-if value="{{ radio.notPlaying }}" hint-placeholder-val="{{ true }}"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z" style="fill: currentColor"></path></svg></sc-if>
+      </button>
+      <button onClick="{{ radio.next }}" aria-label="다음 코너" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: #FFFFFF"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M17 5v14" style="stroke: currentColor; stroke-width: 2.2; stroke-linecap: round"></path><path d="M5 6.2v11.6a.8.8 0 0 0 1.25.66l8.25-5.8a.8.8 0 0 0 0-1.32L6.25 5.54A.8.8 0 0 0 5 6.2z" style="fill: currentColor"></path></svg></button>
+      <button onClick="{{ radio.stop }}" aria-label="끄기" style="width: 32px; height: 36px; font-size: 18px; color: #9CC3FF; text-align: center">×</button>
+    </div>
+  </sc-if>
   <div style="display: flex; background: #FFFFFF; border-top: 1px solid #EAECF0; padding: 6px 8px 10px">
     <button onClick="{{ goHome }}" aria-label="오늘" style="flex: 1; min-height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 11px; font-weight: 600; {{ tabHome }}">
       <svg viewBox="0 0 24 24" width="22" height="22" style="fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"><path d="M4 11l8-7 8 7v8a1 1 0 0 1-1 1h-4v-6h-6v6H5a1 1 0 0 1-1-1z"></path></svg>
@@ -1222,6 +1306,22 @@ a{color:#0072F5}a:hover{color:#0058CC}
       <span>내 정보</span>
     </button>
   </div>
+  <sc-if value="{{ shareView.open }}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; z-index: 20; display: flex; flex-direction: column; justify-content: flex-end; background: rgba(11,13,18,0.55)">
+      <div style="background: #FFFFFF; border-radius: 22px 22px 0 0; padding: 16px 20px 22px">
+        <div style="display: flex; justify-content: space-between; align-items: center"><div style="font-size: 16px; font-weight: 700">{{ shareView.title }} 공유</div><button onClick="{{ shareView.close }}" aria-label="닫기" style="min-width: 36px; min-height: 36px; font-size: 20px; color: #667085; text-align: center">×</button></div>
+        <sc-if value="{{ shareView.busy }}" hint-placeholder-val="{{ false }}"><div style="height: 300px; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #667085">카드를 만들고 있습니다…</div></sc-if>
+        <sc-if value="{{ shareView.ready }}" hint-placeholder-val="{{ true }}">
+          <img src="{{ shareView.url }}" alt="{{ shareView.title }} 공유 카드" style="display: block; width: 72%; margin: 10px auto 0; border-radius: 14px; border: 1px solid #EAECF0; box-shadow: 0 8px 24px rgba(16,24,40,0.12)">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px">
+            <a href="{{ shareView.url }}" download="{{ shareView.fileName }}" style="display: flex; align-items: center; justify-content: center; min-height: 48px; border-radius: 24px; border: 1px solid #D0D5DD; color: #344054; font-size: 15px; font-weight: 600; text-decoration: none">이미지 저장</a>
+            <button onClick="{{ shareView.share }}" style="min-height: 48px; border-radius: 24px; background: #0072F5; color: #FFFFFF; font-size: 15px; font-weight: 700; text-align: center">{{ shareView.shareLabel }}</button>
+          </div>
+          <div style="margin-top: 10px; font-size: 11.5px; color: #98A2B3; text-align: center">카카오톡·문자 등 휴대폰의 공유 메뉴로 보낼 수 있습니다.</div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
 </div>
 </template>
 <script>
@@ -1263,6 +1363,132 @@ window.__boot=function(C){comp=new C();render();};
 })();
 </script>
 <script>
+// ---------- Felix 철강 라디오: 기기 음성(Web Speech)으로 읽는 브리핑. 코너 사이에 짧은 효과음 ----------
+var FelixRadio = (function () {
+  var st = { segs: [], si: 0, li: 0, on: false, paused: false, rate: 1, token: 0, ac: null, cb: null };
+  function sup() { return typeof window !== 'undefined' && 'speechSynthesis' in window && typeof window.SpeechSynthesisUtterance === 'function'; }
+  function voice() {
+    var vs = (window.speechSynthesis.getVoices && window.speechSynthesis.getVoices()) || [];
+    var ko = vs.filter(function (v) { return /^ko/i.test(v.lang); });
+    var good = ko.filter(function (v) { return /Yuna|Sora|SunHi|InJoon|Heami|Google|Premium|Enhanced|Natural/i.test(v.name); });
+    return good[0] || ko[0] || null;
+  }
+  function emit() { if (st.cb) st.cb({ on: st.on, paused: st.paused, si: st.si, n: st.segs.length, rate: st.rate }); }
+  function chime(next) {
+    try {
+      var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return next();
+      st.ac = st.ac || new AC(); var ac = st.ac, t = ac.currentTime + 0.02;
+      if (ac.state === 'suspended' && ac.resume) ac.resume();
+      [[784, 0], [1175, 0.13], [1568, 0.26]].forEach(function (n) {
+        var o = ac.createOscillator(), g = ac.createGain(); o.type = 'sine'; o.frequency.value = n[0];
+        g.gain.setValueAtTime(0.0001, t + n[1]); g.gain.exponentialRampToValueAtTime(0.12, t + n[1] + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + n[1] + 0.45);
+        o.connect(g); g.connect(ac.destination); o.start(t + n[1]); o.stop(t + n[1] + 0.5);
+      });
+      setTimeout(next, 850);
+    } catch (e) { next(); }
+  }
+  function line() {
+    var tok = st.token, seg = st.segs[st.si];
+    if (!seg) { stop(true); return; }
+    if (st.li >= seg.lines.length) {
+      st.si++; st.li = 0;
+      if (st.si >= st.segs.length) { stop(true); return; }
+      emit(); chime(function () { if (tok === st.token && st.on && !st.paused) line(); }); return;
+    }
+    var u = new window.SpeechSynthesisUtterance(seg.lines[st.li]); u.lang = 'ko-KR'; var v = voice(); if (v) u.voice = v; u.rate = st.rate; u.pitch = 1.03;
+    var done = function () { if (tok !== st.token || !st.on || st.paused) return; st.li++; setTimeout(function () { if (tok === st.token && st.on && !st.paused) line(); }, 260); };
+    u.onend = done; u.onerror = done;
+    window.speechSynthesis.speak(u);
+  }
+  function hush() { st.token++; try { window.speechSynthesis.cancel(); } catch (e) {} }
+  function stop(reset) { hush(); st.on = false; st.paused = false; if (reset) { st.si = 0; st.li = 0; } emit(); }
+  return {
+    supported: sup,
+    onChange: function (f) { st.cb = f; },
+    state: function () { return st; },
+    start: function (segs, from) { if (!sup()) return false; hush(); st.segs = segs; st.si = from || 0; st.li = 0; st.on = true; st.paused = false; emit(); var tok = st.token; chime(function () { if (tok === st.token) line(); }); return true; },
+    pause: function () { if (!st.on) return; hush(); st.paused = true; emit(); },
+    resume: function () { if (!st.on) return; hush(); st.paused = false; emit(); line(); },
+    next: function () { if (!st.on) return; hush(); st.si++; st.li = 0; st.paused = false; if (st.si >= st.segs.length) { stop(true); return; } emit(); var tok = st.token; chime(function () { if (tok === st.token) line(); }); },
+    prev: function () { if (!st.on) return; hush(); st.si = Math.max(0, st.li > 0 ? st.si : st.si - 1); st.li = 0; st.paused = false; emit(); line(); },
+    stop: function () { stop(true); },
+    setRate: function (r) { st.rate = r; if (st.on && !st.paused) { hush(); emit(); line(); } else emit(); }
+  };
+})();
+if (typeof window !== 'undefined' && window.speechSynthesis && window.speechSynthesis.getVoices) { try { window.speechSynthesis.getVoices(); } catch (e) {} }
+
+// ---------- 공유 카드(1080×1350 PNG) ----------
+var FelixCard = (function () {
+  var W = 1080, H = 1350, F = "'Pretendard Variable', Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif", M = "'JetBrains Mono', 'Pretendard Variable', monospace";
+  function rr(c, x, y, w, h, r) { c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
+  function fit(c, t, max) { t = String(t || ''); if (c.measureText(t).width <= max) return t; while (t.length > 1 && c.measureText(t + '…').width > max) t = t.slice(0, -1); return t + '…'; }
+  function wrap(c, t, max, lines) { var out = [], cur = ''; String(t || '').split('').forEach(function (ch) { if (c.measureText(cur + ch).width > max) { out.push(cur); cur = ch; } else cur += ch; }); if (cur) out.push(cur); if (out.length > lines) { out = out.slice(0, lines); out[lines - 1] = fit(c, out[lines - 1] + '…', max); } return out; }
+  function head(c, date) {
+    c.fillStyle = '#FFFFFF'; c.fillRect(0, 0, W, H);
+    var g = c.createLinearGradient(0, 0, W, 0); g.addColorStop(0, '#0072F5'); g.addColorStop(1, '#3D9BFF'); c.fillStyle = g; c.fillRect(0, 0, W, 14);
+    c.fillStyle = '#EEF6FF'; rr(c, 72, 78, 64, 64, 16); c.fill(); c.strokeStyle = '#0072F5'; c.lineWidth = 5; c.lineCap = 'round'; c.lineJoin = 'round';
+    c.beginPath(); c.moveTo(88, 124); c.lineTo(102, 106); c.lineTo(113, 115); c.lineTo(122, 94); c.stroke();
+    c.fillStyle = '#0B0D12'; c.font = '700 40px ' + F; c.textBaseline = 'middle'; c.fillText('F E L I X', 156, 111);
+    c.fillStyle = '#667085'; c.font = '500 30px ' + F; c.textAlign = 'right'; c.fillText(date, W - 72, 111); c.textAlign = 'left';
+  }
+  function foot(c, src) {
+    c.fillStyle = '#EAECF0'; c.fillRect(72, H - 150, W - 144, 2);
+    c.fillStyle = '#667085'; c.font = '500 26px ' + F; c.textBaseline = 'alphabetic';
+    c.fillText(fit(c, src || '공개 통계 기반 참고 정보', W - 144), 72, H - 96);
+    c.fillStyle = '#0072F5'; c.font = '700 28px ' + F; c.fillText('Felix 철강 시세 · ' + (location.host || 'felix'), 72, H - 54);
+  }
+  function chg(c, x, y, txt, up, size) { c.fillStyle = up > 0 ? '#F04452' : (up < 0 ? '#1B64DA' : '#667085'); c.font = '700 ' + (size || 34) + 'px ' + M; c.textAlign = 'right'; c.fillText(txt, x, y); c.textAlign = 'left'; }
+  function summary(o) {
+    var cv = document.createElement('canvas'); cv.width = W; cv.height = H; var c = cv.getContext('2d');
+    head(c, o.date);
+    c.textBaseline = 'alphabetic'; c.fillStyle = '#0B0D12'; c.font = '700 68px ' + F; c.fillText(o.title, 72, 268);
+    c.fillStyle = '#667085'; c.font = '500 32px ' + F; c.fillText(o.sub, 72, 322);
+    var y = 380;
+    o.rows.slice(0, 4).forEach(function (r) {
+      c.fillStyle = '#F7F9FC'; rr(c, 72, y, W - 144, 140, 24); c.fill();
+      c.fillStyle = '#0B0D12'; c.font = '700 40px ' + F; c.fillText(fit(c, r.name, 560), 108, y + 66);
+      c.fillStyle = '#667085'; c.font = '500 26px ' + F; c.fillText(fit(c, r.sub, 560), 108, y + 110);
+      c.fillStyle = '#0B0D12'; c.font = '700 44px ' + M; c.textAlign = 'right'; c.fillText(r.val, W - 108, y + 66); c.textAlign = 'left';
+      chg(c, W - 108, y + 108, r.chg, r.dir, 32);
+      y += 158;
+    });
+    if (o.note) {
+      var ny = Math.max(y + 30, 1030);
+      c.fillStyle = '#EEF6FF'; rr(c, 72, ny - 20, W - 144, 140, 24); c.fill();
+      c.fillStyle = '#0058CC'; c.font = '700 26px ' + F; c.fillText(o.noteTitle || '가격 방향 신호', 108, ny + 22);
+      c.fillStyle = '#0B0D12'; c.font = '600 30px ' + F; wrap(c, o.note, W - 216, 2).forEach(function (l, i) { c.fillText(l, 108, ny + 66 + i * 40); });
+    }
+    foot(c, o.src); return cv;
+  }
+  function item(o) {
+    var cv = document.createElement('canvas'); cv.width = W; cv.height = H; var c = cv.getContext('2d');
+    head(c, o.date);
+    c.textBaseline = 'alphabetic'; c.fillStyle = '#667085'; c.font = '600 32px ' + F; c.fillText(o.group, 72, 250);
+    c.fillStyle = '#0B0D12'; c.font = '700 72px ' + F; c.fillText(fit(c, o.name, W - 144), 72, 340);
+    c.font = '700 120px ' + M; c.fillText(o.val, 72, 500);
+    var vw = c.measureText(o.val).width; c.fillStyle = '#667085'; c.font = '500 34px ' + F; c.fillText(fit(c, o.unit, W - 144 - vw - 24), 72 + vw + 20, 500);
+    c.fillStyle = o.dir > 0 ? '#F04452' : (o.dir < 0 ? '#1B64DA' : '#667085'); c.font = '700 44px ' + M; c.fillText(o.chg, 72, 576);
+    if (o.hist && o.hist.length >= 3) {
+      var xs = 72, xe = W - 72, ys = 660, ye = 1020, lo = Math.min.apply(null, o.hist), hi = Math.max.apply(null, o.hist), sp = (hi - lo) || 1, n = o.hist.length;
+      var pts = o.hist.map(function (v, i) { return [xs + (xe - xs) * i / (n - 1), ye - (v - lo) / sp * (ye - ys)]; });
+      var col = o.dir > 0 ? '#F04452' : (o.dir < 0 ? '#1B64DA' : '#0072F5');
+      var g = c.createLinearGradient(0, ys, 0, ye); g.addColorStop(0, col + '33'); g.addColorStop(1, col + '00');
+      c.beginPath(); c.moveTo(pts[0][0], ye); pts.forEach(function (p) { c.lineTo(p[0], p[1]); }); c.lineTo(pts[n - 1][0], ye); c.closePath(); c.fillStyle = g; c.fill();
+      c.beginPath(); pts.forEach(function (p, i) { if (i) c.lineTo(p[0], p[1]); else c.moveTo(p[0], p[1]); }); c.strokeStyle = col; c.lineWidth = 6; c.lineJoin = 'round'; c.stroke();
+      c.beginPath(); c.arc(pts[n - 1][0], pts[n - 1][1], 12, 0, Math.PI * 2); c.fillStyle = col; c.fill(); c.strokeStyle = '#FFFFFF'; c.lineWidth = 5; c.stroke();
+      c.fillStyle = '#98A2B3'; c.font = '500 26px ' + F; c.fillText('최근 ' + n + '회 발표', 72, 1066);
+    } else {
+      c.fillStyle = '#F7F9FC'; rr(c, 72, 660, W - 144, 360, 24); c.fill(); c.fillStyle = '#98A2B3'; c.font = '500 30px ' + F; c.textAlign = 'center'; c.fillText('추이는 발표값이 쌓이면 함께 표시됩니다', W / 2, 850); c.textAlign = 'left';
+    }
+    if (o.note) { c.fillStyle = '#0058CC'; c.font = '600 30px ' + F; wrap(c, o.note, W - 144, 1).forEach(function (l) { c.fillText(l, 72, 1130); }); }
+    foot(c, o.src); return cv;
+  }
+  function make(kind, o, done) {
+    var go = function () { try { var cv = kind === 'item' ? item(o) : summary(o); done(cv.toDataURL('image/png')); } catch (e) { done(null); } };
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(go, go); else go();
+  }
+  return { make: make };
+})();
 
 class Component extends DCLogic {
   renderVals() {
@@ -1328,6 +1554,12 @@ class Component extends DCLogic {
     });
     var byId = {};
     items.forEach(function (it) { byId[it.id] = it; });
+    var niceName = function (it) {
+      var base = String(it.name).split(' (')[0];
+      if (it.group === 'cn') { var f0 = base.split(' ')[0]; return '중국 ' + ({ '점결탄': '원료탄', '중후판': '후판' }[f0] || f0); }
+      if (it.group === 'imp' || it.group === 'nf') return '수입 ' + base.split(' ')[0];
+      return base;
+    };
 
     // 시세 분류: 국가 비교 · 나라별(내수/수출/수입) · 국제가 · 국내 방향 · 원료 · 비철 · 환율 · 국내 유통가
     var CATS = [['cmp', '국가 비교'], ['nation', '나라별'], ['wp', '국제가'], ['kr', '국내 방향'], ['raw', '원료'], ['nf', '비철'], ['fx', '환율'], ['dom', '국내 유통가']];
@@ -2373,11 +2605,19 @@ class Component extends DCLogic {
     var rateOf = function (it) { var u = it.unit || ''; return /^달러\/t/.test(u) && byId.fx1 ? byId.fx1.val : (/^위안\/t/.test(u) && byId.fx2 ? byId.fx2.val : null); };
     var invOpts = items.filter(function (it) { return rateOf(it) != null; });
     var invSel = s.invItem && byId[s.invItem] ? s.invItem : (invOpts[0] ? invOpts[0].id : null);
-    var invTotal = 0, invChg = 0;
+    var invTotal = 0, invChg = 0, invCost = 0, invPnl = 0, invHasCost = false;
     var invRows = invList.map(function (e2, k) {
       var it = byId[e2.id]; if (!it || rateOf(it) == null) return null;
       var r2 = rateOf(it), v2 = e2.tons * it.val * r2, c2 = e2.tons * (it.chg || 0) * r2; invTotal += v2; invChg += c2;
-      return { name: it.name, sub: it.groupLabel + ' · ' + fmt(e2.tons, 0) + 't · ' + it.valText + ' ' + String(it.unit).split(' ·')[0], valText: fmt(Math.round(v2 / 10000), 0) + '만원',
+      var perT = it.val * r2, hasCost = e2.cost > 0, pnl = hasCost ? (perT - e2.cost * 10000) * e2.tons : 0, pnlPct = hasCost ? (perT / (e2.cost * 10000) - 1) * 100 : 0;
+      if (hasCost) { invCost += e2.cost * 10000 * e2.tons; invPnl += pnl; invHasCost = true; }
+      var editing = s.invEdit === k;
+      return { name: niceName(it), sub: it.groupLabel + ' · ' + fmt(e2.tons, 0) + 't · 현재 약 ' + fmt(perT / 10000, 1) + '만원/t', valText: fmt(Math.round(v2 / 10000), 0) + '만원',
+        hasCost: hasCost, costText: hasCost ? '매입 ' + fmt(e2.cost, 1) + '만원/t' : '매입가 입력', pnlText: hasCost ? (pnl >= 0 ? '+' : '−') + fmt(Math.abs(Math.round(pnl / 10000)), 0) + '만원 (' + (pnlPct >= 0 ? '+' : '−') + fmt(Math.abs(pnlPct), 1) + '%)' : '',
+        pnlStyle: pnl > 0 ? UP : (pnl < 0 ? DOWN : FLAT), editing: editing, notEditing: !editing,
+        edit: function () { set({ invEdit: editing ? null : k, invCostEdit: hasCost ? String(e2.cost) : '' }); },
+        costVal: s.invCostEdit || '', setCost: function (e) { set({ invCostEdit: e.target.value }); },
+        saveCost: function () { var cv2 = parseFloat(String(s.invCostEdit || '').replace(/,/g, '')); var l = invList.slice(); l[k] = Object.assign({}, l[k], { cost: cv2 > 0 ? cv2 : null }); saveInv(l); set({ invEdit: null, invCostEdit: '' }); },
         chgText: c2 === 0 ? '변동 없음' : (c2 > 0 ? '▲' : '▼') + fmt(Math.abs(Math.round(c2 / 10000)), 0) + '만원', chgStyle: c2 > 0 ? UP : (c2 < 0 ? DOWN : FLAT),
         remove: function () { saveInv(invList.filter(function (_, j) { return j !== k; })); } };
     }).filter(Boolean);
@@ -2387,7 +2627,9 @@ class Component extends DCLogic {
       opts: invOpts.map(function (it) { return { id: it.id, name: it.groupLabel + ' · ' + it.name, sel: it.id === invSel ? 'selected' : null }; }), pickSel: function (e) { set({ invItem: e.target.value }); },
       ton: s.invTon || '', setTon: function (e) { set({ invTon: e.target.value }); },
       addStyle: tonOk ? 'background:#0072F5;color:#FFFFFF' : 'background:#F2F4F7;color:#98A2B3',
-      add: function () { if (!tonOk || !invSel) return; saveInv(invList.concat([{ id: invSel, tons: parseFloat(s.invTon) }])); set({ invTon: '' }); } };
+      cost: s.invCost || '', setCost: function (e) { set({ invCost: e.target.value }); },
+      hasPnl: invHasCost, pnlText: invHasCost ? (invPnl >= 0 ? '+' : '−') + fmt(Math.abs(Math.round(invPnl / 10000)), 0) + '만원 (' + (invPnl >= 0 ? '+' : '−') + fmt(Math.abs(invCost ? invPnl / invCost * 100 : 0), 1) + '%)' : '', pnlStyle: invPnl > 0 ? UP : (invPnl < 0 ? DOWN : FLAT),
+      add: function () { if (!tonOk || !invSel) return; var cst = parseFloat(String(s.invCost || '').replace(/,/g, '')); saveInv(invList.concat([{ id: invSel, tons: parseFloat(s.invTon), cost: cst > 0 ? cst : null }])); set({ invTon: '', invCost: '' }); } };
     // 다가오는 정기 발표(오늘 이후 2주, 대략 날짜)
     var upcoming = (function () {
       var out = [], now = new Date();
@@ -2593,6 +2835,152 @@ class Component extends DCLogic {
     var go = function (t) { return function () { set({ tab: t, sub: null }); }; };
     var top = !s.sub;
     if (s.group === 'raw') ['cn7', 'cn8', 'imp9', 'gl3'].forEach(function (id) { if (byId[id]) { var o = Object.assign({}, byId[id]); o.name = ({ cn7: '원료탄 (중국 유통가)', cn8: '코크스 (중국 유통가)', imp9: '철스크랩 (한국 수입 통관)', gl3: '철스크랩 (미국 생산자물가)' })[id]; rows.push(o); } });
+    // ===== 라디오 브리핑 =====
+    if (!self._radioHooked) { self._radioHooked = true; FelixRadio.onChange(function (x) { self.setState({ radio: x }); }); }
+    var RS = s.radio || { on: false, paused: false, si: 0, n: 0, rate: 1 };
+    var radioSegs = (function () {
+      var now0 = new Date(), hr = now0.getHours(), day = now0.getDate(), WDN = ['일', '월', '화', '수', '목', '금', '토'][now0.getDay()];
+      var pick = function (arr, k) { return arr[(day + (k || 0)) % arr.length]; };
+      var jong = function (w) { var c = String(w).charCodeAt(String(w).length - 1) - 0xAC00; return c >= 0 && c < 11172 && c % 28 !== 0; };
+      var ga = function (w) { return w + (jong(w) ? '이' : '가'); };
+      var spk = function (t) { return String(t || '').replace(/\(([▲▼])([\d.,]+)%\)/g, ', $2퍼센트').replace(/▲/g, '상승 ').replace(/▼/g, '하락 ').replace(/·/g, ', ').replace(/%p/g, '퍼센트포인트').replace(/%/g, '퍼센트').replace(/\s+/g, ' ').trim(); };
+      var nameOf = function (it) {
+        if (it.group === 'kr') return '국내 ' + String(it.name).split(' (')[0];
+        if (it.group === 'fx') return '원달러 환율';
+        return niceName(it);
+      };
+      var valOf = function (it) {
+        var u = String(it.unit || ''), v = String(it.valText).replace(/\.0$/, '');
+        if (/^위안\/t/.test(u)) return '톤당 ' + v + '위안';
+        if (/^달러\/t/.test(u)) return '톤당 ' + v + '달러';
+        if (/^지수/.test(u)) return '지수 ' + v;
+        if (/^원/.test(u)) return v + '원';
+        return v;
+      };
+      var dirW = function (p) { return p > 0 ? '올랐' : '내렸'; };
+      var segs = [];
+      var greet = hr < 11 ? '좋은 아침입니다.' : (hr < 14 ? '점심은 맛있게 드셨나요?' : (hr < 18 ? '오후도 힘내고 계시죠?' : '오늘 하루도 고생 많으셨습니다.'));
+      var md = (now0.getMonth() + 1) + '월 ' + day + '일 ' + WDN + '요일';
+      segs.push({ title: '오프닝', lines: [greet + ' ' + pick(['펠릭스 철강 라디오입니다. ' + md + ' 소식, 3분이면 충분합니다. 운전하시면서 편하게 들으세요.', '오늘도 펠릭스 철강 라디오와 함께하시네요. ' + md + ', 시장에 무슨 일이 있었는지 짧게 정리해 드릴게요.', '펠릭스입니다. ' + md + ' 철강 시장, 핵심만 골라 왔습니다.'])] });
+      var mv = items.filter(function (it) { return it.real && it.rank >= 0 && it.group !== 'fx'; }).sort(function (a, b) { return b.rank - a.rank; }).slice(0, 3);
+      if (mv.length) {
+        var L = [pick(['먼저 크게 움직인 숫자부터 볼게요.', '가장 눈에 띄는 숫자부터 가 볼까요?', '오늘 제일 많이 움직인 것부터 짚어 보겠습니다.'], 1)];
+        mv.forEach(function (it, k) {
+          var p = Math.abs(it.pct || 0), pt = fmt(p, 1).replace(/\.0$/, '') + '퍼센트', last = k === mv.length - 1;
+          L.push(ga(nameOf(it)) + ' ' + valOf(it) + '. ' + ['직전 발표보다 ', '지난번보다 ', '이전보다 '][k] + pt + ' ' + dirW(it.pct) + (last ? '습니다.' : '고요.') + (p >= 5 ? ' ' + pick(['꽤 큰 폭이네요.', '눈여겨볼 만한 움직임입니다.', '평소보다 확실히 큰 폭입니다.'], k) : ''));
+        });
+        segs.push({ title: '오늘의 숫자', lines: L });
+      }
+      var hrI = byId.cn4, rbI = byId.cn1, ckI = byId.cn8;
+      if (hrI && hrI.real) {
+        var L2 = [pick(['중국 시장으로 가 보겠습니다.', '이번엔 중국 소식입니다.', '바다 건너 중국은 어땠을까요?'], 2)];
+        L2.push('중국 열연 유통가는 ' + valOf(hrI) + '으로, 열흘 전보다 ' + fmt(Math.abs(hrI.pct || 0), 1) + '퍼센트 ' + dirW(hrI.pct) + '어요.');
+        if (rbI && rbI.real) L2.push('철근은 ' + valOf(rbI) + ', ' + fmt(Math.abs(rbI.pct || 0), 1) + '퍼센트 ' + dirW(rbI.pct) + '습니다.');
+        if (rbI && rbI.real && hrI.pct < 0 && rbI.pct > 0) L2.push('판재는 약하고 봉형강은 버티는 모습이네요.');
+        else if (rbI && rbI.real && hrI.pct < 0 && rbI.pct < 0) L2.push('판재, 봉형강 할 것 없이 약한 흐름입니다.');
+        else if (rbI && rbI.real && hrI.pct > 0 && rbI.pct > 0) L2.push('판재와 봉형강이 같이 오르고 있습니다.');
+        if (ckI && ckI.real && Math.abs(ckI.pct || 0) >= 1) L2.push('원가 쪽에선 코크스가 ' + fmt(Math.abs(ckI.pct), 1) + '퍼센트 ' + dirW(ckI.pct) + '다는 점도 기억해 두세요.');
+        segs.push({ title: '중국 시장', lines: L2 });
+      }
+      var fxI = byId.fx1;
+      if (fxI && fxI.real) {
+        var fl = ['원달러 환율은 ' + fxI.valText + '원입니다.'];
+        if (fxI.chg) fl.push('직전보다 ' + fmt(Math.abs(fxI.chg), 1) + '원 ' + dirW(fxI.chg) + '는데요, ' + (fxI.chg > 0 ? '환율이 오르면 수입재 원화 가격엔 부담이 됩니다.' : '환율이 내리면 수입재 원화 가격 부담은 조금 덜어집니다.'));
+        segs.push({ title: '환율', lines: fl });
+      }
+      if (typeof head !== 'undefined' && head) {
+        var sl = [pick(['펠릭스 가격 방향 신호도 짚어 볼게요.', '앞으로 한두 달 가격 방향, 신호로 보면 이렇습니다.'], 3)];
+        var SAY = { '강한 상승': '상승 압력이 강하고요', '상승 우위': '상승 쪽이 우세하고요', '강한 하락': '하락 압력이 강하고요', '하락 우위': '하락 쪽이 우세하고요', '상승 쪽': '상승 쪽으로 살짝 기울었고요', '하락 쪽': '하락 쪽으로 살짝 기울었고요' };
+        var parts = order2.filter(function (k) { return SAY[k]; }).map(function (k) { return groups2[k].map(function (p3) { return p3.name; }).join(', ') + (jong(groups2[k][groups2[k].length - 1].name) ? '은 ' : '는 ') + SAY[k]; });
+        if (parts.length) { var lastP = parts.pop().replace(/고요$/, '습니다.'); sl.push(parts.length ? parts.join(', ') + ', ' + lastP : lastP); }
+        else sl.push('지금은 모든 품목이 보합권입니다. 가격을 크게 움직일 힘이 아직 보이지 않네요.');
+        if (drvK && drvK.length) { var dn = drvK.map(function (x) { return x.replace(/\s*\([^)]*\)/g, ''); }); var dj = dn.length > 1 ? dn[0] + (jong(dn[0]) ? '과 ' : '와 ') + dn[1] : dn[0]; sl.push('주 요인으로는 ' + ga(dj) + ' 꼽힙니다.'); }
+        sl.push('참고 지표인 만큼, 실제 거래 판단은 현장 상황과 함께 보시면 좋겠습니다.');
+        segs.push({ title: '가격 방향 신호', lines: sl });
+      }
+      if (repLatest && (repLatest.oneLiner || repLatest.title)) segs.push({ title: '이번 주 리포트', lines: ['이번 주 펠릭스 리포트, 한 줄로 요약하면 이렇습니다.', spk(repLatest.oneLiner || repLatest.title)] });
+      if (upcoming && upcoming.length) {
+        var ul = ['다음 발표 일정도 챙겨 드릴게요.'];
+        upcoming.slice(0, 2).forEach(function (u) { var p2 = String(u.md).split('/'); ul.push(p2[0] + '월 ' + p2[1] + '일 무렵에는 ' + u.title + ' 발표가 있습니다.'); });
+        segs.push({ title: '다음 일정', lines: ul });
+      }
+      segs.push({ title: '클로징', lines: [pick(['오늘 브리핑은 여기까지입니다. 자세한 숫자는 펠릭스 앱에서 확인하시고요, 오늘도 안전 운전하세요.', '여기까지 펠릭스 철강 라디오였습니다. 좋은 거래 되시길 바랄게요. 안전 운전하세요.', '오늘 소식은 여기까지입니다. 다음 브리핑에서 또 뵐게요. 운전 조심하세요.'], 4)] });
+      return segs;
+    })();
+    var radioSec = Math.round(radioSegs.reduce(function (a, g2) { return a + g2.lines.join('').length; }, 0) / 6.5 + radioSegs.length * 1.5);
+    var radio = {
+      supported: FelixRadio.supported(), unsupported: !FelixRadio.supported(), on: !!RS.on, paused: !!RS.paused, playing: !!RS.on && !RS.paused, notPlaying: !(RS.on && !RS.paused),
+      meta: '오늘 브리핑 · 약 ' + Math.max(1, Math.round(radioSec / 60)) + '분 · ' + radioSegs.length + '개 코너',
+      cur: RS.on ? ((radioSegs[RS.si] || {}).title || '') : '', pos: RS.on ? (RS.si + 1) + '/' + radioSegs.length : '',
+      segs: radioSegs.map(function (g2, k) { var on = RS.on && RS.si === k; return { label: g2.title, style: on ? 'background:#FFFFFF;color:#0058CC' : 'background:rgba(255,255,255,0.18);color:#FFFFFF', pick: function () { FelixRadio.start(radioSegs, k); } }; }),
+      rateText: (RS.rate || 1) === 1 ? '1.0×' : '1.2×',
+      toggleRate: function () { FelixRadio.setRate((RS.rate || 1) === 1 ? 1.2 : 1); },
+      main: function () { if (!RS.on) FelixRadio.start(radioSegs, 0); else if (RS.paused) FelixRadio.resume(); else FelixRadio.pause(); },
+      mainLabel: !RS.on ? '듣기' : (RS.paused ? '이어 듣기' : '일시정지'),
+      next: function () { FelixRadio.next(); }, prev: function () { FelixRadio.prev(); }, stop: function () { FelixRadio.stop(); },
+      script: radioSegs.map(function (g2) { return { title: g2.title, text: g2.lines.join(' ') }; }), showScript: !!s.radioScript, scriptLabel: s.radioScript ? '대본 접기' : '대본 보기', toggleScript: function () { set({ radioScript: !s.radioScript }); }
+    };
+
+    // ===== 공유 카드 =====
+    var todayDot = (function () { var t = new Date(); return t.getFullYear() + '.' + String(t.getMonth() + 1).padStart(2, '0') + '.' + String(t.getDate()).padStart(2, '0'); })();
+    var openShare = function (kind, o, title) { set({ share: { busy: true, title: title } }); FelixCard.make(kind, o, function (url) { self.setState({ share: url ? { url: url, title: title } : null, shareMsg: url ? '' : '이미지를 만들지 못했습니다.' }); }); };
+    var shareSummary = function () {
+      var rowsS = items.filter(function (it) { return it.real && it.rank >= 0 && it.group !== 'fx'; }).sort(function (a, b) { return b.rank - a.rank; }).slice(0, 4).map(function (it) {
+        return { name: niceName(it), sub: it.groupLabel + ' · ' + String(it.unit).split(' ·')[0], val: it.valText, chg: it.pctText, dir: it.pct };
+      });
+      openShare('summary', { date: todayDot, title: '이번 주 철강 시세', sub: '직전 발표 대비 크게 움직인 항목', rows: rowsS, note: head || '', noteTitle: '가격 방향 신호 · 향후 1~3개월', src: '출처: 각국 정부·국제기구 공개 통계 · 참고용 정보' }, '이번 주 철강 시세');
+    };
+    var shareItem = function () {
+      var it = byId[s.itemId]; if (!it) return;
+      openShare('item', { date: todayDot, group: it.groupLabel, name: niceName(it), val: it.valText, unit: String(it.unit).split(' ·')[0], chg: it.real ? it.chgLine : '', dir: it.pct, hist: (it.hist || []).slice(-24), note: '', src: '출처: ' + ((G[it.group] || {}).src || '공개 통계') + ' · 참고용 정보' }, niceName(it) + ' 시세');
+    };
+    var SH = s.share;
+    var shareView = {
+      open: !!SH, busy: !!(SH && SH.busy), ready: !!(SH && SH.url), url: SH && SH.url ? SH.url : '', title: SH ? SH.title : '',
+      canShare: typeof navigator !== 'undefined' && !!navigator.share,
+      close: function () { set({ share: null }); },
+      shareLabel: '공유하기',
+      share: function () {
+        if (!SH || !SH.url) return;
+        if (typeof navigator === 'undefined' || !navigator.share) { var a = document.createElement('a'); a.href = SH.url; a.download = 'felix-' + todayDot.replace(/\./g, '') + '.png'; document.body.appendChild(a); a.click(); a.remove(); return; }
+        fetch(SH.url).then(function (r) { return r.blob(); }).then(function (b) {
+          var file = new File([b], 'felix-' + todayDot.replace(/\./g, '') + '.png', { type: 'image/png' });
+          if (navigator.canShare && navigator.canShare({ files: [file] })) return navigator.share({ files: [file], title: SH.title, text: SH.title + ' · Felix' });
+          return navigator.share({ title: SH.title, text: SH.title + ' · Felix', url: location.href });
+        }).catch(function () {});
+      },
+      fileName: 'felix-' + todayDot.replace(/\./g, '') + '.png'
+    };
+
+    // ===== 가격 도달 알림(이 기기에 저장, 앱을 열 때 확인) =====
+    if (!self._tgLoaded) { self._tgLoaded = true; try { var tv = JSON.parse(localStorage.getItem('felix.targets') || '[]'); if (Array.isArray(tv) && tv.length) setTimeout(function () { self.setState({ targets: tv }); }, 0); } catch (e) {} }
+    var tgList = s.targets || [];
+    var saveTg = function (l) { try { localStorage.setItem('felix.targets', JSON.stringify(l)); } catch (e) {} set({ targets: l }); };
+    var tgOpts = items.filter(function (it) { return it.group !== 'dom' && it.val > 0; });
+    var tgSel = s.tgItem && byId[s.tgItem] ? s.tgItem : (tgOpts[0] ? tgOpts[0].id : null), tgDir = s.tgDir || 'le', tgNum = parseFloat(String(s.tgVal || '').replace(/,/g, ''));
+    var hitOf = function (e) { var it = byId[e.id]; return !!(it && it.real && (e.dir === 'ge' ? it.val >= e.v : it.val <= e.v)); };
+    var tgRows = tgList.map(function (e, k) {
+      var it = byId[e.id]; if (!it) return null;
+      var hit = hitOf(e), gap = it.real && it.val ? (e.v - it.val) / it.val * 100 : null;
+      return { name: niceName(it), sub: it.groupLabel + ' · 목표 ' + fmt(e.v, e.v < 100 ? 1 : 0) + ' ' + (e.dir === 'ge' ? '이상' : '이하') + ' · 현재 ' + it.valText,
+        chip: hit ? '도달' : (gap == null ? '대기' : '남은 폭 ' + fmt(Math.abs(gap), 1) + '%'), chipStyle: hit ? 'background:#ECFDF3;color:#067647' : 'background:#F2F4F7;color:#475467',
+        remove: function () { saveTg(tgList.filter(function (_, j) { return j !== k; })); } };
+    }).filter(Boolean);
+    var tgHits = tgList.map(function (e, k) { return { e: e, k: k }; }).filter(function (x) { var it = byId[x.e.id]; return hitOf(x.e) && x.e.seen !== (it && it.valText); }).map(function (x) {
+      var it = byId[x.e.id];
+      return { text: niceName(it) + ' ' + it.valText + ' ' + String(it.unit).split(' ·')[0], sub: '목표 ' + fmt(x.e.v, x.e.v < 100 ? 1 : 0) + ' ' + (x.e.dir === 'ge' ? '이상' : '이하') + '에 도달했습니다.',
+        open: openItem(x.e.id), dismiss: function () { var l = tgList.slice(); l[x.k] = Object.assign({}, l[x.k], { seen: it.valText }); saveTg(l); } };
+    });
+    var tg = {
+      has: tgRows.length > 0, rows: tgRows, hits: tgHits, hasHits: tgHits.length > 0,
+      opts: tgOpts.map(function (it) { return { id: it.id, name: it.groupLabel + ' · ' + niceName(it) + (it.real ? ' (현재 ' + it.valText + ')' : ''), sel: it.id === tgSel ? 'selected' : null }; }),
+      pickSel: function (e) { set({ tgItem: e.target.value }); },
+      dirs: [['le', '이하로 내리면'], ['ge', '이상 오르면']].map(function (x) { return { label: x[1], style: chip(tgDir === x[0]), pick: function () { set({ tgDir: x[0] }); } }; }),
+      val: s.tgVal || '', setVal: function (e) { set({ tgVal: e.target.value }); },
+      unit: tgSel && byId[tgSel] ? String(byId[tgSel].unit).split(' ·')[0] : '',
+      addStyle: tgNum > 0 ? 'background:#0072F5;color:#FFFFFF' : 'background:#F2F4F7;color:#98A2B3',
+      add: function () { if (!(tgNum > 0) || !tgSel) return; saveTg(tgList.concat([{ id: tgSel, dir: tgDir, v: tgNum }])); set({ tgVal: '' }); }
+    };
     var GSRC = { kr: pd, gl: ud2, cn: cd, raw: wd, fx: dd, sd: kd }[s.group], gErr = !!(GSRC && GSRC.status === 'error') && !g.real;
     if (gErr) rows = rows.map(function (r) { return r.real ? r : Object.assign({}, r, { chgText: '' }); });
     return {
@@ -2611,7 +2999,7 @@ class Component extends DCLogic {
       tabHome: s.tab === 'home' ? tabOn : tabOff, tabBoard: s.tab === 'board' ? tabOn : tabOff, tabReports: s.tab === 'reports' ? tabOn : tabOff,
       tabTips: s.tab === 'tips' ? tabOn : tabOff, tabMe: s.tab === 'me' ? tabOn : tabOff,
       movers: movers, upcoming: upcoming, watchItems: watchItems, noWatch: watchItems.length === 0,
-      groups: groups, cats: cats, isNation: isNation, nats: nats, flows: flows, flowNote: flowNote, hasFlowNote: hasFlowNote, natHint: natHint, hasNatHint: !!natHint, goUsImp: goUsImp, isLive: isLive, lv: lv, isKrDom: isKrDom, sdRows: items.filter(function (it) { return it.group === 'sd'; }), sdNote: '관세청 · 세계철강협회 · 국토부', jpTitle: jpTitle,
+      radio: radio, shareSummary: shareSummary, shareItem: shareItem, shareView: shareView, tg: tg, groups: groups, cats: cats, isNation: isNation, nats: nats, flows: flows, flowNote: flowNote, hasFlowNote: hasFlowNote, natHint: natHint, hasNatHint: !!natHint, goUsImp: goUsImp, isLive: isLive, lv: lv, isKrDom: isKrDom, sdRows: items.filter(function (it) { return it.group === 'sd'; }), sdNote: '관세청 · 세계철강협회 · 국토부', jpTitle: jpTitle,
       rows: rows, isDataGroup: !isDom && !isCmp && !isUs && !isJp && !isKr && !isLive, isKrGroup: isKr, krTitle: isNf ? '비철 수입 통관 단가' : '한국 수입 통관 단가', krIsSteel: !isNf, krIsNf: isNf, krRows: krRows, krBanner: krBanner, krBannerStyle: krBannerStyle, krShowRetry: krStatus === 'error', krRetry: krRetry, krMonthLabel: krMonthLabel, isJpGroup: isJp, jpSections: jpSections, jpBanner: jpBanner, jpBannerStyle: jpBannerStyle, jpShowRetry: jpStatus === 'error', jpRetry: jpRetry, jpMonthLabel: jpMonthLabel, isDomGroup: isDom, isCmpGroup: isCmp, cmpRows: cmpRows, cmpCols: cmpCols, cmpItems: cmpItems, cmpList: cmpList, cmpMatrix: cmpMatrix, cmpTabs: cmpTabs, cmpTitle: ct.title, isUsGroup: isUs, usStates: usStates, usSections: usSections, usStateName: STATES.at(si)[1], usBanner: usBanner, usBannerStyle: usBannerStyle, usShowRetry: usStatus === 'error', usRetry: usRetry, usMonthLabel: usStatus === 'ok' ? monthLabel(ud.month) : (usStatus === 'error' ? '—' : '확인 중'),
       groupSrc: g.src, groupCycle: g.cycle, groupDate: g.date, groupNote: g.note,
       groupTag: gErr ? '불러오지 못함' : (g.real || s.group === 'sd' ? '공식 발표값' : '불러오는 중'), groupTagStyle: gErr ? 'color:#B54708' : (g.real || s.group === 'sd' ? 'color:#12B76A' : 'color:#98A2B3'),
