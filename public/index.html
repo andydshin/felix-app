@@ -174,6 +174,7 @@ a{color:#0072F5}a:hover{color:#0058CC}
               </sc-for>
             </div>
             <sc-if value="{{ hasFlowNote }}" hint-placeholder-val="{{ false }}"><div style="margin-top: 8px; font-size: 11.5px; color: #98A2B3">{{ flowNote }}</div></sc-if>
+            <sc-if value="{{ hasNatHint }}" hint-placeholder-val="{{ false }}"><button onClick="{{ goUsImp }}" style="display: flex; width: 100%; margin-top: 8px; align-items: center; justify-content: space-between; min-height: 40px; padding: 0 12px; border-radius: 10px; background: #EEF6FF; color: #0058CC; font-size: 12.5px; font-weight: 600; text-align: left"><span>{{ natHint }}</span><span aria-hidden="true">→</span></button></sc-if>
           </div>
         </sc-if>
 
@@ -290,9 +291,10 @@ a{color:#0072F5}a:hover{color:#0058CC}
               <button onClick="{{ usRetry }}" style="margin-top: 6px; min-height: 44px; padding: 0 14px; border-radius: 22px; border: 1px solid #B54708; font-size: 13px; font-weight: 600">다시 불러오기</button>
             </sc-if>
           </div>
-          <div style="display: flex; gap: 8px; flex-wrap: wrap; padding: 12px 20px 4px">
+          <div style="margin: 12px 20px 0; font-size: 13px; font-weight: 700; color: #344054">주 선택 <span style="font-weight: 500; color: #98A2B3">· 그 주 항구·공항에 도착한 수입품 기준</span></div>
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 8px 20px 4px">
             <sc-for list="{{ usStates }}" as="us" hint-placeholder-count="8">
-              <button onClick="{{ us.pick }}" aria-pressed="{{ us.on }}" style="flex: none; min-height: 44px; padding: 0 14px; border-radius: 22px; font-size: 14px; font-weight: 600; white-space: nowrap; {{ us.style }}">{{ us.label }}</button>
+              <button onClick="{{ us.pick }}" aria-pressed="{{ us.on }}" style="min-width: 0; min-height: 36px; padding: 0 2px; border-radius: 10px; font-size: 12.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; {{ us.style }}">{{ us.label }}</button>
             </sc-for>
           </div>
           <div style="margin: 8px 20px 0">
@@ -1406,6 +1408,8 @@ class Component extends DCLogic {
     var flows = FLOWS.map(function (f) { var has = !!natRow[2][f[0]], on = f[0] === natFlow; return { label: f[1], on: on, style: has ? (on ? 'background:#FFFFFF;color:#0B0D12;box-shadow:0 1px 2px rgba(16,24,40,.10)' : 'color:#475467') : 'color:#C4CAD4', pick: has ? function () { set({ flow: f[0], group: natRow[2][f[0]] }); } : function () {} }; });
     var flowNote = natRow[1] + ' ' + FLOWS.filter(function (f) { return !natRow[2][f[0]]; }).map(function (f) { return f[1]; }).join('·') + ' 자료는 아직 없습니다.';
     var hasFlowNote = FLOWS.some(function (f) { return !natRow[2][f[0]]; });
+    var natHint = natRow[0] === 'us' ? (natFlow === 'imp' ? '' : '주별 수입 단가 보기 · 텍사스·캘리포니아 등 8개 주') : '';
+    var goUsImp = function () { set({ flow: 'imp', group: 'us' }); };
     var groups = [];
     var isDom = s.group === 'dom', isCmp = s.group === 'cmp', isUs = s.group === 'us', isJp = s.group === 'jpx' || s.group === 'jpm', isKr = s.group === 'imp' || s.group === 'nf', isNf = s.group === 'nf';
     var LIVEG = { 'in': 1, eupp: 1, mx: 1, euim: 1, wp: 1 }, isLive = !!LIVEG[s.group], isKrDom = s.group === 'kr';
@@ -2634,7 +2638,7 @@ class Component extends DCLogic {
       tabHome: s.tab === 'home' ? tabOn : tabOff, tabBoard: s.tab === 'board' ? tabOn : tabOff, tabReports: s.tab === 'reports' ? tabOn : tabOff,
       tabTips: s.tab === 'tips' ? tabOn : tabOff, tabMe: s.tab === 'me' ? tabOn : tabOff,
       movers: movers, upcoming: upcoming, watchItems: watchItems, noWatch: watchItems.length === 0,
-      groups: groups, cats: cats, isNation: isNation, nats: nats, flows: flows, flowNote: flowNote, hasFlowNote: hasFlowNote, isLive: isLive, lv: lv, isKrDom: isKrDom, sdRows: items.filter(function (it) { return it.group === 'sd'; }), sdNote: '관세청 · 세계철강협회 · 국토부', jpTitle: jpTitle,
+      groups: groups, cats: cats, isNation: isNation, nats: nats, flows: flows, flowNote: flowNote, hasFlowNote: hasFlowNote, natHint: natHint, hasNatHint: !!natHint, goUsImp: goUsImp, isLive: isLive, lv: lv, isKrDom: isKrDom, sdRows: items.filter(function (it) { return it.group === 'sd'; }), sdNote: '관세청 · 세계철강협회 · 국토부', jpTitle: jpTitle,
       rows: rows, isDataGroup: !isDom && !isCmp && !isUs && !isJp && !isKr && !isLive, isKrGroup: isKr, krTitle: isNf ? '비철 수입 통관 단가' : '한국 수입 통관 단가', krIsSteel: !isNf, krIsNf: isNf, krRows: krRows, krBanner: krBanner, krBannerStyle: krBannerStyle, krShowRetry: krStatus === 'error', krRetry: krRetry, krMonthLabel: krMonthLabel, isJpGroup: isJp, jpSections: jpSections, jpBanner: jpBanner, jpBannerStyle: jpBannerStyle, jpShowRetry: jpStatus === 'error', jpRetry: jpRetry, jpMonthLabel: jpMonthLabel, isDomGroup: isDom, isCmpGroup: isCmp, cmpRows: cmpRows, cmpCols: cmpCols, cmpItems: cmpItems, cmpList: cmpList, cmpMatrix: cmpMatrix, cmpTabs: cmpTabs, cmpTitle: ct.title, isUsGroup: isUs, usStates: usStates, usSections: usSections, usStateName: STATES.at(si)[1], usBanner: usBanner, usBannerStyle: usBannerStyle, usShowRetry: usStatus === 'error', usRetry: usRetry, usMonthLabel: usStatus === 'ok' ? monthLabel(ud.month) : (usStatus === 'error' ? '예시' : '확인 중'),
       groupSrc: g.src, groupCycle: g.cycle, groupDate: g.date, groupNote: g.note,
       groupTag: s.group === 'sd' ? '일부 실제 값' : (g.real ? '실제 발표값' : '예시 값'), groupTagStyle: g.real ? 'color:#12B76A' : 'color:#B54708',
