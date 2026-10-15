@@ -55,16 +55,36 @@ a{color:#0072F5}a:hover{color:#0058CC}
           <div style="margin-top: 14px; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #0072F5">리포트 읽기 <span aria-hidden="true">→</span></div>
         </button>
 
-        <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
-          <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px"><div style="font-size: 13px; font-weight: 700; color: #667085">가격 방향 신호 · 향후 1~3개월</div><div style="font-size: 11px; color: #98A2B3">{{ sg.meta }}</div></div>
+        <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 16px">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px"><div style="font-size: 15px; font-weight: 700">가격 방향 신호</div><div style="font-size: 11px; color: #98A2B3">{{ sg.meta }}</div></div>
+          <div style="margin-top: 2px; font-size: 12px; color: #667085">향후 1~3개월 · 지표별 평소 변동폭 대비</div>
+          <sc-if value="{{ sg.hasSum }}" hint-placeholder-val="{{ true }}">
+            <div style="display: flex; gap: 6px; margin-top: 12px">
+              <sc-for list="{{ sg.sum }}" as="sm" hint-placeholder-count="3"><div style="flex: 1; border-radius: 10px; padding: 8px 6px; text-align: center; {{ sm.style }}"><div style="font-size: 18px; font-weight: 700; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ sm.n }}</div><div style="font-size: 11px; font-weight: 600">{{ sm.label }}</div></div></sc-for>
+            </div>
+          </sc-if>
           <sc-for list="{{ sg.rows }}" as="sr" hint-placeholder-count="6">
-            <button onClick="{{ sr.open }}" style="display: grid; width: 100%; grid-template-columns: 64px 1fr auto; gap: 10px; align-items: center; min-height: 44px; border-top: 1px solid #F2F4F7; margin-top: 4px">
-              <div style="font-size: 15px; font-weight: 600; text-align: left">{{ sr.name }}</div>
-              <div style="position: relative; height: 6px; border-radius: 3px; background: #F2F4F7"><div style="position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: #C4CAD4"></div><div style="position: absolute; top: 0; height: 6px; border-radius: 3px; {{ sr.bar }}"></div></div>
-              <div style="display: flex; align-items: center; gap: 6px; justify-content: flex-end; white-space: nowrap"><span style="font-size: 12px; font-weight: 700; border-radius: 8px; padding: 2px 8px; {{ sr.chip }}">{{ sr.dir }}</span><span style="font-size: 11px; color: #98A2B3">{{ sr.conf }}</span></div>
+            <button onClick="{{ sr.open }}" style="display: block; width: 100%; text-align: left; padding: 12px 0 10px; border-top: 1px solid #F2F4F7; margin-top: 10px">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px">
+                <div style="min-width: 0">
+                  <div style="font-size: 16px; font-weight: 700">{{ sr.name }}</div>
+                  <div style="margin-top: 4px; display: flex; flex-wrap: wrap; gap: 4px 8px; font-size: 11px">
+                    <sc-for list="{{ sr.factors }}" as="fx" hint-placeholder-count="3"><span style="white-space: nowrap; color: #667085">{{ fx.name }} <b style="{{ fx.style }}">{{ fx.arrow }}</b></span></sc-for>
+                  </div>
+                </div>
+                <div style="flex: none; text-align: right">
+                  <span style="display: inline-block; font-size: 13px; font-weight: 700; border-radius: 8px; padding: 3px 10px; {{ sr.chip }}">{{ sr.level }}</span>
+                  <div style="margin-top: 4px; font-size: 11px; color: #98A2B3; white-space: nowrap">{{ sr.sub }}</div>
+                </div>
+              </div>
+              <div style="position: relative; height: 6px; margin-top: 10px; border-radius: 3px; background: linear-gradient(90deg, #D1E0FF 0%, #EEF3FC 38.3%, #F2F4F7 38.3%, #F2F4F7 61.7%, #FCEBEC 61.7%, #FDD9DC 100%)">
+                <div style="position: absolute; left: 50%; top: -2px; bottom: -2px; width: 1px; background: #C4CAD4"></div>
+                <div style="position: absolute; top: -4px; width: 14px; height: 14px; margin-left: -7px; box-sizing: border-box; border-radius: 7px; border: 2px solid #FFFFFF; {{ sr.dot }}"></div>
+              </div>
             </button>
           </sc-for>
-          <div style="margin-top: 8px; font-size: 12px; color: #667085">{{ sg.note }}</div>
+          <div style="display: flex; justify-content: space-between; margin-top: 2px; font-size: 10px; color: #98A2B3"><span>하락</span><span>보합 구간</span><span>상승</span></div>
+          <div style="margin-top: 10px; font-size: 12px; line-height: 1.55; color: #667085">{{ sg.note }}</div>
         </div>
 
         <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
@@ -612,13 +632,14 @@ a{color:#0072F5}a:hover{color:#0058CC}
           <h1 style="margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em">{{ sd.name }}</h1>
         </div>
         <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 18px">
-          <div style="display: flex; align-items: center; gap: 10px"><span style="font-size: 22px; font-weight: 700; border-radius: 12px; padding: 4px 14px; {{ sd.chip }}">{{ sd.dir }}</span><div><div style="font-size: 13px; color: #667085">확실성 {{ sd.conf }}</div><div style="font-size: 12px; color: #98A2B3">요소 {{ sd.n }}개 중 {{ sd.agree }}% 같은 방향</div></div></div>
-          <div style="margin-top: 16px; display: flex; justify-content: space-between; font-size: 11px; color: #98A2B3"><span>하락</span><span>보합</span><span>상승</span></div>
-          <div style="position: relative; height: 8px; border-radius: 4px; margin-top: 4px; background: linear-gradient(90deg, #D1E0FF 0%, #F2F4F7 40%, #F2F4F7 60%, #FDD9DC 100%)"><div style="position: absolute; top: -5px; width: 18px; height: 18px; margin-left: -9px; box-sizing: border-box; border-radius: 9px; background: #0B0D12; border: 3px solid #FFFFFF; box-shadow: 0 0 0 1px #0B0D12; {{ sd.pos }}"></div></div>
-          <div style="margin-top: 8px; font-size: 12px; color: #667085">종합 점수 <b style="font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ sd.score }}</b> (−2 ~ +2, ±0.35 넘으면 방향 표시)</div>
+          <div style="display: flex; align-items: center; gap: 10px"><span style="font-size: 20px; font-weight: 700; border-radius: 12px; padding: 4px 14px; {{ sd.chip }}">{{ sd.dir }}</span><div><div style="font-size: 13px; color: #667085">{{ sd.leanText }}확실성 {{ sd.conf }}</div><div style="font-size: 12px; color: #98A2B3">요소 {{ sd.n }}개 중 {{ sd.agree }}% 같은 방향</div></div></div>
+          <div style="margin-top: 16px; display: grid; grid-template-columns: 25% 16.25% 17.5% 16.25% 25%; font-size: 10px; color: #98A2B3; text-align: center"><span style="text-align: left">강한 하락</span><span>하락 우위</span><span>보합</span><span>상승 우위</span><span style="text-align: right">강한 상승</span></div>
+          <div style="position: relative; height: 8px; border-radius: 4px; margin-top: 4px; background: linear-gradient(90deg, #A9C5F7 0%, #A9C5F7 25%, #D1E0FF 25%, #D1E0FF 41.25%, #F2F4F7 41.25%, #F2F4F7 58.75%, #FDD9DC 58.75%, #FDD9DC 75%, #F8A9B0 75%, #F8A9B0 100%)"><div style="position: absolute; top: -5px; width: 18px; height: 18px; margin-left: -9px; box-sizing: border-box; border-radius: 9px; background: #0B0D12; border: 3px solid #FFFFFF; box-shadow: 0 0 0 1px #0B0D12; {{ sd.pos }}"></div></div>
+          <div style="margin-top: 8px; font-size: 12px; color: #667085">종합 점수 <b style="font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ sd.score }}</b> (−2 ~ +2. 1이면 평소만큼 움직였다는 뜻. ±0.35 넘으면 우위, ±1 넘으면 강함)</div>
         </div>
         <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
           <div style="font-size: 13px; font-weight: 700; color: #667085">무엇이 이 신호를 만들었나</div>
+          <div style="margin-top: 2px; font-size: 12px; color: #98A2B3">가격 요소는 지표마다 평소 변동폭이 달라 그 대비 몇 배 움직였는지로 점수를 매깁니다.</div>
           <sc-for list="{{ sd.comps }}" as="cm" hint-placeholder-count="5">
             <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #F2F4F7">
               <div style="display: flex; justify-content: space-between; align-items: baseline"><div style="font-size: 15px; font-weight: 700">{{ cm.name }} <span style="font-size: 11px; font-weight: 500; color: #98A2B3">비중 {{ cm.weight }}%</span></div><div style="font-size: 13px; font-weight: 700; {{ cm.style }}; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ cm.scoreText }}</div></div>
@@ -2326,9 +2347,19 @@ class Component extends DCLogic {
     var REGN = { kr: '한국', us: '미국', cn: '중국', in: '인도', mx: '멕시코', jp: '일본', eu: '유럽', world: '세계' };
     var millView = function (m) { return { maker: m.maker, region: REGN[m.region] || '', action: m.action, chip: dirChip(m.action === '인상' ? '상승' : (m.action === '인하' ? '하락' : '')), detail: [m.amount, m.effective, m.note, (m.sources && m.sources[0] ? m.sources[0].source : '')].filter(Boolean).join(' · ') || (m.date || '') }; };
     var trk = sgd && sgd.status === 'ok' ? sgd.j.track : null;
-    var sg = { rows: SIGP.map(function (p) { return { name: p.name, dir: p.dir || '자료 부족', conf: p.conf ? '확실성 ' + p.conf : '', chip: dirChip(p.dir), bar: barOf(p.score || 0), open: function () { set({ sub: 'signal', sigId: p.id }); } }; }),
+    var LVSTY = { '강한 상승': 'background:#F04452;color:#FFFFFF', '상승 우위': 'background:#FEF0F1;color:#D92D3A', '보합': 'background:#F2F4F7;color:#475467', '하락 우위': 'background:#EAF1FD;color:#1B64DA', '강한 하락': 'background:#1B64DA;color:#FFFFFF' };
+    var lvOf = function (p) { if (p.level) return p.level; var sc = p.score || 0; return !p.dir ? null : (sc >= 1 ? '강한 상승' : sc >= 0.35 ? '상승 우위' : sc <= -1 ? '강한 하락' : sc <= -0.35 ? '하락 우위' : '보합'); };
+    var leanOf = function (p) { if (p.lean !== undefined) return p.lean; var sc = p.score || 0; return sc >= 0.15 ? 'up' : (sc <= -0.15 ? 'down' : null); };
+    var FSHORT = { cost: '원가', china: '중국', mills: '제철소', issues: '이슈', votes: '체감' };
+    var factorsOf = function (p) { return (p.comps || []).map(function (c) { var a = c.score >= 0.35 ? '▲' : (c.score <= -0.35 ? '▼' : '–'); return { name: FSHORT[c.id] || c.name, arrow: a, style: a === '▲' ? 'color:#F04452' : (a === '▼' ? 'color:#1B64DA' : 'color:#98A2B3') }; }); };
+    var dotOf = function (sc) { var v = Math.max(-1.5, Math.min(1.5, sc || 0)); return 'left:' + ((v + 1.5) / 3 * 100).toFixed(1) + '%;background:' + (v >= 0.35 ? '#F04452' : (v <= -0.35 ? '#1B64DA' : '#475467')); };
+    var cnt = { up: 0, flat: 0, down: 0 };
+    SIGP.forEach(function (p) { var l = lvOf(p); if (!l) return; if (/상승/.test(l)) cnt.up++; else if (/하락/.test(l)) cnt.down++; else cnt.flat++; });
+    var sg = { rows: SIGP.map(function (p) { var l = lvOf(p), ln = leanOf(p); return { name: p.name, level: l || '자료 부족', chip: LVSTY[l] || LVSTY['보합'], factors: factorsOf(p),
+        sub: (l === '보합' && ln ? (ln === 'up' ? '상승 쪽 · ' : '하락 쪽 · ') : '') + (p.conf ? '확실성 ' + p.conf : ''), dot: dotOf(p.score), open: function () { set({ sub: 'signal', sigId: p.id }); } }; }),
+      hasSum: SIGP.length > 0, sum: [{ n: cnt.up, label: '상승', style: cnt.up ? 'background:#FEF0F1;color:#D92D3A' : 'background:#F9FAFB;color:#98A2B3' }, { n: cnt.flat, label: '보합', style: 'background:#F2F4F7;color:#475467' }, { n: cnt.down, label: '하락', style: cnt.down ? 'background:#EAF1FD;color:#1B64DA' : 'background:#F9FAFB;color:#98A2B3' }],
       meta: sgd && sgd.status === 'ok' ? sgd.j.today + ' 기준' : '',
-      note: !sgd ? '신호를 계산하는 중입니다.' : (sgd.status !== 'ok' ? '신호를 불러오지 못했습니다.' : (trk && trk.graded ? '지난 신호 ' + trk.graded + '건 중 ' + trk.hits + '건 적중 (' + trk.rate + '%)' : '원가·중국 가격·제철소 발표·세계 이슈·현장 체감을 합친 참고 지표입니다. 적중률은 기록 2개월 뒤부터 공개합니다.')) };
+      note: !sgd ? '신호를 계산하는 중입니다.' : (sgd.status !== 'ok' ? '신호를 불러오지 못했습니다.' : (trk && trk.graded ? '지난 신호 ' + trk.graded + '건 중 ' + trk.hits + '건 적중 (' + trk.rate + '%). ' : '') + '원가·중국 가격·제철소 발표·세계 이슈·현장 체감을 합친 참고 지표입니다.' + (trk && trk.graded ? '' : ' 적중률은 기록 2개월 뒤부터 공개합니다.')) };
     var sd = {};
     if (s.sub === 'signal') {
       var sp = SIGP.filter(function (p) { return p.id === s.sigId; })[0];
@@ -2338,7 +2369,8 @@ class Component extends DCLogic {
         var PIT = { hr: ['hr'], cr: ['cr', 'hr'], coated: ['coated', 'cr'], plate: ['plate'], rebar: ['rebar'], section: ['section'] }[sp.id] || [];
         var ms2 = ((sgd.j.report && sgd.j.report.mills) || []).filter(function (m) { return (m.items || []).some(function (k) { return PIT.indexOf(k) >= 0; }); });
         var pt = trk && trk.per && trk.per[sp.id];
-        sd = { name: sp.name, dir: sp.dir || '자료 부족', chip: dirChip(sp.dir), conf: sp.conf || '-', n: sp.comps.length, agree: sp.agree, score: (sp.score > 0 ? '+' : '') + sp.score,
+        var spl = lvOf(sp), spn = leanOf(sp);
+        sd = { name: sp.name, dir: spl || '자료 부족', chip: LVSTY[spl] || LVSTY['보합'], leanText: spl === '보합' && spn ? (spn === 'up' ? '상승 쪽으로 기움 · ' : '하락 쪽으로 기움 · ') : '', conf: sp.conf || '-', n: sp.comps.length, agree: sp.agree, score: (sp.score > 0 ? '+' : '') + sp.score,
           pos: 'left:' + ((Math.max(-2, Math.min(2, sp.score)) + 2) / 4 * 100).toFixed(1) + '%',
           comps: sp.comps.map(function (c) { return { name: c.name, weight: c.weight, text: c.text, scoreText: (c.score > 0 ? '+' : '') + c.score, style: c.score > 0 ? UP : (c.score < 0 ? DOWN : FLAT), bar: barOf(c.score) }; }),
           missing: miss.length > 0, missingText: miss.join(', '),
@@ -2351,7 +2383,7 @@ class Component extends DCLogic {
       var kk = String(ITEM2KEY[s.itemId] || '').split(':')[1];
       var sp2 = SIGP.filter(function (p) { return p.id === kk; })[0];
       d.hasSig = !!(sp2 && sp2.dir);
-      if (d.hasSig) Object.assign(d, { sigText: sp2.name + ' 방향 신호 · ' + sp2.dir, sigConf: '확실성 ' + sp2.conf, sigChip: dirChip(sp2.dir), openSig: function () { set({ sub: 'signal', sigId: sp2.id }); } });
+      if (d.hasSig) Object.assign(d, { sigText: sp2.name + ' 방향 신호 · ' + lvOf(sp2), sigConf: '확실성 ' + sp2.conf, sigChip: LVSTY[lvOf(sp2)] || dirChip(sp2.dir), openSig: function () { set({ sub: 'signal', sigId: sp2.id }); } });
     }
     // 리포트의 제철소 발표
     if (rp) { rp.mills = (repCur.mills || []).map(millView); rp.hasMills = rp.mills.length > 0 && rp.secIssue; }

@@ -54,3 +54,16 @@ test('제철소 발표 정리: 출처·품목·행동 없으면 버림', () => {
   assert.strictEqual(m.length, 1);
   assert.deepStrictEqual(m[0].items, ['hr']);
 });
+
+test('평소 변동폭 대비 환산: 같은 1%라도 열흘 유통가는 크게, 철광석은 작게', () => {
+  const { volOf, levelOf } = require('../lib/signal');
+  const a = compute({ rows: [{ key: 'cn:hr', pct: 1.5 }], today: '2026-10-15' }).find(x => x.id === 'hr');
+  assert.strictEqual(a.comps.find(c => c.id === 'china').score, 1);           // 사전 변동폭 1.5% → 평소만큼 = 1
+  const b = compute({ rows: [{ key: 'world:iron_ore', pct: 1.5 }], today: '2026-10-15' }).find(x => x.id === 'hr');
+  assert.ok(b.comps[0].score < 0.35 && /평소보다 작음/.test(b.comps[0].text));
+  // 자체 시계열이 쌓이면 실제 변동폭 쪽으로 이동
+  const pts = []; for (let i = 0; i < 20; i++) pts.push(['p' + String(i).padStart(2, '0'), 100 + (i % 2 ? 0.3 : 0)]);
+  const v = volOf('cn:hr', 1, { 'cn:hr': { pts } });
+  assert.ok(v.vol < 1 && v.n === 19);
+  assert.deepStrictEqual([levelOf(1.2, 3).level, levelOf(0.5, 3).level, levelOf(0.2, 3).lean, levelOf(-0.1, 3).lean, levelOf(-0.6, 3).level, levelOf(0, 0).level], ['강한 상승', '상승 우위', 'up', null, '하락 우위', null]);
+});
