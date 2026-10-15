@@ -137,6 +137,10 @@ a{color:#0072F5}a:hover{color:#0058CC}
           <h1 style="margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em">시세</h1>
           <div style="font-size: 13px; color: #667085">공개 데이터 44개 항목 · 8개 그룹</div>
         </div>
+        <button onClick="{{ openHs }}" style="display: flex; margin: 12px 20px 0; width: calc(100% - 40px); box-sizing: border-box; align-items: center; justify-content: space-between; gap: 10px; min-height: 52px; border-radius: 14px; border: 1px solid #CFE3FF; background: #EEF6FF; padding: 0 16px">
+          <div style="text-align: left"><div style="font-size: 14px; font-weight: 700; color: #0058CC">HS 코드로 무역 통계 검색</div><div style="font-size: 12px; color: #344054">예: 멕시코의 중국산·한국산 석도강판 수입 물량·단가</div></div>
+          <span style="font-size: 16px; color: #0058CC">→</span>
+        </button>
         <div style="display: flex; gap: 8px; flex-wrap: wrap; padding: 14px 20px 6px">
           <sc-for list="{{ groups }}" as="g" hint-placeholder-count="5">
             <button onClick="{{ g.pick }}" style="flex: none; min-height: 34px; padding: 0 12px; border-radius: 17px; font-size: 13px; font-weight: 600; white-space: nowrap; {{ g.style }}">{{ g.label }}</button>
@@ -469,6 +473,83 @@ a{color:#0072F5}a:hover{color:#0058CC}
           <div style="font-size: 14px; font-weight: 700">프로 등급에서 열리는 기능</div>
           <div style="margin-top: 2px; font-size: 13px; color: #344054">전체 시계열, 고시가·수입재와의 스프레드, 엑셀 내려받기. 1단계 무료 베타에서는 제공하지 않습니다.</div>
         </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isHs }}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-direction: column; gap: 14px; padding: 8px 20px 28px">
+        <button onClick="{{ back }}" style="min-height: 44px; font-size: 14px; font-weight: 600; color: #0072F5">← 뒤로</button>
+        <div>
+          <div style="font-size: 13px; color: #667085">HS 코드 무역 검색</div>
+          <h1 style="margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em">누가, 어디서, 얼마에 들여오나</h1>
+        </div>
+        <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 16px">
+          <div style="font-size: 12px; font-weight: 700; color: #667085">품목</div>
+          <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px">
+            <sc-for list="{{ hs.presets }}" as="hp" hint-placeholder-count="5"><button onClick="{{ hp.pick }}" aria-pressed="{{ hp.on }}" style="min-height: 32px; padding: 0 12px; border-radius: 16px; font-size: 13px; font-weight: 600; {{ hp.style }}">{{ hp.name }}</button></sc-for>
+          </div>
+          <input id="hsCodes" inputmode="numeric" placeholder="직접 입력: 721012, 721011" value="{{ hs.codes }}" onChange="{{ hs.setCodes }}" style="width: 100%; margin-top: 8px; min-height: 44px; box-sizing: border-box; border: 1px solid #D0D5DD; border-radius: 10px; padding: 0 12px; font-size: 15px; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">
+          <div style="margin-top: 4px; font-size: 11px; color: #98A2B3">{{ hs.codeNote }}</div>
+          <div style="margin-top: 12px; font-size: 12px; font-weight: 700; color: #667085">시장 (수입국)</div>
+          <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px">
+            <sc-for list="{{ hs.markets }}" as="hm" hint-placeholder-count="5"><button onClick="{{ hm.pick }}" aria-pressed="{{ hm.on }}" style="min-height: 32px; padding: 0 12px; border-radius: 16px; font-size: 13px; font-weight: 600; {{ hm.style }}">{{ hm.name }}</button></sc-for>
+          </div>
+          <div style="margin-top: 12px; font-size: 12px; font-weight: 700; color: #667085">상대국 (원산지, 여러 개)</div>
+          <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px">
+            <sc-for list="{{ hs.partners }}" as="hq" hint-placeholder-count="5"><button onClick="{{ hq.pick }}" aria-pressed="{{ hq.on }}" style="min-height: 32px; padding: 0 12px; border-radius: 16px; font-size: 13px; font-weight: 600; {{ hq.style }}">{{ hq.name }}</button></sc-for>
+          </div>
+          <button onClick="{{ hs.go }}" style="margin-top: 14px; width: 100%; min-height: 46px; border-radius: 23px; background: #0072F5; color: #FFFFFF; font-size: 15px; font-weight: 600; text-align: center">검색</button>
+        </div>
+
+        <sc-if value="{{ hs.loading }}" hint-placeholder-val="{{ false }}"><div style="font-size: 14px; color: #667085">불러오는 중입니다. 처음 조회는 20~30초 걸릴 수 있습니다.</div></sc-if>
+        <sc-if value="{{ hs.err }}" hint-placeholder-val="{{ false }}"><div style="background: #FEF3E2; border-radius: 12px; padding: 12px 14px; font-size: 13px; color: #B54708">{{ hs.errText }}</div></sc-if>
+
+        <sc-if value="{{ hs.has }}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; gap: 6px; background: #F2F4F7; border-radius: 12px; padding: 4px">
+            <sc-for list="{{ hs.views }}" as="hv" hint-placeholder-count="2"><button onClick="{{ hv.pick }}" aria-pressed="{{ hv.on }}" style="flex: 1; min-height: 40px; border-radius: 9px; font-size: 13px; font-weight: 700; text-align: center; {{ hv.style }}">{{ hv.label }}</button></sc-for>
+          </div>
+          <div style="font-size: 13px; color: #344054">{{ hs.title }}</div>
+          <sc-for list="{{ hs.cards }}" as="hc" hint-placeholder-count="2">
+            <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 16px">
+              <div style="display: flex; justify-content: space-between; align-items: baseline"><div style="display: flex; align-items: center; gap: 8px"><span style="width: 10px; height: 10px; border-radius: 5px; {{ hc.dot }}"></span><span style="font-size: 16px; font-weight: 700">{{ hc.name }}산</span></div><div style="font-size: 12px; color: #667085">{{ hc.month }}</div></div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 10px">
+                <div><div style="font-size: 11px; color: #667085">물량</div><div style="font-size: 16px; font-weight: 700; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ hc.tons }}</div><div style="font-size: 11px; color: #98A2B3">t</div></div>
+                <div><div style="font-size: 11px; color: #667085">단가</div><div style="font-size: 16px; font-weight: 700; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ hc.unit }}</div><div style="font-size: 11px; font-weight: 600; {{ hc.unitChgStyle }}">{{ hc.unitChg }}</div></div>
+                <div><div style="font-size: 11px; color: #667085">수입 비중</div><div style="font-size: 16px; font-weight: 700; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ hc.share }}</div><div style="font-size: 11px; color: #98A2B3">전체 대비</div></div>
+              </div>
+              <div style="margin-top: 10px; font-size: 12px; color: #667085">{{ hc.sum12 }}</div>
+            </div>
+          </sc-for>
+          <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 16px">
+            <div style="font-size: 13px; font-weight: 700; color: #667085">월별 단가 ($/t)</div>
+            <svg viewBox="0 0 326 140" style="display: block; width: 100%; margin-top: 10px" role="img" aria-label="상대국별 단가 추이">
+              <line x1="0" y1="130" x2="326" y2="130" style="stroke: #EAECF0; stroke-width: 1"></line>
+              <sc-for list="{{ hs.lines }}" as="hl" hint-placeholder-count="2"><polyline points="{{ hl.pts }}" style="fill: none; stroke: {{ hl.color }}; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round"></polyline></sc-for>
+            </svg>
+            <div style="display: flex; justify-content: space-between; font-size: 11px; color: #667085"><div>{{ hs.from }}</div><div>{{ hs.range }}</div><div>{{ hs.to }}</div></div>
+          </div>
+          <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 12px 16px">
+            <sc-for list="{{ hs.tables }}" as="ht" hint-placeholder-count="1">
+              <div style="font-size: 13px; font-weight: 700; color: #667085; margin-top: 6px">{{ ht.title }}</div>
+              <div style="display: grid; grid-template-columns: 56px repeat({{ ht.n }}, 1fr); gap: 4px; margin-top: 8px; font-size: 11px; color: #667085"><div>월</div><sc-for list="{{ ht.heads }}" as="hh" hint-placeholder-count="2"><div style="text-align: right">{{ hh }}</div></sc-for></div>
+              <sc-for list="{{ ht.rows }}" as="hr0" hint-placeholder-count="6">
+                <div style="display: grid; grid-template-columns: 56px repeat({{ ht.n }}, 1fr); gap: 4px; padding: 6px 0; border-top: 1px solid #F2F4F7; font-size: 12px">
+                  <div style="color: #344054">{{ hr0.m }}</div>
+                  <sc-for list="{{ hr0.cells }}" as="hcl" hint-placeholder-count="2"><div style="text-align: right; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace"><div style="font-weight: 700">{{ hcl.unit }}</div><div style="color: #98A2B3">{{ hcl.t }}</div></div></sc-for>
+                </div>
+              </sc-for>
+            </sc-for>
+            <div style="margin-top: 6px; font-size: 11px; color: #98A2B3">위: 단가 $/t · 아래: 물량 t</div>
+          </div>
+          <sc-if value="{{ hs.hasKr }}" hint-placeholder-val="{{ false }}">
+            <div style="background: #EEF6FF; border-radius: 16px; padding: 16px">
+              <div style="font-size: 13px; font-weight: 700; color: #0058CC">교차 확인 · 한국 관세청 기준 대{{ hs.marketName }} 수출</div>
+              <div style="margin-top: 6px; font-size: 14px; line-height: 1.6; color: #0B0D12">{{ hs.krText }}</div>
+              <div style="margin-top: 4px; font-size: 12px; color: #344054">{{ hs.krGap }}</div>
+            </div>
+          </sc-if>
+          <div style="font-size: 11px; line-height: 1.6; color: #98A2B3">{{ hs.srcNote }}</div>
+        </sc-if>
       </div>
     </sc-if>
 
@@ -2189,6 +2270,76 @@ class Component extends DCLogic {
     }
     // 리포트의 제철소 발표
     if (rp) { rp.mills = (repCur.mills || []).map(millView); rp.hasMills = rp.mills.length > 0 && rp.secIssue; }
+    // HS 코드 무역 검색 (/api/hs)
+    var hsQ = s.hsQ || { preset: 'tinplate', codes: '', market: 'MX', partners: ['CN', 'KR'] };
+    var HSP = [['tinplate', '석도강판', '721011, 721012, 721210'], ['hr', '열연', '7208'], ['cr', '냉연', '7209'], ['coated', '도금강판', '721041, 721049, 721070'], ['plate', '후판', '720851, 720852'], ['rebar', '철근', '721420'], ['sts', '스테인리스', '7219']];
+    var HSM = [['MX', '멕시코'], ['US', '미국'], ['VN', '베트남'], ['IN', '인도'], ['JP', '일본'], ['KR', '한국']];
+    var HSO = [['CN', '중국'], ['KR', '한국'], ['JP', '일본'], ['TW', '대만'], ['VN', '베트남'], ['IN', '인도']];
+    var HSC = { CN: '#F79009', KR: '#0072F5', JP: '#7A5AF8', TW: '#12B76A', VN: '#E31B54', IN: '#475467', WD: '#98A2B3' };
+    var setHs = function (o) { set({ hsQ: Object.assign({}, hsQ, o) }); };
+    var hsKeyOf = function (q) { return [q.preset || '', q.codes || '', q.market, (q.partners || []).join('.')].join('|'); };
+    var runHs = function (q) {
+      var key = hsKeyOf(q); if (self._hsReq === key) return; self._hsReq = key;
+      self.setState({ hsData: { status: 'loading', key: key } });
+      var qs = 'market=' + q.market + '&partners=' + q.partners.join(',') + (q.codes ? '&codes=' + encodeURIComponent(q.codes) : '&preset=' + q.preset);
+      fetch('/api/hs?' + qs).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+        .then(function (x) { self.setState({ hsData: x.ok && x.j.status === 'ok' ? { status: 'ok', key: key, j: x.j } : { status: 'error', key: key, msg: (x.j && x.j.message) || '' } }); })
+        .catch(function () { self.setState({ hsData: { status: 'error', key: key, msg: '네트워크 오류' } }); });
+    };
+    if (s.sub === 'hs' && !s.hsData && typeof fetch === 'function') setTimeout(function () { runHs(hsQ); }, 0);
+    var hs = {};
+    if (s.sub === 'hs') {
+      var hd2 = s.hsData || {}, J2 = hd2.status === 'ok' ? hd2.j : null, view = s.hsView || 'total';
+      var presetName = (HSP.filter(function (p) { return p[0] === hsQ.preset; })[0] || [])[1];
+      hs = { presets: HSP.map(function (p) { var on = !hsQ.codes && hsQ.preset === p[0]; return { name: p[1], on: on, style: chip(on), pick: function () { setHs({ preset: p[0], codes: '' }); } }; }),
+        codes: hsQ.codes, setCodes: function (e) { setHs({ codes: e.target.value }); },
+        codeNote: hsQ.codes ? '직접 입력한 코드로 검색합니다 (4~10자리, 최대 6개).' : (presetName ? presetName + ': ' + (HSP.filter(function (p) { return p[0] === hsQ.preset; })[0][2]) : ''),
+        markets: HSM.map(function (m) { var on = hsQ.market === m[0]; return { name: m[1], on: on, style: chip(on), pick: function () { setHs({ market: m[0], partners: hsQ.partners.filter(function (x) { return x !== m[0]; }) }); } }; }),
+        partners: HSO.filter(function (o2) { return o2[0] !== hsQ.market; }).map(function (o2) { var on = hsQ.partners.indexOf(o2[0]) >= 0; return { name: o2[1], on: on, style: chip(on), pick: function () { var l = on ? hsQ.partners.filter(function (x) { return x !== o2[0]; }) : hsQ.partners.concat([o2[0]]); if (l.length) setHs({ partners: l }); } }; }),
+        go: function () { self._hsReq = null; runHs(hsQ); },
+        loading: hd2.status === 'loading', err: hd2.status === 'error' || !!(J2 && J2.mainError), has: !!(J2 && J2.main) };
+      hs.errText = hd2.status === 'error' ? '검색하지 못했습니다. ' + (hd2.msg || '') : (J2 && J2.mainError ? '수입국 통계(UN Comtrade)를 불러오지 못했습니다(' + J2.mainError.status + '). ' + (J2.mainError.message || '') : '');
+      if (J2 && J2.main) {
+        var M = J2.main, ps = J2.partners.map(function (p) { return p.code; }).filter(function (p) { return M.series[p]; }), WDs = M.series.WD;
+        var fmtT = function (t) { return t >= 100 ? fmt(Math.round(t), 0) : fmt(t, 1); };
+        var lastIdx = function (arr) { for (var k = arr.length - 1; k >= 0; k--) if (arr[k].t > 0) return k; return -1; };
+        var codesV = view === 'code' ? J2.codes : [null];
+        hs.views = [['total', '합계'], ['code', '코드별']].map(function (v) { return { label: v[1], on: view === v[0], style: view === v[0] ? segOn : segOff, pick: function () { set({ hsView: v[0] }); } }; });
+        hs.title = J2.marketName + '의 ' + (J2.preset ? J2.preset.name + ' (' + J2.codes.join(', ') + ')' : 'HS ' + J2.codes.join(', ')) + ' 수입 · ' + (M.months.length ? M.months[0] + ' ~ ' + M.months[M.months.length - 1] : '자료 없음');
+        hs.cards = ps.map(function (p) {
+          var tot = M.series[p].total, li = lastIdx(tot), cur = li >= 0 ? tot[li] : null, prv = null;
+          for (var k = li - 1; k >= 0; k--) if (tot[k].unit) { prv = tot[k]; break; }
+          var w = WDs && cur ? WDs.total[li] : null, uc = cur && prv && prv.unit ? (cur.unit - prv.unit) / prv.unit * 100 : null;
+          var t12 = tot.reduce(function (a, x) { return a + x.t; }, 0), u12 = tot.reduce(function (a, x) { return a + x.usd; }, 0);
+          return { name: M.series[p].name, dot: 'background:' + (HSC[p] || '#98A2B3'), month: cur ? cur.ym.slice(0, 4) + '-' + cur.ym.slice(4) : '자료 없음',
+            tons: cur ? fmtT(cur.t) : '—', unit: cur && cur.unit ? '$' + fmt(Math.round(cur.unit), 0) : '—', unitChg: uc == null ? '전월 자료 없음' : (uc > 0 ? '▲' : uc < 0 ? '▼' : '') + fmt(Math.abs(uc), 1) + '% 전월비', unitChgStyle: uc > 0 ? UP : (uc < 0 ? DOWN : FLAT),
+            share: w && w.t ? fmt(cur.t / w.t * 100, 1) + '%' : '—', sum12: '최근 ' + M.months.length + '개월 합계 ' + fmtT(t12) + 't · 평균 $' + (t12 ? fmt(Math.round(u12 / t12), 0) : '—') + '/t' };
+        });
+        // 단가 추이 선
+        var allU = []; ps.forEach(function (p) { M.series[p].total.forEach(function (x) { if (x.unit) allU.push(x.unit); }); });
+        var ulo = allU.length ? Math.min.apply(null, allU) : 0, uhi = allU.length ? Math.max.apply(null, allU) : 1, usp = (uhi - ulo) || 1, nM = M.months.length;
+        hs.lines = ps.map(function (p) { return { color: HSC[p] || '#98A2B3', pts: M.series[p].total.map(function (x, k) { return x.unit ? (8 + k * 310 / Math.max(1, nM - 1)).toFixed(1) + ',' + (122 - (x.unit - ulo) / usp * 110).toFixed(1) : null; }).filter(Boolean).join(' ') }; });
+        hs.from = M.months[0] || ''; hs.to = M.months[nM - 1] || ''; hs.range = allU.length ? '$' + fmt(Math.round(ulo), 0) + ' ~ $' + fmt(Math.round(uhi), 0) : '';
+        // 월별 표: 합계 또는 코드별
+        hs.tables = codesV.map(function (c) {
+          return { title: c ? 'HS ' + c : '합계', n: ps.length, heads: ps.map(function (p) { return M.series[p].name; }),
+            rows: M.months.map(function (m, k) { return { m: m.slice(2).replace('-', '.'), cells: ps.map(function (p) { var x = c ? M.series[p].byCode[c][k] : M.series[p].total[k]; return { unit: x && x.unit ? fmt(Math.round(x.unit), 0) : '—', t: x && x.t ? fmtT(x.t) : '0' }; }) }; }).reverse() };
+        });
+        // 한국 측 교차 확인
+        if (J2.koreaExport && J2.koreaExport.series.KR) {
+          var kt = J2.koreaExport.series.KR.total, ki = lastIdx(kt), kc = ki >= 0 ? kt[ki] : null;
+          // 두 통계에 모두 있는 가장 최근 달로 비교
+          var mk2 = null, kc2 = null;
+          if (M.series.KR) for (var q2 = kt.length - 1; q2 >= 0 && !mk2; q2--) { var mm = M.series.KR.total.filter(function (x) { return x.ym === kt[q2].ym && x.unit; })[0]; if (mm && kt[q2].unit) { mk2 = mm; kc2 = kt[q2]; } }
+          hs.hasKr = !!kc; hs.marketName = J2.marketName;
+          if (kc) {
+            hs.krText = kc.ym.slice(0, 4) + '-' + kc.ym.slice(4) + ' 한국 수출 ' + fmtT(kc.t) + 't · $' + fmt(Math.round(kc.unit || 0), 0) + '/t (FOB)';
+            hs.krGap = mk2 ? mk2.ym.slice(0, 4) + '-' + mk2.ym.slice(4) + ' 비교: 한국 수출 $' + fmt(Math.round(kc2.unit), 0) + '/t (FOB) · ' + J2.marketName + ' 신고 한국산 수입 $' + fmt(Math.round(mk2.unit), 0) + '/t (CIF) → 차이 $' + fmt(Math.round(mk2.unit - kc2.unit), 0) + '/t. 운임·보험, 선적과 통관 사이 시차가 반영된 차이입니다.' : J2.marketName + ' 쪽 같은 달 자료가 아직 없어 비교하지 않았습니다(수입국 통계는 2~3개월 늦게 나옵니다).';
+          }
+        }
+        hs.srcNote = '출처: ' + M.source + (M.keyed === false ? ' · 공개 미리보기(건수 제한)' : '') + (J2.koreaExport ? ' / ' + J2.koreaExport.source : '') + '. UN Comtrade 자료는 각국 통계 신고 기준이며 단가는 금액 ÷ 순중량입니다. 수입국 통계는 2~3개월 늦게 공개됩니다.';
+      }
+    }
     // 국가 비교: 품목 하나를 골라 나라별 세로 목록 + 한눈에 보기 점 지도(가로 스크롤 없음)
     var cmpSelIdx = Math.max(0, cmpRows.map(function (r) { return r.name; }).indexOf(s.cmpItem));
     var cmpSel = cmpRows[cmpSelIdx] || { name: '', cells: [] };
@@ -2206,6 +2357,7 @@ class Component extends DCLogic {
       isDetail: s.sub === 'detail', isReport: s.sub === 'report', isSources: s.sub === 'sources',
       goHome: go('home'), goBoard: go('board'), goReports: go('reports'), goTips: go('tips'), goMe: go('me'),
       back: function () { set({ sub: null }); }, backDetail: function () { set({ sub: 'detail' }); },
+      isHs: s.sub === 'hs', hs: hs, openHs: function () { set({ sub: 'hs' }); },
       isSignal: s.sub === 'signal', sg: sg, sd: sd,
       isCompare: s.sub === 'compare', isCalc: s.sub === 'calc', cp: cp, cc: cc, vh: vh, inv: inv, voteMeta: voteMeta,
       openReport: openRep(repLatest ? repLatest.no : null),
