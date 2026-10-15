@@ -194,3 +194,19 @@ test('체감 투표: 기기당 주 1회, 잘못된 값 거절, 합계만', async
   assert.deepStrictEqual(r.items.hr, { up: 1, flat: 0, down: 1, n: 2 });
   assert.strictEqual(r.items.cr.n, 0);
 });
+
+test('뉴스: Google 뉴스 RSS 파싱과 GDELT 실패 시 대체', async () => {
+  const { parseRss } = require('../lib/news');
+  const xml = '<rss><channel><item><title>Nippon Steel to raise prices for January shipments - Reuters</title><link>https://news.google.com/rss/articles/abc</link><pubDate>Tue, 14 Oct 2026 07:00:00 GMT</pubDate><source url="https://www.reuters.com">Reuters</source></item><item><title>&lt;b&gt;bad&lt;/b&gt;</title><link>javascript:x</link></item></channel></rss>';
+  const r = parseRss(xml);
+  assert.deepStrictEqual(r, [{ title: 'Nippon Steel to raise prices for January shipments', url: 'https://news.google.com/rss/articles/abc', source: 'Reuters', date: '2026-10-14' }]);
+  const f = async (url) => url.includes('gdelt') ? { ok: false, status: 429, text: async () => 'rate' }
+    : url.includes('news.google') ? { ok: true, status: 200, text: async () => xml } : { ok: true, status: 200, text: async () => JSON.stringify({ count: 0, results: [] }) };
+  const n = await createNews({ fetch: f, wait: () => Promise.resolve() }).collect(7);
+  assert.strictEqual(n.news.length, 1);
+  assert.strictEqual(n.errors.counts.gnews, 1);
+  assert.strictEqual(n.errors.gdelt[0].status, '429');
+  const t = await createNews({ fetch: f, wait: () => Promise.resolve() }).topic(['tinplate (Mexico OR China) sourcelang:english', 'hojalata México sourcelang:spanish'], 90);
+  assert.strictEqual(t.items.length, 1);
+  assert.strictEqual(t.items[0].lang, 'English');
+});
