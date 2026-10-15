@@ -159,6 +159,20 @@
     });
     box.appendChild(iss);
 
+    var mil = el('div', { class: 'card' }, [el('div', { class: 'row', style: 'justify-content:space-between' }, [el('h2', { text: '제철소 가격 발표 (' + (d.mills || []).length + ')' }), el('button', { class: 'ghost', text: '+ 발표 추가', on: { click: function () { (d.mills = d.mills || []).push({ maker: '', region: 'jp', items: ['hr'], action: '인상', amount: '', effective: '', note: '', sources: [] }); renderEditor(); } } })]),
+      el('div', { class: 'muted', text: '가격 방향 신호의 20%를 차지합니다. 뉴스에 없어도 업계에서 확인한 발표는 직접 넣고, 출처 링크가 없으면 메모에 근거(예: 업계 보도·거래처 확인)를 적으세요. 유료 기관 수치는 그대로 옮기지 마세요.' })]);
+    (d.mills || []).forEach(function (m, i) {
+      mil.appendChild(el('div', { class: 'issue' }, [
+        el('div', { class: 'grid3' }, [field('회사', m.maker, function (v) { m.maker = v; }), select('지역', m.region || 'jp', ['jp', 'kr', 'cn', 'in', 'us', 'eu', 'mx', 'world'], function (v) { m.region = v; }), select('발표', m.action || '인상', ['인상', '동결', '인하'], function (v) { m.action = v; })]),
+        el('div', { class: 'grid3' }, [field('품목 키 (쉼표: hr, cr, coated, plate, rebar, section)', (m.items || []).join(', '), function (v) { m.items = v.split(',').map(function (x) { return x.trim(); }).filter(Boolean); }), field('폭 (예: 톤당 1만엔)', m.amount, function (v) { m.amount = v; }), field('적용 시점 (예: 2027-01 선적)', m.effective, function (v) { m.effective = v; })]),
+        field('메모 (근거)', m.note, function (v) { m.note = v; }),
+        el('label', { text: '출처' }), srcList(m.sources, function (k) { m.sources.splice(k, 1); renderEditor(); }),
+        addSourceRow(function (sx) { (m.sources = m.sources || []).push(sx); renderEditor(); }),
+        el('div', { style: 'margin-top:8px' }, [el('button', { class: 'danger', text: '삭제', on: { click: function () { d.mills.splice(i, 1); renderEditor(); } } })])
+      ]));
+    });
+    box.appendChild(mil);
+
     var cal = el('div', { class: 'card' }, [el('div', { class: 'row', style: 'justify-content:space-between' }, [el('h2', { text: '무역·정책 일정 (뉴스에서 찾은 것)' }), el('button', { class: 'ghost', text: '+ 일정 추가', on: { click: function () { (d.calendar = d.calendar || []).push({ date: '', title: '', why: '', sources: [] }); renderEditor(); } } })]),
       el('div', { class: 'muted', text: '정기 통계 발표 일정은 발행할 때 자동으로 합쳐집니다.' })]);
     (d.calendar || []).forEach(function (c, i) {
@@ -231,7 +245,7 @@
   $('pasteGo').addEventListener('click', function () {
     var text = $('pasteArea').value; if (!text.trim()) return;
     if (!confirmReplace()) return;
-    run('Claude 답 반영', function () { return api({ action: 'import', text: text }).then(function (j) { log('이슈 ' + j.issues + '개' + (j.dropped > 0 ? ' (출처 없음 ' + j.dropped + '개 제외)' : '') + ', 일정 ' + j.calendar + '개, 전망 ' + j.checks + '개'); $('pasteBox').style.display = 'none'; return refresh(); }); });
+    run('Claude 답 반영', function () { return api({ action: 'import', text: text }).then(function (j) { log('제철소 발표 ' + (j.mills || 0) + '건, 이슈 ' + j.issues + '개' + (j.dropped > 0 ? ' (출처 없음 ' + j.dropped + '개 제외)' : '') + ', 일정 ' + j.calendar + '개, 전망 ' + j.checks + '개'); $('pasteBox').style.display = 'none'; return refresh(); }); });
   });
   $('bSave').addEventListener('click', function () { if (!draft) return; run('저장', function () { return api({ action: 'save', draft: draft }).then(function (j) { draft = j.draft; renderEditor(); }); }); });
   $('bPublish').addEventListener('click', function () {

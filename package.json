@@ -5,7 +5,7 @@
   "description": "Felix steel price app with a Census state imports proxy",
   "scripts": {
     "start": "node server.js",
-    "test": "node --test test/census.test.js test/estat.test.js test/jptrade.test.js test/customs.test.js test/krtrade.test.js test/fx.test.js test/kosis.test.js test/eximfx.test.js test/bls.test.js test/router.test.js test/nbs.test.js test/worldbank.test.js test/india.test.js test/inegi.test.js test/mxtrade.test.js test/eurostat.test.js test/report.test.js"
+    "test": "node --test test/census.test.js test/estat.test.js test/jptrade.test.js test/customs.test.js test/krtrade.test.js test/fx.test.js test/kosis.test.js test/eximfx.test.js test/bls.test.js test/router.test.js test/nbs.test.js test/worldbank.test.js test/india.test.js test/inegi.test.js test/mxtrade.test.js test/eurostat.test.js test/report.test.js test/signal.test.js"
   },
   "engines": { "node": ">=18" }
 }

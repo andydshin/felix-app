@@ -56,6 +56,18 @@ a{color:#0072F5}a:hover{color:#0058CC}
         </button>
 
         <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px"><div style="font-size: 13px; font-weight: 700; color: #667085">가격 방향 신호 · 향후 1~3개월</div><div style="font-size: 11px; color: #98A2B3">{{ sg.meta }}</div></div>
+          <sc-for list="{{ sg.rows }}" as="sr" hint-placeholder-count="6">
+            <button onClick="{{ sr.open }}" style="display: grid; width: 100%; grid-template-columns: 64px 1fr auto; gap: 10px; align-items: center; min-height: 44px; border-top: 1px solid #F2F4F7; margin-top: 4px">
+              <div style="font-size: 15px; font-weight: 600; text-align: left">{{ sr.name }}</div>
+              <div style="position: relative; height: 6px; border-radius: 3px; background: #F2F4F7"><div style="position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: #C4CAD4"></div><div style="position: absolute; top: 0; height: 6px; border-radius: 3px; {{ sr.bar }}"></div></div>
+              <div style="display: flex; align-items: center; gap: 6px; justify-content: flex-end; white-space: nowrap"><span style="font-size: 12px; font-weight: 700; border-radius: 8px; padding: 2px 8px; {{ sr.chip }}">{{ sr.dir }}</span><span style="font-size: 11px; color: #98A2B3">{{ sr.conf }}</span></div>
+            </button>
+          </sc-for>
+          <div style="margin-top: 8px; font-size: 12px; color: #667085">{{ sg.note }}</div>
+        </div>
+
+        <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
           <div style="font-size: 13px; font-weight: 700; color: #667085">크게 움직인 항목 · 실제 발표값 기준</div>
           <sc-for list="{{ movers }}" as="m" hint-placeholder-count="3">
             <button onClick="{{ m.open }}" style="display: flex; width: 100%; min-height: 60px; align-items: center; gap: 12px; border-top: 1px solid #F2F4F7; margin-top: 8px; padding-top: 8px">
@@ -425,6 +437,12 @@ a{color:#0072F5}a:hover{color:#0058CC}
         <sc-if value="{{ d.whyEmpty }}" hint-placeholder-val="{{ false }}">
           <div style="background: #F5F7FA; border-radius: 16px; padding: 14px 16px; font-size: 13px; line-height: 1.55; color: #667085">{{ d.whyEmptyText }}</div>
         </sc-if>
+        <sc-if value="{{ d.hasSig }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ d.openSig }}" style="display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 10px; min-height: 52px; border-radius: 16px; border: 1px solid #EAECF0; background: #FFFFFF; padding: 0 16px">
+            <div style="display: flex; align-items: center; gap: 8px"><span style="font-size: 12px; font-weight: 700; border-radius: 8px; padding: 2px 8px; {{ d.sigChip }}">신호</span><span style="font-size: 14px; font-weight: 600">{{ d.sigText }}</span></div>
+            <span style="font-size: 12px; color: #667085">{{ d.sigConf }} →</span>
+          </button>
+        </sc-if>
         <div style="display: flex; gap: 10px">
           <button onClick="{{ d.openCompare }}" style="flex: 1; min-height: 48px; border-radius: 24px; border: 1px solid #D0D5DD; background: #FFFFFF; font-size: 14px; font-weight: 600; text-align: center">다른 품목과 겹쳐 보기</button>
           <sc-if value="{{ d.canCalc }}" hint-placeholder-val="{{ false }}">
@@ -451,6 +469,46 @@ a{color:#0072F5}a:hover{color:#0058CC}
           <div style="font-size: 14px; font-weight: 700">프로 등급에서 열리는 기능</div>
           <div style="margin-top: 2px; font-size: 13px; color: #344054">전체 시계열, 고시가·수입재와의 스프레드, 엑셀 내려받기. 1단계 무료 베타에서는 제공하지 않습니다.</div>
         </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isSignal }}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-direction: column; gap: 14px; padding: 8px 20px 28px">
+        <button onClick="{{ back }}" style="min-height: 44px; font-size: 14px; font-weight: 600; color: #0072F5">← 뒤로</button>
+        <div>
+          <div style="font-size: 13px; color: #667085">가격 방향 신호 · 향후 1~3개월</div>
+          <h1 style="margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em">{{ sd.name }}</h1>
+        </div>
+        <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 18px">
+          <div style="display: flex; align-items: center; gap: 10px"><span style="font-size: 22px; font-weight: 700; border-radius: 12px; padding: 4px 14px; {{ sd.chip }}">{{ sd.dir }}</span><div><div style="font-size: 13px; color: #667085">확실성 {{ sd.conf }}</div><div style="font-size: 12px; color: #98A2B3">요소 {{ sd.n }}개 중 {{ sd.agree }}% 같은 방향</div></div></div>
+          <div style="margin-top: 16px; display: flex; justify-content: space-between; font-size: 11px; color: #98A2B3"><span>하락</span><span>보합</span><span>상승</span></div>
+          <div style="position: relative; height: 8px; border-radius: 4px; margin-top: 4px; background: linear-gradient(90deg, #D1E0FF 0%, #F2F4F7 40%, #F2F4F7 60%, #FDD9DC 100%)"><div style="position: absolute; top: -5px; width: 18px; height: 18px; margin-left: -9px; box-sizing: border-box; border-radius: 9px; background: #0B0D12; border: 3px solid #FFFFFF; box-shadow: 0 0 0 1px #0B0D12; {{ sd.pos }}"></div></div>
+          <div style="margin-top: 8px; font-size: 12px; color: #667085">종합 점수 <b style="font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ sd.score }}</b> (−2 ~ +2, ±0.35 넘으면 방향 표시)</div>
+        </div>
+        <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
+          <div style="font-size: 13px; font-weight: 700; color: #667085">무엇이 이 신호를 만들었나</div>
+          <sc-for list="{{ sd.comps }}" as="cm" hint-placeholder-count="5">
+            <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #F2F4F7">
+              <div style="display: flex; justify-content: space-between; align-items: baseline"><div style="font-size: 15px; font-weight: 700">{{ cm.name }} <span style="font-size: 11px; font-weight: 500; color: #98A2B3">비중 {{ cm.weight }}%</span></div><div style="font-size: 13px; font-weight: 700; {{ cm.style }}; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ cm.scoreText }}</div></div>
+              <div style="position: relative; height: 6px; border-radius: 3px; background: #F2F4F7; margin-top: 6px"><div style="position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: #C4CAD4"></div><div style="position: absolute; top: 0; height: 6px; border-radius: 3px; {{ cm.bar }}"></div></div>
+              <div style="margin-top: 6px; font-size: 13px; line-height: 1.55; color: #344054">{{ cm.text }}</div>
+            </div>
+          </sc-for>
+          <sc-if value="{{ sd.missing }}" hint-placeholder-val="{{ false }}"><div style="margin-top: 12px; font-size: 12px; color: #98A2B3">자료가 없어 빠진 요소: {{ sd.missingText }}</div></sc-if>
+        </div>
+        <sc-if value="{{ sd.hasMills }}" hint-placeholder-val="{{ false }}">
+          <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
+            <div style="font-size: 13px; font-weight: 700; color: #667085">관련 제철소 가격 발표</div>
+            <sc-for list="{{ sd.mills }}" as="ml" hint-placeholder-count="2">
+              <div style="margin-top: 10px; display: flex; justify-content: space-between; gap: 10px"><div><div style="font-size: 14px; font-weight: 600">{{ ml.maker }} <span style="font-size: 12px; color: #667085">{{ ml.region }}</span></div><div style="font-size: 12px; color: #667085">{{ ml.detail }}</div></div><span style="flex: none; align-self: flex-start; font-size: 12px; font-weight: 700; border-radius: 8px; padding: 2px 8px; {{ ml.chip }}">{{ ml.action }}</span></div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <div style="background: #F5F7FA; border-radius: 16px; padding: 14px 16px">
+          <div style="font-size: 13px; font-weight: 700">지난 신호 적중률</div>
+          <div style="margin-top: 4px; font-size: 13px; line-height: 1.6; color: #344054">{{ sd.track }}</div>
+        </div>
+        <div style="font-size: 12px; line-height: 1.6; color: #667085">방향 신호는 공개 통계·뉴스·현장 체감을 정해진 규칙으로 합친 참고 지표입니다. 예측을 보장하지 않으며 거래·투자 권유가 아닙니다. 채점은 신호를 낸 시점의 한국은행 생산자물가와 2개월 뒤 값을 비교합니다(±0.5% 이내는 보합).</div>
       </div>
     </sc-if>
 
@@ -749,6 +807,14 @@ a{color:#0072F5}a:hover{color:#0058CC}
             </sc-for>
           </sc-if>
 
+            <sc-if value="{{ rp.hasMills }}" hint-placeholder-val="{{ false }}">
+              <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
+                <div style="font-size: 13px; font-weight: 700; color: #667085">제철소 가격 발표</div>
+                <sc-for list="{{ rp.mills }}" as="ml" hint-placeholder-count="2">
+                  <div style="margin-top: 10px; display: flex; justify-content: space-between; gap: 10px"><div><div style="font-size: 14px; font-weight: 600">{{ ml.maker }} <span style="font-size: 12px; color: #667085">{{ ml.region }}</span></div><div style="font-size: 12px; color: #667085">{{ ml.detail }}</div></div><span style="flex: none; align-self: flex-start; font-size: 12px; font-weight: 700; border-radius: 8px; padding: 2px 8px; {{ ml.chip }}">{{ ml.action }}</span></div>
+                </sc-for>
+              </div>
+            </sc-if>
           <sc-if value="{{ rp.secCal }}" hint-placeholder-val="{{ true }}">
             <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
               <div style="font-size: 13px; font-weight: 700; color: #667085">앞으로 2주 일정</div>
@@ -2078,6 +2144,51 @@ class Component extends DCLogic {
       }
       return out.slice(0, 4);
     })();
+    // 가격 방향 신호 (/api/signals)
+    var sgd = s.sigData;
+    if (!sgd && !self._sigReq && (s.tab === 'home' || s.sub === 'signal' || s.sub === 'detail')) {
+      self._sigReq = true;
+      setTimeout(function () {
+        if (typeof fetch !== 'function') { self.setState({ sigData: { status: 'error' } }); return; }
+        fetch('/api/signals').then(function (r) { return r.json(); }).then(function (j) { self.setState({ sigData: j && j.products ? { status: 'ok', j: j } : { status: 'error' } }); })
+          .catch(function () { self.setState({ sigData: { status: 'error' } }); });
+      }, 0);
+    }
+    var SIGP = sgd && sgd.status === 'ok' ? sgd.j.products : [];
+    var dirChip = function (d) { return d === '상승' ? 'background:#FEF0F1;color:#D92D3A' : (d === '하락' ? 'background:#EAF1FD;color:#1B64DA' : 'background:#F2F4F7;color:#475467'); };
+    var barOf = function (sc) { var w = Math.min(50, Math.abs(sc) / 2 * 50); return (sc >= 0 ? 'left:50%;' : 'right:50%;') + 'width:' + w.toFixed(1) + '%;background:' + (sc > 0 ? '#F04452' : (sc < 0 ? '#1B64DA' : '#98A2B3')); };
+    var REGN = { kr: '한국', us: '미국', cn: '중국', in: '인도', mx: '멕시코', jp: '일본', eu: '유럽', world: '세계' };
+    var millView = function (m) { return { maker: m.maker, region: REGN[m.region] || '', action: m.action, chip: dirChip(m.action === '인상' ? '상승' : (m.action === '인하' ? '하락' : '')), detail: [m.amount, m.effective, m.note, (m.sources && m.sources[0] ? m.sources[0].source : '')].filter(Boolean).join(' · ') || (m.date || '') }; };
+    var trk = sgd && sgd.status === 'ok' ? sgd.j.track : null;
+    var sg = { rows: SIGP.map(function (p) { return { name: p.name, dir: p.dir || '자료 부족', conf: p.conf ? '확실성 ' + p.conf : '', chip: dirChip(p.dir), bar: barOf(p.score || 0), open: function () { set({ sub: 'signal', sigId: p.id }); } }; }),
+      meta: sgd && sgd.status === 'ok' ? sgd.j.today + ' 기준' : '',
+      note: !sgd ? '신호를 계산하는 중입니다.' : (sgd.status !== 'ok' ? '신호를 불러오지 못했습니다.' : (trk && trk.graded ? '지난 신호 ' + trk.graded + '건 중 ' + trk.hits + '건 적중 (' + trk.rate + '%)' : '원가·중국 가격·제철소 발표·세계 이슈·현장 체감을 합친 참고 지표입니다. 적중률은 기록 2개월 뒤부터 공개합니다.')) };
+    var sd = {};
+    if (s.sub === 'signal') {
+      var sp = SIGP.filter(function (p) { return p.id === s.sigId; })[0];
+      if (sp) {
+        var ALLC = { cost: '원가 압력', china: '중국 가격', mills: '제철소 가격 발표', issues: '세계 이슈', votes: '현장 체감' };
+        var have = sp.comps.map(function (c) { return c.id; }), miss = Object.keys(ALLC).filter(function (k) { return have.indexOf(k) < 0; }).map(function (k) { return ALLC[k]; });
+        var PIT = { hr: ['hr'], cr: ['cr', 'hr'], coated: ['coated', 'cr'], plate: ['plate'], rebar: ['rebar'], section: ['section'] }[sp.id] || [];
+        var ms2 = ((sgd.j.report && sgd.j.report.mills) || []).filter(function (m) { return (m.items || []).some(function (k) { return PIT.indexOf(k) >= 0; }); });
+        var pt = trk && trk.per && trk.per[sp.id];
+        sd = { name: sp.name, dir: sp.dir || '자료 부족', chip: dirChip(sp.dir), conf: sp.conf || '-', n: sp.comps.length, agree: sp.agree, score: (sp.score > 0 ? '+' : '') + sp.score,
+          pos: 'left:' + ((Math.max(-2, Math.min(2, sp.score)) + 2) / 4 * 100).toFixed(1) + '%',
+          comps: sp.comps.map(function (c) { return { name: c.name, weight: c.weight, text: c.text, scoreText: (c.score > 0 ? '+' : '') + c.score, style: c.score > 0 ? UP : (c.score < 0 ? DOWN : FLAT), bar: barOf(c.score) }; }),
+          missing: miss.length > 0, missingText: miss.join(', '),
+          hasMills: ms2.length > 0, mills: ms2.map(millView),
+          track: pt && pt.graded ? sp.name + ' 신호 ' + pt.graded + '건 중 ' + pt.hits + '건 적중 (' + Math.round(pt.hits / pt.graded * 100) + '%). 전체 ' + trk.graded + '건 중 ' + trk.hits + '건.' : '아직 채점된 신호가 없습니다. 매주 한 번 신호를 기록하고, 2개월 뒤 한국은행 생산자물가로 맞았는지 채점해 이곳에 공개합니다.' };
+      }
+    }
+    // 상세 화면에서 해당 제품 신호로 가는 칩
+    if (s.sub === 'detail' && byId[s.itemId]) {
+      var kk = String(ITEM2KEY[s.itemId] || '').split(':')[1];
+      var sp2 = SIGP.filter(function (p) { return p.id === kk; })[0];
+      d.hasSig = !!(sp2 && sp2.dir);
+      if (d.hasSig) Object.assign(d, { sigText: sp2.name + ' 방향 신호 · ' + sp2.dir, sigConf: '확실성 ' + sp2.conf, sigChip: dirChip(sp2.dir), openSig: function () { set({ sub: 'signal', sigId: sp2.id }); } });
+    }
+    // 리포트의 제철소 발표
+    if (rp) { rp.mills = (repCur.mills || []).map(millView); rp.hasMills = rp.mills.length > 0 && rp.secIssue; }
     // 국가 비교: 품목 하나를 골라 나라별 세로 목록 + 한눈에 보기 점 지도(가로 스크롤 없음)
     var cmpSelIdx = Math.max(0, cmpRows.map(function (r) { return r.name; }).indexOf(s.cmpItem));
     var cmpSel = cmpRows[cmpSelIdx] || { name: '', cells: [] };
@@ -2095,6 +2206,7 @@ class Component extends DCLogic {
       isDetail: s.sub === 'detail', isReport: s.sub === 'report', isSources: s.sub === 'sources',
       goHome: go('home'), goBoard: go('board'), goReports: go('reports'), goTips: go('tips'), goMe: go('me'),
       back: function () { set({ sub: null }); }, backDetail: function () { set({ sub: 'detail' }); },
+      isSignal: s.sub === 'signal', sg: sg, sd: sd,
       isCompare: s.sub === 'compare', isCalc: s.sub === 'calc', cp: cp, cc: cc, vh: vh, inv: inv, voteMeta: voteMeta,
       openReport: openRep(repLatest ? repLatest.no : null),
       repList: repList, repListNote: repListNote, homeRepTag: homeRepTag, homeRepLine: homeRepLine, rp: rp || {}, repLive: !!rp, repLoading: repLoading, repSample: repSample,
