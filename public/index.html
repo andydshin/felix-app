@@ -1078,14 +1078,16 @@ a{color:#0072F5}a:hover{color:#0058CC}
         </div>
         <div style="font-size: 13px; color: #344054">{{ stageNote }}</div>
 
+        <sc-if value="{{ isStage1 }}" hint-placeholder-val="{{ true }}">
         <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
           <div style="font-size: 13px; font-weight: 700; color: #667085">품목</div>
-          <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px">
+          <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 8px">
             <sc-for list="{{ tipItems }}" as="t" hint-placeholder-count="5">
-              <button onClick="{{ t.pick }}" aria-pressed="{{ t.on }}" style="min-height: 44px; padding: 0 16px; border-radius: 22px; font-size: 14px; font-weight: 600; {{ t.style }}">{{ t.label }}</button>
+              <button onClick="{{ t.pick }}" aria-pressed="{{ t.on }}" style="min-width: 0; min-height: 40px; padding: 0 2px; border-radius: 10px; font-size: 13px; font-weight: 600; white-space: nowrap; text-align: center; {{ t.style }}">{{ t.label }}</button>
             </sc-for>
           </div>
         </div>
+        </sc-if>
 
         <sc-if value="{{ isStage1 }}" hint-placeholder-val="{{ true }}">
           <sc-if value="{{ voteOpen }}" hint-placeholder-val="{{ true }}">
@@ -1108,79 +1110,63 @@ a{color:#0072F5}a:hover{color:#0058CC}
                   <div style="margin-top: 4px; height: 10px; border-radius: 5px; background: #F2F4F7"><div style="height: 10px; border-radius: 5px; {{ vr.barStyle }}"></div></div>
                 </div>
               </sc-for>
-              <button onClick="{{ resetVote }}" style="margin-top: 14px; min-height: 44px; font-size: 14px; font-weight: 600; color: #0072F5">다른 품목도 투표하기</button>
+              <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 8px">
+                <button onClick="{{ vd2.openSig }}" style="min-height: 48px; border-radius: 24px; background: #0072F5; color: #FFFFFF; font-size: 15px; font-weight: 700; text-align: center">{{ vd2.sigLabel }}</button>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px">
+                  <button onClick="{{ resetVote }}" style="min-height: 44px; border-radius: 22px; border: 1px solid #D0D5DD; background: #FFFFFF; color: #344054; font-size: 14px; font-weight: 600; text-align: center">다른 품목 투표</button>
+                  <button onClick="{{ goHome }}" style="min-height: 44px; border-radius: 22px; border: 1px solid #D0D5DD; background: #FFFFFF; color: #344054; font-size: 14px; font-weight: 600; text-align: center">홈으로</button>
+                </div>
+                <button onClick="{{ vd2.goPanel }}" style="min-height: 40px; font-size: 13px; font-weight: 600; color: #0072F5; text-align: center">실거래가 패널에도 참여하기 →</button>
+              </div>
             </div>
           </sc-if>
         </sc-if>
 
-        <sc-if value="{{ isStage2 }}" hint-placeholder-val="{{ false }}">
-          <sc-if value="{{ bandOpen }}" hint-placeholder-val="{{ true }}">
-            <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
-              <div style="font-size: 15px; font-weight: 700">이번 주 {{ tipItemLabel }} 거래 가격대 (만원/t)</div>
-              <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 12px">
-                <sc-for list="{{ bands }}" as="b" hint-placeholder-count="5">
-                  <button onClick="{{ b.pick }}" style="min-height: 48px; padding: 0 16px; border-radius: 12px; border: 1px solid #D0D5DD; background: #FFFFFF; font-size: 15px; font-weight: 600">{{ b.label }}</button>
-                </sc-for>
+        <sc-if value="{{ isPanelStage }}" hint-placeholder-val="{{ false }}">
+          <sc-if value="{{ pn.form }}" hint-placeholder-val="{{ true }}">
+            <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 16px">
+              <div style="display: flex; justify-content: space-between; align-items: baseline"><div style="font-size: 16px; font-weight: 700">가격 패널 모집 중</div><span style="font-size: 11px; font-weight: 700; border-radius: 6px; padding: 2px 7px; background: #EEF6FF; color: #0058CC">준비 단계</span></div>
+              <div style="margin-top: 6px; font-size: 13px; line-height: 1.6; color: #344054">{{ pn.intro }}</div>
+              <div style="margin-top: 10px; padding: 10px 12px; border-radius: 10px; background: #F7F9FC; font-size: 12px; line-height: 1.7; color: #475467">
+                <div>· 이미 끝난 거래만 받습니다. 앞으로의 가격 계획은 묻지 않습니다.</div>
+                <div>· 개별 회사의 값은 공개하지 않습니다. 3개사 이상 모인 품목만 집계값으로 공개합니다.</div>
+                <div>· 공개는 주 단위로 늦춰서 합니다.</div>
               </div>
+              <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 14px">
+                <label for="pn-phone" style="font-size: 13px; font-weight: 600; color: #344054">휴대폰 번호 <span style="color: #D92D3A">*</span></label>
+                <input id="pn-phone" type="tel" inputMode="tel" autocomplete="tel" value="{{ pn.phone }}" onChange="{{ pn.setPhone }}" placeholder="010-1234-5678" style="min-height: 46px; box-sizing: border-box; border: 1px solid #D0D5DD; border-radius: 10px; padding: 0 14px; font-size: 16px; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace; background: #FFFFFF">
+                <div style="font-size: 11.5px; color: #98A2B3">패널을 열 때 문자로 안내합니다.</div>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 10px">
+                <label for="pn-company" style="font-size: 13px; font-weight: 600; color: #344054">회사명 <span style="font-weight: 500; color: #98A2B3">· 선택</span></label>
+                <input id="pn-company" value="{{ pn.company }}" onChange="{{ pn.setCompany }}" placeholder="비워 두셔도 됩니다" style="min-height: 46px; box-sizing: border-box; border: 1px solid #D0D5DD; border-radius: 10px; padding: 0 14px; font-size: 15px; background: #FFFFFF">
+              </div>
+              <div style="margin-top: 12px; font-size: 13px; font-weight: 600; color: #344054">업종 <span style="font-weight: 500; color: #98A2B3">· 선택</span></div>
+              <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 6px">
+                <sc-for list="{{ pn.roles }}" as="pr" hint-placeholder-count="4"><button onClick="{{ pr.pick }}" aria-pressed="{{ pr.on }}" style="min-height: 38px; border-radius: 10px; font-size: 13px; font-weight: 600; text-align: center; {{ pr.style }}">{{ pr.label }}</button></sc-for>
+              </div>
+              <div style="margin-top: 12px; font-size: 13px; font-weight: 600; color: #344054">주로 거래하는 품목 <span style="font-weight: 500; color: #98A2B3">· 선택, 여러 개 가능</span></div>
+              <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 6px">
+                <sc-for list="{{ pn.items }}" as="pi" hint-placeholder-count="7"><button onClick="{{ pi.pick }}" aria-pressed="{{ pi.on }}" style="min-height: 38px; border-radius: 10px; font-size: 13px; font-weight: 600; text-align: center; {{ pi.style }}">{{ pi.label }}</button></sc-for>
+              </div>
+              <button onClick="{{ pn.toggleConsent }}" aria-pressed="{{ pn.consent }}" style="display: flex; width: 100%; gap: 10px; align-items: flex-start; margin-top: 14px; text-align: left">
+                <span style="flex: none; width: 20px; height: 20px; margin-top: 1px; border-radius: 6px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; {{ pn.boxStyle }}">{{ pn.check }}</span>
+                <span style="font-size: 12.5px; line-height: 1.55; color: #344054">입력한 휴대폰 번호(와 회사명)를 패널 안내 연락에만 쓰는 데 동의합니다. 언제든 삭제를 요청할 수 있습니다.</span>
+              </button>
+              <sc-if value="{{ pn.hasMsg }}" hint-placeholder-val="{{ false }}"><div style="margin-top: 10px; font-size: 13px; color: #D92D3A">{{ pn.msg }}</div></sc-if>
+              <button onClick="{{ pn.submit }}" style="margin-top: 14px; width: 100%; min-height: 50px; border-radius: 25px; font-size: 15px; font-weight: 700; text-align: center; {{ pn.btnStyle }}">{{ pn.btnText }}</button>
             </div>
           </sc-if>
-          <sc-if value="{{ bandDone }}" hint-placeholder-val="{{ false }}">
-            <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
-              <div style="font-size: 15px; font-weight: 700">제출했습니다. 가격대 분포</div>
-              <div style="font-size: 12px; color: #667085">{{ tipItemLabel }} · 응답 11곳 · 예시 분포 · 진한 막대가 내 응답</div>
-              <sc-for list="{{ bandRows }}" as="br" hint-placeholder-count="5">
-                <div style="display: flex; align-items: center; gap: 10px; margin-top: 10px">
-                  <div style="width: 92px; font-size: 13px; font-weight: 600">{{ br.label }}</div>
-                  <div style="flex: 1; height: 12px; border-radius: 6px; background: #F2F4F7"><div style="height: 12px; border-radius: 6px; {{ br.barStyle }}"></div></div>
-                  <div style="width: 30px; text-align: right; font-size: 13px; font-weight: 700">{{ br.count }}</div>
-                </div>
-              </sc-for>
-              <button onClick="{{ resetBand }}" style="margin-top: 14px; min-height: 44px; font-size: 14px; font-weight: 600; color: #0072F5">다시 제출하기</button>
-            </div>
-          </sc-if>
-        </sc-if>
-
-        <sc-if value="{{ isStage3 }}" hint-placeholder-val="{{ false }}">
-          <sc-if value="{{ priceOpen }}" hint-placeholder-val="{{ true }}">
-            <div style="display: flex; flex-direction: column; gap: 14px; background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
-              <div style="font-size: 15px; font-weight: 700">{{ tipItemLabel }} 실거래가 제출</div>
-              <div style="display: flex; flex-direction: column; gap: 4px">
-                <label for="tip-price" style="font-size: 13px; font-weight: 600; color: #344054">가격 (만원/t)</label>
-                <input id="tip-price" inputMode="decimal" value="{{ price }}" onChange="{{ setPrice }}" placeholder="예: 90.5" style="min-height: 48px; box-sizing: border-box; border: 1px solid #98A2B3; border-radius: 10px; padding: 0 14px; font-size: 17px; font-weight: 600; background: #FFFFFF">
+          <sc-if value="{{ pn.done }}" hint-placeholder-val="{{ false }}">
+            <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 24px 16px 16px; text-align: center">
+              <div style="width: 52px; height: 52px; margin: 0 auto; border-radius: 26px; background: #ECFDF3; color: #12B76A; font-size: 26px; font-weight: 700; display: flex; align-items: center; justify-content: center">✓</div>
+              <div style="margin-top: 12px; font-size: 18px; font-weight: 700">패널 등록이 접수됐습니다</div>
+              <div style="margin-top: 6px; font-size: 13px; line-height: 1.6; color: #475467">{{ pn.doneText }}</div>
+              <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 8px">
+                <button onClick="{{ pn.goVote }}" style="min-height: 48px; border-radius: 24px; background: #0072F5; color: #FFFFFF; font-size: 15px; font-weight: 700; text-align: center">이번 주 체감 투표하기</button>
+                <button onClick="{{ goHome }}" style="min-height: 48px; border-radius: 24px; border: 1px solid #D0D5DD; background: #FFFFFF; color: #344054; font-size: 15px; font-weight: 600; text-align: center">홈으로</button>
+                <button onClick="{{ pn.edit }}" style="min-height: 40px; font-size: 13px; font-weight: 600; color: #667085; text-align: center">등록 정보 고치기</button>
               </div>
-              <div style="display: flex; flex-direction: column; gap: 4px">
-                <label for="tip-ton" style="font-size: 13px; font-weight: 600; color: #344054">물량 (t)</label>
-                <input id="tip-ton" inputMode="numeric" value="{{ ton }}" onChange="{{ setTon }}" placeholder="예: 50" style="min-height: 48px; box-sizing: border-box; border: 1px solid #98A2B3; border-radius: 10px; padding: 0 14px; font-size: 17px; font-weight: 600; background: #FFFFFF">
-              </div>
-              <div>
-                <div style="font-size: 13px; font-weight: 600; color: #344054">가격의 종류</div>
-                <div style="display: flex; gap: 8px; margin-top: 6px">
-                  <sc-for list="{{ dealOpts }}" as="dl" hint-placeholder-count="2">
-                    <button onClick="{{ dl.pick }}" aria-pressed="{{ dl.on }}" style="flex: 1; min-height: 44px; border-radius: 10px; font-size: 14px; font-weight: 600; text-align: center; {{ dl.style }}">{{ dl.label }}</button>
-                  </sc-for>
-                </div>
-              </div>
-              <div style="font-size: 13px; color: #344054; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ priceHint }}</div>
-              <button onClick="{{ submitPrice }}" style="min-height: 48px; border-radius: 24px; font-size: 15px; font-weight: 700; text-align: center; {{ submitStyle }}">제출하고 내 위치 보기</button>
-            </div>
-          </sc-if>
-          <sc-if value="{{ priceDone }}" hint-placeholder-val="{{ false }}">
-            <div style="background: #FFFFFF; border: 1px solid #0072F5; border-radius: 16px; padding: 16px">
-              <div style="font-size: 12px; font-weight: 700; color: #0072F5">기여자 슬라이스 · 제출한 품목만 보입니다</div>
-              <div style="margin-top: 6px; font-size: 15px; font-weight: 700">{{ tipItemLabel }} 이번 주 평가가</div>
-              <div style="display: flex; align-items: baseline; gap: 8px">
-                <div style="font-size: 32px; font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">90.2</div>
-                <div style="font-size: 14px; color: #667085">만원/t · 표본 5개사 · 예시</div>
-              </div>
-              <div style="margin-top: 16px; position: relative; height: 34px">
-                <div style="position: absolute; left: 0; right: 0; top: 14px; height: 8px; border-radius: 4px; background: #DCEBFF"></div>
-                <div style="position: absolute; left: 49%; top: 8px; width: 2px; height: 20px; background: #0B0D12"></div>
-                <div style="position: absolute; top: 8px; width: 20px; height: 20px; margin-left: -10px; box-sizing: border-box; border-radius: 10px; background: #0072F5; border: 3px solid #FFFFFF; box-shadow: 0 0 0 1px #0072F5; {{ myLeft }}"></div>
-              </div>
-              <div style="display: flex; justify-content: space-between; font-size: 12px; color: #667085"><div>최저 88.0</div><div>평가가 90.2</div><div>최고 92.5</div></div>
-              <div style="margin-top: 12px; font-size: 15px; font-weight: 700">{{ myPosText }}</div>
-              <div style="margin-top: 4px; font-size: 13px; color: #344054">다른 제출자의 개별 가격과 이름은 보이지 않습니다. 표본이 3개사 미만인 주에는 평가가를 발행하지 않습니다.</div>
-              <button onClick="{{ resetPrice }}" style="margin-top: 12px; min-height: 44px; font-size: 14px; font-weight: 600; color: #0072F5">다시 제출하기</button>
             </div>
           </sc-if>
         </sc-if>
@@ -1569,7 +1555,7 @@ class Component extends DCLogic {
     var stages = [[1, '1. 체감 방향'], [2, '2. 가격대'], [3, '3. 실거래가']].map(function (x) {
       return { label: x[1], on: s.stage === x[0], style: s.stage === x[0] ? segOn : segOff, pick: function () { set({ stage: x[0] }); } };
     });
-    var stageNote = s.stage === 1 ? '누구나 참여합니다. 숫자를 묻지 않습니다.' : (s.stage === 2 ? '패널로 초대된 뒤 열리는 단계입니다. 목업에서는 미리 체험할 수 있습니다.' : '품목당 3개사가 4주 연속 제출하면 열리는 단계입니다. 목업에서는 미리 체험할 수 있습니다.');
+    var stageNote = s.stage === 1 ? '누구나 참여합니다. 숫자를 묻지 않습니다.' : (s.stage === 2 ? '이번 주 거래 가격대를 구간으로 고르는 단계입니다. 패널 회사부터 엽니다.' : '체결가를 물량과 함께 받는 단계입니다. 패널 운영 기준이 확정되면 엽니다.');
 
     var VO = [['up', '올랐다', 22], ['flat', '그대로다', 51], ['down', '내렸다', 27]];
     var voteOpts = VO.map(function (v) { return { label: v[1], pick: function () { set({ vote: v[0] }); } }; });
@@ -1578,6 +1564,42 @@ class Component extends DCLogic {
     var BD = [['b1', '86 미만', 1], ['b2', '86 ~ 88', 2], ['b3', '88 ~ 90', 3], ['b4', '90 ~ 92', 4], ['b5', '92 이상', 1]];
     var bands = BD.map(function (b) { return { label: b[1], pick: function () { set({ band: b[0] }); } }; });
     var bandRows = BD.map(function (b) { return { label: b[1], count: b[2] + '곳', barStyle: 'width:' + (b[2] / 4 * 100) + '%;background:' + (s.band === b[0] ? '#0072F5' : '#9CC3FF') }; });
+
+    // 가격 패널 관심 등록 (/api/panel)
+    var PROLES = ['유통', '실수요', '제조', '기타'], PITEMS = [['hr', '열연'], ['cr', '냉연'], ['gi', '도금'], ['rb', '철근'], ['hb', 'H형강'], ['plate', '후판'], ['sts', 'STS']];
+    var pDoneSaved = (function () { try { return localStorage.getItem('felix.panel') === '1'; } catch (e) { return false; } })();
+    var pSt = s.panelState || (pDoneSaved ? 'done' : 'idle'), pItems = s.pItems || [], pRole = s.pRole || '';
+    var pn = {
+      form: pSt !== 'done', done: pSt === 'done',
+      intro: '가격대·실거래가 제보는 등록한 회사로 구성한 패널에서 받습니다. 지금은 참여할 회사를 먼저 모으고 있습니다. 운영 원칙은 아래와 같습니다.',
+      company: s.pCompany || '', phone: s.pPhone || '',
+      setCompany: function (e) { set({ pCompany: e.target.value, panelMsg: '' }); }, setPhone: function (e) { set({ pPhone: e.target.value, panelMsg: '' }); },
+      roles: PROLES.map(function (r) { return { label: r, on: pRole === r, style: chip(pRole === r), pick: function () { set({ pRole: r }); } }; }),
+      items: PITEMS.map(function (t) { var on = pItems.indexOf(t[0]) >= 0; return { label: t[1], on: on, style: chip(on), pick: function () { set({ pItems: on ? pItems.filter(function (x) { return x !== t[0]; }) : pItems.concat([t[0]]) }); } }; }),
+      consent: !!s.pConsent, check: s.pConsent ? '✓' : '', boxStyle: s.pConsent ? 'background:#0072F5;color:#FFFFFF;border:1px solid #0072F5' : 'background:#FFFFFF;border:1.5px solid #98A2B3',
+      toggleConsent: function () { set({ pConsent: !s.pConsent, panelMsg: '' }); },
+      msg: s.panelMsg || '', hasMsg: !!s.panelMsg,
+      btnText: pSt === 'sending' ? '보내는 중…' : '패널 참여 등록',
+      btnStyle: pSt === 'sending' ? 'background:#98A2B3;color:#FFFFFF' : 'background:#0072F5;color:#FFFFFF',
+      doneText: '패널을 구성하는 대로 등록한 휴대폰으로 참여 방법을 문자로 안내합니다. 그때까지는 1단계 체감 투표로 먼저 참여해 주세요.',
+      goVote: function () { set({ stage: 1 }); },
+      edit: function () { try { localStorage.removeItem('felix.panel'); } catch (e) {} set({ panelState: 'idle' }); },
+      submit: function () {
+        if (pSt === 'sending') return;
+        var company = String(s.pCompany || '').trim(), phone = String(s.pPhone || '').replace(/\D/g, '');
+        if (phone.indexOf('8210') === 0) phone = '0' + phone.slice(2);
+        if (!/^01[016789]\d{7,8}$/.test(phone)) return set({ panelMsg: '휴대폰 번호를 확인하세요. 예: 010-1234-5678' });
+        if (!s.pConsent) return set({ panelMsg: '연락 동의에 체크해 주세요.' });
+        set({ panelState: 'sending', panelMsg: '' });
+        if (typeof fetch !== 'function') return set({ panelState: 'idle', panelMsg: '지금은 보낼 수 없습니다. 잠시 후 다시 시도하세요.' });
+        fetch('/api/panel', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ phone: phone, company: company, role: pRole, items: pItems, consent: true }) })
+          .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+          .then(function (x) { if (x.ok && x.j.ok) { try { localStorage.setItem('felix.panel', '1'); } catch (e) {} self.setState({ panelState: 'done' }); } else self.setState({ panelState: 'idle', panelMsg: (x.j && x.j.message) || '등록하지 못했습니다. 잠시 후 다시 시도하세요.' }); })
+          .catch(function () { self.setState({ panelState: 'idle', panelMsg: '네트워크 오류로 등록하지 못했습니다. 잠시 후 다시 시도하세요.' }); });
+      }
+    };
+    var SIGOF = { hr: 'hr', cr: 'cr', gi: 'coated', rb: 'rebar', hb: 'section' };
+    var vd2 = { sigLabel: tipLabel + ' 가격 방향 신호 보기 →', openSig: function () { set({ sub: 'signal', sigId: SIGOF[s.tipItem] || 'hr' }); }, goPanel: function () { set({ stage: 2 }); } };
 
     var priceNum = parseFloat(s.price), tonNum = parseFloat(s.ton);
     var priceOk = priceNum >= 60 && priceNum <= 150 && tonNum > 0;
@@ -2647,7 +2669,7 @@ class Component extends DCLogic {
       alertMsg: s.alert === 'off' ? '알림이 꺼져 있습니다.' : '±' + s.alert + '% 이상 움직이면 발표 직후 알림을 보냅니다.',
       news: news,
       stages: stages, stageNote: stageNote, tipItems: tipItems, tipItemLabel: tipLabel,
-      isStage1: s.stage === 1, isStage2: s.stage === 2, isStage3: s.stage === 3,
+      isStage1: s.stage === 1, isStage2: s.stage === 2, isStage3: s.stage === 3, isPanelStage: s.stage === 2 || s.stage === 3, pn: pn, vd2: vd2,
       voteOpen: !myVotes[s.tipItem], voteDone: !!myVotes[s.tipItem], voteOpts: voteOpts, voteRows: voteRows, resetVote: function () { var o = Object.assign({}, s.votes); delete o[s.tipItem]; set({ votes: o }); },
       bandOpen: !s.band, bandDone: !!s.band, bands: bands, bandRows: bandRows, resetBand: function () { set({ band: null }); },
       price: s.price, ton: s.ton, setPrice: function (e) { set({ price: e.target.value }); }, setTon: function (e) { set({ ton: e.target.value }); },

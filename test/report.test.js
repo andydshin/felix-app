@@ -210,3 +210,16 @@ test('뉴스: Google 뉴스 RSS 파싱과 GDELT 실패 시 대체', async () => 
   assert.strictEqual(t.items.length, 1);
   assert.strictEqual(t.items[0].lang, 'English');
 });
+
+test('패널 관심 등록: 휴대폰만 필수, 같은 번호는 갱신, 동의 필수', async () => {
+  const { createPanel, phoneOf } = require('../lib/panel');
+  assert.deepStrictEqual([phoneOf('010-1234-5678'), phoneOf('+82 10 1234 5678'), phoneOf('02-123-4567'), phoneOf('0101234')], ['01012345678', '01012345678', null, null]);
+  const p = createPanel({ kv: createKv(), now: () => new Date('2026-10-15T00:00:00Z') });
+  assert.strictEqual((await p.register({ phone: '02-123-4567', consent: true })).error, 'phone');
+  assert.strictEqual((await p.register({ phone: '010-1234-5678' })).error, 'consent');
+  assert.deepStrictEqual(await p.register({ phone: '010-1234-5678', items: ['hr', 'xx'], consent: true }), { ok: true, updated: false });
+  assert.deepStrictEqual(await p.register({ phone: '01012345678', company: 'A철강<b>', role: '유통', consent: true }), { ok: true, updated: true });
+  const l = await p.list();
+  assert.strictEqual(l.count, 1);
+  assert.deepStrictEqual([l.items[0].phone, l.items[0].company, l.items[0].role, l.items[0].items], ['010-1234-5678', 'A철강b', '유통', ['hr']]);
+});

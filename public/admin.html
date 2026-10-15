@@ -74,6 +74,7 @@
     <div class="card"><h2>진행 기록</h2><div id="log">대기 중</div></div>
     <div class="card" id="dataBox"><h2>수집한 숫자</h2><div class="muted">아직 없음</div></div>
     <div class="card" id="notesBox"><div class="row" style="justify-content:space-between"><h2 style="margin:0">시장 노트 (HS 검색)</h2><button id="bNotes" class="ghost">불러오기</button></div><div class="muted">수입국 × 품목별 관세·특례 제도·무역구제. 확인한 내용만, 출처와 확인일을 함께.</div><div id="notesList"></div></div>
+    <div class="card" id="panelBox"><div class="row" style="justify-content:space-between"><h2 style="margin:0">가격 패널 관심 등록</h2><button id="bPanel" class="ghost">불러오기</button></div><div class="muted">앱 제보 탭에서 등록한 휴대폰 번호(필수)와 회사명(선택). 패널 안내 연락에만 사용하고 외부에 공유하지 않습니다.</div><div id="panelList"></div></div>
     <div class="card" id="newsBox"><h2>수집한 뉴스·공고</h2><div class="muted">아직 없음</div></div>
   </aside>
 </main>
@@ -279,6 +280,11 @@
       el('button', { class: 'primary', text: '노트 저장', on: { click: function () { run('노트 저장', function () { return api({ action: 'notes-save', notes: notes }).then(function (j) { notes = j.notes; renderNotes(); log('노트 ' + notes.length + '건 저장'); }); }); } } })
     ]));
   }
+  $('bPanel').addEventListener('click', function () { run('패널 등록 불러오기', function () { return api({ action: 'panel-list' }).then(function (j) {
+    var box = $('panelList'); box.innerHTML = '';
+    box.appendChild(el('div', { class: 'muted', text: '총 ' + (j.count || 0) + '곳' }));
+    (j.items || []).forEach(function (x) { box.appendChild(el('div', { class: 'newsitem' }, [el('b', { text: x.phone || x.email || '' }), ' ', el('span', { text: x.company || '(회사명 없음)' }), ' ', el('span', { class: 'pill', text: x.role || '-' }), el('span', { class: 'muted', text: ' · ' + (x.items || []).join(', ') + ' · ' + String(x.updatedAt || x.at || '').slice(0, 10) })])); });
+  }); }); });
   $('bNotes').addEventListener('click', function () { run('노트 불러오기', function () { return api({ action: 'notes-get' }).then(function (j) { notes = j.notes || []; renderNotes(); }); }); });
   if ($('token').value) refresh().catch(function (e) { log('불러오기 실패: ' + e.message); });
 })();
