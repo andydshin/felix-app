@@ -149,17 +149,24 @@ a{color:#0072F5}a:hover{color:#0058CC}
       <div style="padding: 18px 0 28px">
         <div style="padding: 0 20px">
           <h1 style="margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em">시세</h1>
-          <div style="font-size: 13px; color: #667085">공개 데이터 44개 항목 · 8개 그룹</div>
+          <div style="font-size: 13px; color: #667085">공개 데이터 · 나라별 내수·수출·수입 가격</div>
         </div>
         <button onClick="{{ openHs }}" style="display: flex; margin: 12px 20px 0; width: calc(100% - 40px); box-sizing: border-box; align-items: center; justify-content: space-between; gap: 10px; min-height: 52px; border-radius: 14px; border: 1px solid #CFE3FF; background: #EEF6FF; padding: 0 16px">
           <div style="text-align: left"><div style="font-size: 14px; font-weight: 700; color: #0058CC">HS 코드로 무역 통계 검색</div><div style="font-size: 12px; color: #344054">예: 멕시코의 중국산·한국산 석도강판 수입 물량·단가</div></div>
           <span style="font-size: 16px; color: #0058CC">→</span>
         </button>
-        <div style="display: flex; gap: 8px; flex-wrap: wrap; padding: 14px 20px 6px">
+        <div style="display: flex; gap: 2px; margin: 14px 20px 0; background: #F2F4F7; border-radius: 12px; padding: 3px">
+          <sc-for list="{{ mkts }}" as="mk" hint-placeholder-count="6">
+            <button onClick="{{ mk.pick }}" aria-pressed="{{ mk.on }}" style="min-width: 0; min-height: 38px; border-radius: 9px; font-size: 13px; font-weight: 700; white-space: nowrap; padding: 0 2px; {{ mk.style }}">{{ mk.label }}</button>
+          </sc-for>
+        </div>
+<sc-if value="{{ hasCtry }}" hint-placeholder-val="{{ true }}">
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; padding: 12px 20px 2px">
           <sc-for list="{{ groups }}" as="g" hint-placeholder-count="5">
             <button onClick="{{ g.pick }}" style="flex: none; min-height: 34px; padding: 0 12px; border-radius: 17px; font-size: 13px; font-weight: 600; white-space: nowrap; {{ g.style }}">{{ g.label }}</button>
           </sc-for>
         </div>
+        </sc-if>
 
         <sc-if value="{{ isDataGroup }}" hint-placeholder-val="{{ true }}">
           <div style="margin: 8px 20px 0; background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 4px 16px 6px">
@@ -181,6 +188,38 @@ a{color:#0072F5}a:hover{color:#0058CC}
             </sc-for>
           </div>
           <div style="margin: 10px 20px 0; font-size: 12px; color: #667085">기준: {{ groupDate }}. {{ groupNote }}</div>
+        </sc-if>
+
+        <sc-if value="{{ isKrDom }}" hint-placeholder-val="{{ false }}">
+          <div style="margin: 14px 20px 0; background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 4px 16px 6px">
+            <div style="display: flex; justify-content: space-between; gap: 10px; padding: 12px 0 8px; font-size: 12px; color: #667085"><div style="font-size: 13px; font-weight: 700; color: #344054">수급 지표</div><div>{{ sdNote }}</div></div>
+            <sc-for list="{{ sdRows }}" as="r" hint-placeholder-count="3">
+              <button onClick="{{ r.open }}" style="display: flex; width: 100%; min-height: 56px; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid #F2F4F7; padding: 6px 0">
+                <div><div style="font-size: 15px; font-weight: 600">{{ r.name }}</div><div style="font-size: 12px; color: #667085">{{ r.unit }}</div></div>
+                <div style="text-align: right"><div style="font-size: 16px; font-weight: 700; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ r.valText }}</div><div style="font-size: 12px; font-weight: 600; {{ r.chgStyle }}; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ r.chgText }}</div></div>
+              </button>
+            </sc-for>
+          </div>
+          <div style="margin: 14px 20px 0; background: #FFFFFF; border: 1px dashed #9CC3FF; border-radius: 16px; padding: 14px 16px">
+            <div style="display: flex; justify-content: space-between; align-items: baseline"><div style="font-size: 15px; font-weight: 700">국내 유통 실거래가</div><div style="font-size: 12px; color: #667085">제보로 채워지는 칸</div></div>
+            <div style="margin-top: 4px; font-size: 13px; line-height: 1.55; color: #344054">합법적으로 가져올 공개 소스가 없어, 품목당 3개사 이상 제보가 모이면 평가가를 발행합니다.</div>
+            <div style="margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px"><sc-for list="{{ domRows }}" as="dm" hint-placeholder-count="4"><span style="font-size: 12px; border-radius: 8px; padding: 3px 8px; background: #F2F4F7; color: #475467">{{ dm.name }} · {{ dm.status }}</span></sc-for></div>
+            <button onClick="{{ goTips }}" style="margin-top: 12px; width: 100%; min-height: 44px; border-radius: 22px; background: #0072F5; color: #FFFFFF; font-size: 14px; font-weight: 600; text-align: center">제보 참여하기</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isLive }}" hint-placeholder-val="{{ false }}">
+          <div style="margin: 8px 20px 0; border-radius: 12px; padding: 10px 12px; font-size: 12px; {{ lv.bannerStyle }}">{{ lv.banner }}</div>
+          <div style="margin: 12px 20px 0"><div style="font-size: 15px; font-weight: 700">{{ lv.title }}</div><div style="font-size: 12px; color: #667085">{{ lv.src }}</div></div>
+          <div style="margin: 10px 20px 0; background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 4px 16px 6px">
+            <sc-for list="{{ lv.rows }}" as="lr" hint-placeholder-count="8">
+              <div style="display: flex; min-height: 56px; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid #F2F4F7; padding: 6px 0">
+                <div style="min-width: 0"><div style="font-size: 15px; font-weight: 600">{{ lr.name }}</div><div style="font-size: 12px; color: #667085; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ lr.sub }}</div></div>
+                <div style="flex: none; text-align: right"><div style="font-size: 16px; font-weight: 700; {{ lr.valStyle }}; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ lr.valText }}</div><div style="font-size: 12px; font-weight: 600; {{ lr.chgStyle }}; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ lr.chgText }}</div></div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="margin: 10px 20px 0; display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #667085"><sc-for list="{{ lv.notes }}" as="ln" hint-placeholder-count="2"><div>{{ ln }}</div></sc-for></div>
         </sc-if>
 
         <sc-if value="{{ isCmpGroup }}" hint-placeholder-val="{{ false }}">
@@ -329,7 +368,7 @@ a{color:#0072F5}a:hover{color:#0058CC}
             </sc-if>
           </div>
           <div style="margin: 12px 20px 0">
-            <div style="font-size: 15px; font-weight: 700">일본 수출·수입 단가</div>
+            <div style="font-size: 15px; font-weight: 700">{{ jpTitle }}</div>
             <div style="font-size: 12px; color: #667085">기준 월: {{ jpMonthLabel }} · 단위: 엔/t · 출처: 일본 재무성 무역통계</div>
           </div>
           <sc-for list="{{ jpSections }}" as="sec" hint-placeholder-count="3">
@@ -338,7 +377,7 @@ a{color:#0072F5}a:hover{color:#0058CC}
               <sc-for list="{{ sec.rows }}" as="jr" hint-placeholder-count="4">
                 <div style="display: flex; min-height: 60px; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid #F2F4F7; padding: 6px 0">
                   <div>
-                    <div style="font-size: 15px; font-weight: 600">{{ jr.name }} <span style="font-size: 11px; font-weight: 700; color: #1B64DA; background: #EEF6FF; border-radius: 6px; padding: 1px 6px">{{ jr.flow }}</span></div>
+                    <div style="font-size: 15px; font-weight: 600">{{ jr.name }}</div>
                     <div style="font-size: 12px; color: #667085">HS {{ jr.hs }} · <span style="font-weight: 700; {{ jr.tagStyle }}">{{ jr.tag }}</span></div>
                     <div style="font-size: 11.5px; color: #667085">{{ jr.partners }}</div>
                   </div>
@@ -353,7 +392,7 @@ a{color:#0072F5}a:hover{color:#0058CC}
           </sc-for>
           <div style="margin: 10px 20px 0; display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #344054">
             <div>단가(엔/t) = 해당 월 금액 ÷ 수량. 수출은 본선인도(FOB), 수입은 운임·보험료 포함(CIF) 금액입니다.</div>
-            <div>일본은 철강 순수출국이라 철강 제품·스크랩·정련동은 수출 단가, 원료와 나머지 비철은 수입 단가를 보여 줍니다. 품목 아래 국가는 물량 기준 주요 상대국입니다.</div>
+            <div>일본은 철강 순수출국이라 철강 제품·스크랩·정련동은 수출, 원료와 나머지 비철은 수입에서 봅니다. 품목 아래 국가는 물량 기준 주요 상대국입니다.</div>
             <div>수량 단위가 톤·킬로그램이 아닌 세부 품목은 계산에서 뺍니다. 한 달 물량이 100t 미만이면 회색으로 표시하고 ‘물량 적음’을 붙입니다.</div>
             <div>1월 값의 전월비는 전년도 표가 달라 아직 계산하지 않습니다. 달러 값(≈)은 관세청 수입 과세환율의 해당 월 평균으로 환산한 참고치입니다.</div>
             <div>출처: 財務省 貿易統計 (政府統計の総合窓口 e-Stat, 品別国別表).</div>
@@ -1349,11 +1388,22 @@ class Component extends DCLogic {
     var byId = {};
     items.forEach(function (it) { byId[it.id] = it; });
 
-    var isDom = s.group === 'dom', isCmp = s.group === 'cmp', isUs = s.group === 'us', isJp = s.group === 'jp', isKr = s.group === 'imp' || s.group === 'nf', isNf = s.group === 'nf';
+    // 시세 분류: 국가 비교 · 내수(나라별) · 수출(나라별) · 수입(나라별) · 국제가 · 환율
+    var MKT = [
+      { id: 'cmp', label: '국가 비교', g: 'cmp' },
+      { id: 'dom', label: '내수', ctry: [['kr', '한국'], ['cn', '중국'], ['gl', '미국'], ['in', '인도'], ['eupp', '유럽']] },
+      { id: 'exp', label: '수출', ctry: [['jpx', '일본'], ['mx', '멕시코']] },
+      { id: 'imp', label: '수입', ctry: [['imp', '한국 철강'], ['nf', '한국 비철'], ['us', '미국'], ['jpm', '일본'], ['euim', '유럽']] },
+      { id: 'intl', label: '국제가', g: 'wp' },
+      { id: 'fx', label: '환율', g: 'fx' }
+    ];
+    var mktOf = function (gk) { for (var i = 0; i < MKT.length; i++) { var m = MKT[i]; if (m.g === gk || (m.ctry && m.ctry.some(function (c) { return c[0] === gk; }))) return m; } return MKT[0]; };
+    var curMkt = mktOf(s.group);
+    var mkts = MKT.map(function (m) { var on = m.id === curMkt.id; return { label: m.label, on: on, style: 'flex:' + (m.label.length > 2 ? '1.7' : '1') + ' 1 0;' + (on ? 'background:#FFFFFF;color:#0B0D12;box-shadow:0 1px 2px rgba(16,24,40,.08)' : 'color:#667085'), pick: function () { var mem = (s.mktMem || {})[m.id]; set({ group: m.g || mem || m.ctry[0][0] }); } }; });
+    var groups = (curMkt.ctry || []).map(function (c) { return { label: c[1], style: chip(s.group === c[0]), pick: function () { var mm = Object.assign({}, s.mktMem); mm[curMkt.id] = c[0]; set({ group: c[0], mktMem: mm }); } }; });
+    var isDom = false, isCmp = s.group === 'cmp', isUs = s.group === 'us', isJp = s.group === 'jpx' || s.group === 'jpm', isKr = s.group === 'imp' || s.group === 'nf', isNf = s.group === 'nf';
+    var LIVEG = { 'in': 1, eupp: 1, mx: 1, euim: 1, wp: 1 }, isLive = !!LIVEG[s.group], isKrDom = s.group === 'kr';
     var g = G[s.group] || G.cn;
-    var groups = ORDER.map(function (k) {
-      return { label: k === 'dom' ? '국내 유통가' : (k === 'cmp' ? '국가 비교' : (k === 'us' ? '미국 주별' : (k === 'jp' ? '일본 수출입' : G[k].label))), style: chip(s.group === k), pick: function () { set({ group: k }); } };
-    });
     var rows = items.filter(function (it) { return it.group === s.group; });
     var movers = items.slice().sort(function (a, b) { return b.rank - a.rank; }).slice(0, 3);
     var watchItems = s.watch.map(function (id) { return byId[id]; }).filter(Boolean);
@@ -1686,6 +1736,7 @@ class Component extends DCLogic {
     ];
     var FLOW_KO = { 'export': '수출', 'import': '수입' };
     var jj = 0;
+    var jpWant = s.group === 'jpm' ? '수입' : '수출';
     var jpSections = JP_ITEMS.map(function (sec) {
       return { label: sec[0], rows: sec[1].map(function (it) {
         jj++;
@@ -1716,6 +1767,8 @@ class Component extends DCLogic {
     });
     var jpSrc = jpStatus === 'ok' && jd.source ? jd.source : {};
     var jpMonth = jpSrc['export'] ? jpSrc['export'].month : (jpSrc['import'] ? jpSrc['import'].month : null);
+    jpSections = jpSections.map(function (sec) { return { label: sec.label, rows: sec.rows.filter(function (r) { return r.flow === jpWant; }) }; }).filter(function (sec) { return sec.rows.length; });
+    var jpTitle = '일본 ' + jpWant + ' 단가';
     var jpMonthLabel = jpStatus === 'ok' ? (jpMonth ? monthLabel(jpMonth) : '확인 불가') : (jpStatus === 'error' ? '예시' : '확인 중');
     var jpBanner = jpStatus === 'ok' ? '실제 값: ' + jpMonthLabel + ' 기준, 일본 재무성 무역통계.' + (jpSrc['import'] && jpSrc['import'].preliminary ? ' 수입 품목은 9자리 속보치라 확정 때 바뀔 수 있습니다.' : '')
       : (jpStatus === 'error' ? '데이터 서버에 연결하지 못해 예시 값을 보여 줍니다. 실제 값은 Felix 서버를 통해서만 표시됩니다.'
@@ -1725,7 +1778,7 @@ class Component extends DCLogic {
 
     // 한국: 관세청 품목별 국가별 수출입실적 → 수입 통관 단가 (달러/t). 서버 /api/kr-trade 경유.
     var kd = s.krData;
-    if ((isKr || isCmp || s.group === 'raw' || s.group === 'sd') && !kd && !self._krReq) {
+    if ((isKr || isCmp || s.group === 'kr') && !kd && !self._krReq) {
       self._krReq = true;
       var putK = function (v) { self.setState({ krData: v }); };
       setTimeout(function () {
@@ -1915,7 +1968,7 @@ class Component extends DCLogic {
 
     // 세계: 세계은행 월평균 가격 (/api/world-prices)
     var wd = s.wbData;
-    if ((s.group === 'raw' || isCmp) && !wd && !self._wbReq) {
+    if ((s.group === 'wp' || isCmp) && !wd && !self._wbReq) {
       self._wbReq = true;
       setTimeout(function () {
         if (typeof fetch !== 'function') { self.setState({ wbData: { status: 'error' } }); return; }
@@ -1935,7 +1988,7 @@ class Component extends DCLogic {
 
     // 인도: 경제자문관실 WPI 품목별 (/api/in-wpi)
     var idd = s.inData;
-    if (isCmp && !idd && !self._inReq) {
+    if ((isCmp || s.group === 'in') && !idd && !self._inReq) {
       self._inReq = true;
       setTimeout(function () {
         if (typeof fetch !== 'function') { self.setState({ inData: { status: 'error' } }); return; }
@@ -1948,7 +2001,7 @@ class Component extends DCLogic {
 
     // 멕시코: Census 수입 통계로 본 멕시코산 대미 수출 단가 (/api/mx-trade)
     var mxd = s.mxData;
-    if (isCmp && !mxd && !self._mxReq) {
+    if ((isCmp || s.group === 'mx') && !mxd && !self._mxReq) {
       self._mxReq = true;
       setTimeout(function () {
         if (typeof fetch !== 'function') { self.setState({ mxData: { status: 'error' } }); return; }
@@ -1961,7 +2014,7 @@ class Component extends DCLogic {
 
     // 유럽: Eurostat Comext 역외 수입 단가(기본) + 생산자물가지수 업종(보완) (/api/eu-prices)
     var eud = s.euData;
-    if (isCmp && !eud && !self._euReq) {
+    if ((isCmp || s.group === 'eupp' || s.group === 'euim') && !eud && !self._euReq) {
       self._euReq = true;
       setTimeout(function () {
         if (typeof fetch !== 'function') { self.setState({ euData: { status: 'error' } }); return; }
@@ -1970,6 +2023,50 @@ class Component extends DCLogic {
           .then(function (x) { if (!x.ok || !x.j || x.j.status !== 'ok') throw new Error('bad'); self.setState({ euData: { status: 'ok', j: x.j } }); })
           .catch(function () { self.setState({ euData: { status: 'error' } }); });
       }, 0);
+    }
+
+    // 나라별 목록(내수 인도·유럽, 수출 멕시코, 수입 유럽, 국제가)
+    var lv = { title: '', src: '', banner: '', bannerStyle: '', rows: [], notes: [] };
+    if (isLive) {
+      var NM = { hr: '열연', cr: '냉연', coated: '도금강판', plate: '후판', wire_rod: '선재', rebar: '철근', section: '형강', pipe: '강관', sts: '스테인리스', iron_ore: '철광석', coking_coal: '원료탄', coke: '코크스', scrap: '철스크랩', steam_coal: '연료탄', coal_au: '호주산 연료탄', al: '알루미늄', cu: '구리', zn: '아연', ni: '니켈', pb: '납', sn: '주석' };
+      var ORD = ['hr', 'cr', 'coated', 'plate', 'wire_rod', 'rebar', 'section', 'pipe', 'sts', 'iron_ore', 'coking_coal', 'coke', 'steam_coal', 'coal_au', 'scrap', 'al', 'cu', 'zn', 'ni', 'pb', 'sn'];
+      var chgOf = function (cur, prev, word) { if (!(cur > 0) || !(prev > 0)) return { t: '전기 자료 없음', st: FLAT }; var c = (cur - prev) / prev * 100; return { t: (c > 0 ? '▲' : (c < 0 ? '▼' : '')) + fmt(Math.abs(c), 1) + '% ' + word, st: c > 0 ? UP : (c < 0 ? DOWN : FLAT) }; };
+      var deEnt = function (t) { return String(t || '').replace(/&#(\d+);/g, function (m, n) { return String.fromCharCode(Number(n)); }).replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>'); };
+      var rowOf = function (name, sub, val, d, cur, prev, word, muted) { var c = chgOf(cur, prev, word); return { name: name, sub: deEnt(sub), valText: val, valStyle: muted ? MUTED : '', chgText: c.t, chgStyle: muted ? MUTED : c.st }; };
+      var ld = function (x, err) { return !x ? 'loading' : (x.status === 'ok' ? 'ok' : 'error'); };
+      var stIn = function (st, okText, errText) { lv.banner = st === 'ok' ? okText : (st === 'loading' ? '불러오는 중입니다.' : errText); lv.bannerStyle = st === 'ok' ? 'background:#ECFDF3;color:#067647' : (st === 'loading' ? 'background:#F2F4F7;color:#475467' : 'background:#FEF3E2;color:#B54708'); };
+      if (s.group === 'in') {
+        lv.title = '인도 도매물가지수'; lv.src = '인도 상공부 경제자문관실 WPI · 월 1회 · 2022-23=100';
+        var it1 = idd && idd.status === 'ok' ? idd.j.items : {}, per1 = Object.keys(it1).map(function (k) { return it1[k].period; }).sort().pop();
+        stIn(ld(idd), '실제 값: ' + (per1 ? monthLabel(per1) : '') + ' 기준. 가격이 아니라 지수입니다.', '인도 WPI를 불러오지 못했습니다.');
+        lv.rows = ORD.filter(function (k) { return it1[k]; }).map(function (k) { var d = it1[k]; return rowOf(NM[k], d.name, fmt(d.value, 1), 1, d.value, d.prev, '전월비'); });
+        lv.notes = ['출처: Office of the Economic Adviser, DPIIT, Government of India — Wholesale Price Index.'];
+      } else if (s.group === 'eupp') {
+        lv.title = '유럽 업종 생산자물가'; lv.src = 'Eurostat sts_inppd_m · 월 1회 · 2021=100';
+        var it2 = eud && eud.status === 'ok' ? eud.j.items : {}, seen = {};
+        var NACE = { C241: '기초 철강 (판재·봉형강 등)', C242: '강관', C191: '코크스', C2442: '알루미늄', C2443: '납·아연·주석', C2444: '구리', C2445: '기타 비철' };
+        stIn(ld(eud), '실제 값: ' + (eud && eud.j && eud.j.ppiMonth ? monthLabel(eud.j.ppiMonth) : '') + ' 기준. 품목이 아니라 업종 단위 지수입니다.', '유럽 자료를 불러오지 못했습니다.');
+        ORD.forEach(function (k) { var d = it2[k]; if (!d || !d.ppi || !(d.ppi.value > 0)) return; var nc = d.ppi.nace || ({ pipe: 'C242', coke: 'C191', al: 'C2442', cu: 'C2444', zn: 'C2443', pb: 'C2443', ni: 'C2445' }[k] || 'C241'); if (seen[nc]) return; seen[nc] = 1; lv.rows.push(rowOf(NACE[nc] || nc, 'NACE ' + nc, fmt(d.ppi.value, 1), 1, d.ppi.value, d.ppi.prev, '전월비')); });
+        lv.notes = ['Source: Eurostat. 유럽연합 국내 출고 기준 생산자물가입니다.'];
+      } else if (s.group === 'euim') {
+        lv.title = '유럽 역외 수입 단가'; lv.src = 'Eurostat Comext · 월 1회 · 유로/t';
+        var it3 = eud && eud.status === 'ok' ? eud.j.items : {};
+        stIn(ld(eud), '실제 값: ' + (eud && eud.j && eud.j.month ? monthLabel(eud.j.month) : '') + ' 기준, EU 27개국이 역외에서 들여온 금액 ÷ 물량.', '유럽 자료를 불러오지 못했습니다.');
+        lv.rows = ORD.filter(function (k) { return it3[k] && it3[k].comext && it3[k].comext.status === 'ok'; }).map(function (k) { var c = it3[k].comext; return rowOf(NM[k], fmt(c.tons, 0) + 't' + (c.lowVolume ? ' · 물량 적음' : ''), '€' + fmt(c.unitPrice, 0), 0, c.prev && !c.prev.lowVolume ? c.unitPrice : 0, c.prev ? c.prev.unitPrice : 0, '전월비', c.lowVolume); });
+        lv.notes = ['Source: Eurostat (Comext DS-045409). 한 달 물량 100t 미만은 회색으로 표시합니다.'];
+      } else if (s.group === 'mx') {
+        lv.title = '멕시코 대미 수출 단가'; lv.src = '미국 Census 수입 통계 · 월 1회 · 달러/t';
+        var it4 = mxd && mxd.status === 'ok' ? mxd.j.items : {};
+        stIn(ld(mxd), '실제 값: ' + (mxd && mxd.j && mxd.j.month ? monthLabel(mxd.j.month) : '') + ' 기준, 미국이 멕시코에서 들여온 금액 ÷ 물량.', '멕시코 자료를 불러오지 못했습니다.');
+        lv.rows = ORD.filter(function (k) { return it4[k] && it4[k].status === 'ok'; }).map(function (k) { var d = it4[k]; return rowOf(NM[k], fmt(d.tons, 0) + 't' + (d.lowVolume ? ' · 물량 적음' : ''), '$' + fmt(d.unitPrice, 0), 0, d.prev && !d.prev.lowVolume ? d.unitPrice : 0, d.prev ? d.prev.unitPrice : 0, '전월비', d.lowVolume); });
+        lv.notes = ['멕시코의 최대 수출처인 미국의 수입 통계로 본 단가입니다.', 'This product uses the Census Bureau Data API but is not endorsed or certified by the Census Bureau.'];
+      } else if (s.group === 'wp') {
+        lv.title = '국제 원료·비철 가격'; lv.src = '세계은행 Pink Sheet · 월 1회 · 달러/t 월평균';
+        var it5 = wd && wd.status === 'ok' ? wd.j.items : {};
+        stIn(ld(wd), '실제 값: ' + (wd && wd.j && wd.j.period ? monthLabel(wd.j.period) : '') + ' 월평균.', '세계은행 자료를 불러오지 못했습니다.');
+        lv.rows = ['iron_ore', 'coal_au', 'al', 'cu', 'zn', 'ni', 'pb', 'sn'].filter(function (k) { return it5[k]; }).map(function (k) { var d = it5[k]; return rowOf(NM[k], d.unit || '달러/t', fmt(d.value, d.value < 1000 ? 1 : 0), 1, d.value, d.prev, '전월비'); });
+        lv.notes = ['출처: World Bank Commodity Price Data (The Pink Sheet), CC BY 4.0.'];
+      }
     }
 
     // 국가 비교 표: 한국 열 추가, 미국·일본 칸을 실제 데이터로 (각 서버 API 결과를 그대로 쓴다)
@@ -2520,7 +2617,8 @@ class Component extends DCLogic {
       tabHome: s.tab === 'home' ? tabOn : tabOff, tabBoard: s.tab === 'board' ? tabOn : tabOff, tabReports: s.tab === 'reports' ? tabOn : tabOff,
       tabTips: s.tab === 'tips' ? tabOn : tabOff, tabMe: s.tab === 'me' ? tabOn : tabOff,
       movers: movers, upcoming: upcoming, watchItems: watchItems, noWatch: watchItems.length === 0,
-      groups: groups, rows: rows, isDataGroup: !isDom && !isCmp && !isUs && !isJp && !isKr, isKrGroup: isKr, krTitle: isNf ? '비철 수입 통관 단가' : '한국 수입 통관 단가', krIsSteel: !isNf, krIsNf: isNf, krRows: krRows, krBanner: krBanner, krBannerStyle: krBannerStyle, krShowRetry: krStatus === 'error', krRetry: krRetry, krMonthLabel: krMonthLabel, isJpGroup: isJp, jpSections: jpSections, jpBanner: jpBanner, jpBannerStyle: jpBannerStyle, jpShowRetry: jpStatus === 'error', jpRetry: jpRetry, jpMonthLabel: jpMonthLabel, isDomGroup: isDom, isCmpGroup: isCmp, cmpRows: cmpRows, cmpCols: cmpCols, cmpItems: cmpItems, cmpList: cmpList, cmpMatrix: cmpMatrix, cmpTabs: cmpTabs, cmpTitle: ct.title, isUsGroup: isUs, usStates: usStates, usSections: usSections, usStateName: STATES.at(si)[1], usBanner: usBanner, usBannerStyle: usBannerStyle, usShowRetry: usStatus === 'error', usRetry: usRetry, usMonthLabel: usStatus === 'ok' ? monthLabel(ud.month) : (usStatus === 'error' ? '예시' : '확인 중'),
+      groups: groups, hasCtry: groups.length > 0, mkts: mkts, isLive: isLive, lv: lv, isKrDom: isKrDom, sdRows: items.filter(function (it) { return it.group === 'sd'; }), sdNote: '관세청 · 세계철강협회 · 국토부', jpTitle: jpTitle,
+      rows: rows, isDataGroup: !isDom && !isCmp && !isUs && !isJp && !isKr && !isLive, isKrGroup: isKr, krTitle: isNf ? '비철 수입 통관 단가' : '한국 수입 통관 단가', krIsSteel: !isNf, krIsNf: isNf, krRows: krRows, krBanner: krBanner, krBannerStyle: krBannerStyle, krShowRetry: krStatus === 'error', krRetry: krRetry, krMonthLabel: krMonthLabel, isJpGroup: isJp, jpSections: jpSections, jpBanner: jpBanner, jpBannerStyle: jpBannerStyle, jpShowRetry: jpStatus === 'error', jpRetry: jpRetry, jpMonthLabel: jpMonthLabel, isDomGroup: isDom, isCmpGroup: isCmp, cmpRows: cmpRows, cmpCols: cmpCols, cmpItems: cmpItems, cmpList: cmpList, cmpMatrix: cmpMatrix, cmpTabs: cmpTabs, cmpTitle: ct.title, isUsGroup: isUs, usStates: usStates, usSections: usSections, usStateName: STATES.at(si)[1], usBanner: usBanner, usBannerStyle: usBannerStyle, usShowRetry: usStatus === 'error', usRetry: usRetry, usMonthLabel: usStatus === 'ok' ? monthLabel(ud.month) : (usStatus === 'error' ? '예시' : '확인 중'),
       groupSrc: g.src, groupCycle: g.cycle, groupDate: g.date, groupNote: g.note,
       groupTag: s.group === 'sd' ? '일부 실제 값' : (g.real ? '실제 발표값' : '예시 값'), groupTagStyle: g.real ? 'color:#12B76A' : 'color:#B54708',
       domRows: [{ name: '열연 유통가', status: '제보 대기' }, { name: '냉연 유통가', status: '제보 대기' }, { name: '도금강판 유통가', status: '제보 대기' }, { name: '철근 유통가', status: '제보 대기' }],
