@@ -60,7 +60,8 @@ a{color:#0072F5}a:hover{color:#0058CC}
           <sc-if value="{{ sg.hasHead }}" hint-placeholder-val="{{ true }}">
             <div style="margin-top: 10px; background: #F5F8FF; border-radius: 12px; padding: 12px">
               <div style="font-size: 14px; font-weight: 600; line-height: 1.5; color: #0B0D12">{{ sg.head }}</div>
-              <div style="margin-top: 4px; font-size: 12px; line-height: 1.5; color: #475467">{{ sg.why }}</div>
+              <sc-if value="{{ sg.hasWhy }}" hint-placeholder-val="{{ true }}"><div style="margin-top: 6px; font-size: 12.5px; line-height: 1.5; color: #344054">{{ sg.why }}</div></sc-if>
+              <div style="margin-top: 2px; font-size: 12px; line-height: 1.5; color: #98A2B3">{{ sg.basis }}</div>
             </div>
           </sc-if>
           <div style="margin-top: 6px">
@@ -2466,16 +2467,26 @@ class Component extends DCLogic {
     if (strongK.length) head = strongK.map(function (k) { return nm(groups2[k]) + ' ' + k; }).join(', ') + (leanK.length ? '. ' + leanK.map(function (k) { return eun(nm(groups2[k])) + ' ' + k; }).join(', ') + '으로 약하게 기울었습니다.' : '.');
     else if (leanK.length) head = '뚜렷한 방향은 없습니다. ' + leanK.map(function (k) { return eun(nm(groups2[k])) + ' ' + k; }).join(', ') + '으로 약하게 기울었습니다.';
     else if (flatK.length) head = '모든 품목이 보합입니다. 지금은 가격을 밀어 올리거나 내리는 힘이 뚜렷하지 않습니다.';
-    var drv = {}; SIGP.forEach(function (p) { if (lvOf(p) === '보합' && !leanOf(p)) return; var t = impactOf(p)[0]; if (t && Math.abs(t.m) > 0.05) { var k = briefOf(t.c); drv[k] = (drv[k] || 0) + 1; } });
+    // 주 요인: 가격 지표면 '흐름', 이슈·제철소 발표면 '이슈'. 가격 지표는 '중국 열연 약세(▼0.5%)' 꼴로
+    var drvText = function (c) { var b = briefOf(c), m = (c.id === 'cost' || c.id === 'china') && b.match(/^(.*?)\s*([▲▼])([\d.]+%)(.*)$/); return m ? m[1] + ' ' + (m[2] === '▲' ? '강세' : '약세') + '(' + m[2] + m[3] + ')' + m[4] : b; };
+    var drv = {}, drvKind = {}; SIGP.forEach(function (p) { if (lvOf(p) === '보합' && !leanOf(p)) return; var t = impactOf(p)[0]; if (t && Math.abs(t.m) > 0.05) { var k = drvText(t.c); drv[k] = (drv[k] || 0) + 1; drvKind[k] = (t.c.id === 'issues' || t.c.id === 'mills') ? 'i' : 'f'; } });
     var drvK = Object.keys(drv).sort(function (a, b) { return drv[b] - drv[a]; }).slice(0, 2);
-    var why = (drvK.length ? '주 요인: ' + drvK.join(', ') + '. ' : '') + (sameConf ? '모든 품목 확실성 ' + sameConf + (sameConf === '낮음' ? ' — 제철소 발표·세계 이슈가 아직 입력되지 않아 원가·중국 가격만 반영했습니다.' : '.') : '');
+    var kinds = drvK.map(function (k) { return drvKind[k]; }), why = drvK.length ? (kinds.every(function (x) { return x === 'i'; }) ? '주 요인으로 보이는 이슈: ' : (kinds.every(function (x) { return x === 'f'; }) ? '주 요인으로 보이는 흐름: ' : '주 요인: ')) + drvK.join(', ') : '';
+    // 판단 근거: 쓰인 요소 종류, 3가지 이상이면 가장 뚜렷한 품목에서 같은 방향인 요소 수
+    var CNAME = { cost: '원가', china: '중국 가격', mills: '제철소 발표', issues: '세계 이슈', votes: '현장 체감' }, used = [];
+    SIGP.forEach(function (p) { (p.comps || []).forEach(function (c) { if (used.indexOf(c.id) < 0) used.push(c.id); }); });
+    used.sort(function (a, b) { return Object.keys(CNAME).indexOf(a) - Object.keys(CNAME).indexOf(b); });
+    var lead = SIGP.slice().sort(function (a, b) { return ((b.comps || []).length - (a.comps || []).length) || (Math.abs(b.score || 0) - Math.abs(a.score || 0)); })[0];
+    var leadAgree = lead && Math.abs(lead.score || 0) >= 0.15 ? (lead.comps || []).filter(function (c) { return (lead.score > 0 ? c.score >= 0.1 : c.score <= -0.1); }).length : 0;
+    var basis = !used.length ? '' : (used.length < 3 ? '판단 근거: ' + used.map(function (k) { return CNAME[k]; }).join(' · ')
+      : '판단 근거 ' + used.length + '가지' + (lead && leadAgree ? ' · ' + eun(lead.name) + ' 그중 ' + leadAgree + '가지가 같은 방향' : '') );
     var STRIPE = { '강한 상승': '#F04452', '상승 우위': '#F7838D', '보합': '#EAECF0', '하락 우위': '#7FA6E8', '강한 하락': '#1B64DA' };
     var sg = { rows: SIGP.map(function (p) { var l = lvOf(p), ln = leanOf(p), im = impactOf(p).filter(function (x) { return Math.abs(x.c.score || 0) >= 0.1; }).slice(0, 2);
         return { name: p.name, level: l === '보합' && ln ? '보합 ' + (ln === 'up' ? '↗' : '↘') : (l || '자료 부족'), chip: LVSTY[l] || LVSTY['보합'], meter: meterOf(l, ln),
           stripe: 'background:' + (l === '보합' && ln ? (ln === 'up' ? '#FBC5CA' : '#C7D7F5') : (STRIPE[l] || '#EAECF0')),
-          brief: (im.length ? im.map(function (x) { return briefOf(x.c); }).join(' · ') : '큰 움직임 없음') + (!sameConf && p.conf ? ' · 확실성 ' + p.conf : ''),
+          brief: im.length ? im.map(function (x) { return briefOf(x.c); }).join(' · ') : '큰 움직임 없음',
           open: function () { set({ sub: 'signal', sigId: p.id }); } }; }),
-      hasHead: !!head, head: head, why: why,
+      hasHead: !!head, head: head, why: why, basis: basis, hasWhy: !!why,
       meta: sgd && sgd.status === 'ok' ? sgd.j.today + ' 기준' : '',
       note: !sgd ? '신호를 계산하는 중입니다.' : (sgd.status !== 'ok' ? '신호를 불러오지 못했습니다.' : (trk && trk.graded ? '지난 신호 ' + trk.graded + '건 중 ' + trk.hits + '건 적중 (' + trk.rate + '%). ' : '') + '원가·중국 가격·제철소 발표·세계 이슈·현장 체감을 지표별 평소 변동폭 대비로 합친 참고 지표입니다. 막대 5칸은 강한 하락 ~ 강한 상승.' + (trk && trk.graded ? '' : ' 적중률은 기록 2개월 뒤부터 공개합니다.')) };
     var sd = {};
