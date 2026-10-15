@@ -509,6 +509,26 @@ a{color:#0072F5}a:hover{color:#0058CC}
             <sc-for list="{{ hs.views }}" as="hv" hint-placeholder-count="2"><button onClick="{{ hv.pick }}" aria-pressed="{{ hv.on }}" style="flex: 1; min-height: 40px; border-radius: 9px; font-size: 13px; font-weight: 700; text-align: center; {{ hv.style }}">{{ hv.label }}</button></sc-for>
           </div>
           <div style="font-size: 13px; color: #344054">{{ hs.title }}</div>
+          <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 16px">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px"><div style="font-size: 15px; font-weight: 700">데이터로 본 핵심</div><div style="font-size: 11px; color: #98A2B3">통계에서 계산한 사실만</div></div>
+            <sc-for list="{{ hs.facts }}" as="hf" hint-placeholder-count="4">
+              <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #F2F4F7"><div style="font-size: 13px; font-weight: 700; color: #0058CC">{{ hf.title }}</div><div style="margin-top: 4px; font-size: 14px; line-height: 1.65; color: #344054">{{ hf.text }}</div></div>
+            </sc-for>
+          </div>
+          <sc-if value="{{ hs.hasNotes }}" hint-placeholder-val="{{ false }}">
+            <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 16px">
+              <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px"><div style="font-size: 15px; font-weight: 700">통상 환경</div><div style="font-size: 11px; color: #98A2B3">편집부 확인 정보</div></div>
+              <sc-for list="{{ hs.notes }}" as="hn" hint-placeholder-count="2">
+                <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #F2F4F7">
+                  <div style="font-size: 14px; font-weight: 700">{{ hn.title }}</div>
+                  <div style="margin-top: 4px; font-size: 13px; line-height: 1.65; color: #344054">{{ hn.body }}</div>
+                  <div style="margin-top: 4px; font-size: 11px; color: #98A2B3">확인일 {{ hn.checkedAt }}</div>
+                  <sc-for list="{{ hn.sources }}" as="hns" hint-placeholder-count="1"><a href="{{ hns.href }}" target="_blank" rel="noopener noreferrer" style="display: block; margin-top: 4px; font-size: 12px; line-height: 1.45; color: #0058CC">{{ hns.title }}</a></sc-for>
+                </div>
+              </sc-for>
+              <div style="margin-top: 12px; font-size: 11px; line-height: 1.5; color: #98A2B3">관세·특례 제도는 자주 바뀝니다. 실제 거래 전에는 관세사나 해당국 관세표로 세번별 세율을 확인하세요.</div>
+            </div>
+          </sc-if>
           <sc-for list="{{ hs.cards }}" as="hc" hint-placeholder-count="2">
             <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 16px">
               <div style="display: flex; justify-content: space-between; align-items: baseline"><div style="display: flex; align-items: center; gap: 8px"><span style="width: 10px; height: 10px; border-radius: 5px; {{ hc.dot }}"></span><span style="font-size: 16px; font-weight: 700">{{ hc.name }}산</span></div><div style="font-size: 12px; color: #667085">{{ hc.month }}</div></div>
@@ -2306,6 +2326,9 @@ class Component extends DCLogic {
         var codesV = view === 'code' ? J2.codes : [null];
         hs.views = [['total', '합계'], ['code', '코드별']].map(function (v) { return { label: v[1], on: view === v[0], style: view === v[0] ? segOn : segOff, pick: function () { set({ hsView: v[0] }); } }; });
         hs.title = J2.marketName + '의 ' + (J2.preset ? J2.preset.name + ' (' + J2.codes.join(', ') + ')' : 'HS ' + J2.codes.join(', ')) + ' 수입 · ' + (M.months.length ? M.months[0] + ' ~ ' + M.months[M.months.length - 1] : '자료 없음');
+        hs.facts = J2.facts || [];
+        hs.notes = (J2.notes || []).map(function (n) { return { title: n.title, body: n.body, checkedAt: n.checkedAt, sources: (n.sources || []).map(function (x) { return { title: x.title || x.url, href: /^https?:\/\//i.test(x.url) ? x.url : '#' }; }) }; });
+        hs.hasNotes = hs.notes.length > 0;
         hs.cards = ps.map(function (p) {
           var tot = M.series[p].total, li = lastIdx(tot), cur = li >= 0 ? tot[li] : null, prv = null;
           for (var k = li - 1; k >= 0; k--) if (tot[k].unit) { prv = tot[k]; break; }

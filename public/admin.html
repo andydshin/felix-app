@@ -73,6 +73,7 @@
   <aside>
     <div class="card"><h2>진행 기록</h2><div id="log">대기 중</div></div>
     <div class="card" id="dataBox"><h2>수집한 숫자</h2><div class="muted">아직 없음</div></div>
+    <div class="card" id="notesBox"><div class="row" style="justify-content:space-between"><h2 style="margin:0">시장 노트 (HS 검색)</h2><button id="bNotes" class="ghost">불러오기</button></div><div class="muted">수입국 × 품목별 관세·특례 제도·무역구제. 확인한 내용만, 출처와 확인일을 함께.</div><div id="notesList"></div></div>
     <div class="card" id="newsBox"><h2>수집한 뉴스·공고</h2><div class="muted">아직 없음</div></div>
   </aside>
 </main>
@@ -254,6 +255,27 @@
     if (!confirm('제' + no + '호로 발행합니다. 앱 사용자에게 바로 보입니다. 계속할까요?')) return;
     run('발행', function () { return api({ action: 'save', draft: draft }).then(function () { return api({ action: 'publish', no: no }); }).then(function (j) { log('제' + j.no + '호 발행 (' + j.weekLabel + ')'); return refresh(); }); });
   });
+
+  // ---------- 시장 노트 ----------
+  var notes = null;
+  function renderNotes() {
+    var box = $('notesList'); box.replaceChildren();
+    if (!notes) return;
+    notes.forEach(function (n, i) {
+      box.appendChild(el('div', { class: 'issue' }, [
+        el('div', { class: 'grid3' }, [field('수입국(ISO2)', n.market, function (v) { n.market = v.trim().toUpperCase(); }), field('HS 앞자리(쉼표)', (n.codes || []).join(', '), function (v) { n.codes = v.split(',').map(function (x) { return x.trim(); }).filter(Boolean); }), field('확인일', n.checkedAt, function (v) { n.checkedAt = v.trim(); })]),
+        field('제목', n.title, function (v) { n.title = v; }), field('내용', n.body, function (v) { n.body = v; }, true),
+        srcList(n.sources, function (k) { n.sources.splice(k, 1); renderNotes(); }),
+        addSourceRow(function (sx) { (n.sources = n.sources || []).push({ title: sx.title, url: sx.url }); renderNotes(); }),
+        el('button', { class: 'danger', style: 'margin-top:8px', text: '삭제', on: { click: function () { notes.splice(i, 1); renderNotes(); } } })
+      ]));
+    });
+    box.appendChild(el('div', { class: 'row', style: 'margin-top:10px' }, [
+      el('button', { class: 'ghost', text: '+ 노트 추가', on: { click: function () { notes.push({ market: 'MX', codes: ['72'], title: '', body: '', sources: [], checkedAt: new Date().toISOString().slice(0, 10) }); renderNotes(); } } }),
+      el('button', { class: 'primary', text: '노트 저장', on: { click: function () { run('노트 저장', function () { return api({ action: 'notes-save', notes: notes }).then(function (j) { notes = j.notes; renderNotes(); log('노트 ' + notes.length + '건 저장'); }); }); } } })
+    ]));
+  }
+  $('bNotes').addEventListener('click', function () { run('노트 불러오기', function () { return api({ action: 'notes-get' }).then(function (j) { notes = j.notes || []; renderNotes(); }); }); });
   if ($('token').value) refresh().catch(function (e) { log('불러오기 실패: ' + e.message); });
 })();
 </script>

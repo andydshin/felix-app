@@ -23,7 +23,7 @@ test('멕시코 수입(Comtrade 미리보기) + 한국 대멕시코 수출(관�
       { period: '202607', partnerCode: 0, cmdCode: '721012', netWgt: 8000000, primaryValue: 7600000 } ] }) };
     return { ok: true, status: 200, text: async () => '<response><header><resultCode>00</resultCode></header><body><items><item><year>2026.07</year><hsCd>721012</hsCd><statCd>MX</statCd><expWgt>990000</expWgt><expDlr>980000</expDlr></item><item><year>총계</year></item></items></body></response>' };
   };
-  const r = await createHsTrade({ fetch: f, now: () => new Date('2026-10-15T00:00:00Z') }).search({ preset: 'tinplate', market: 'MX', partners: 'CN,KR' });
+  const r = await createHsTrade({ fetch: f, wait: () => Promise.resolve(), now: () => new Date('2026-10-15T00:00:00Z') }).search({ preset: 'tinplate', market: 'MX', partners: 'CN,KR' });
   assert.deepStrictEqual(r.codes, ['721011', '721012', '721210']);
   assert.strictEqual(r.main.series.CN.total.find(x => x.ym === '202607').unit, 900);
   assert.strictEqual(r.main.series.WD.total[0].t, 8000);
@@ -43,9 +43,64 @@ test('Comtrade 미리보기는 달마다 나눠 묻고, 일부 실패해도 나�
     if (per === '202601') return { ok: false, status: 500, text: async () => 'x' };
     return { ok: true, status: 200, text: async () => JSON.stringify({ data: [{ period: per, partnerCode: 156, cmdCode: '721012', netWgt: 1000000, primaryValue: 900000 }] }) };
   };
-  const r = await createHsTrade({ fetch: f, now: () => new Date('2026-10-15T00:00:00Z') }).comtrade('MX', ['CN', 'WD'], ['721012'], 'import', 12);
+  const r = await createHsTrade({ fetch: f, wait: () => Promise.resolve(), now: () => new Date('2026-10-15T00:00:00Z') }).comtrade('MX', ['CN', 'WD'], ['721012'], 'import', 12);
   assert.strictEqual(seen.length, 12);
   assert.ok(seen.every(p => /^\d{6}$/.test(p)));
   assert.strictEqual(r.rows.length, 11);
   assert.deepStrictEqual(r.failed, [{ period: '202601', status: '500' }]);
+});
+
+test('429면 쉬었다 한 번 더 묻고, 계속 막히면 멈춘다', async () => {
+  let n = 0;
+  const f = async (url) => { n++; if (n === 1 || n >= 4) return { ok: false, status: 429, text: async () => 'rate' }; const per = new URL(url).searchParams.get('period'); return { ok: true, status: 200, text: async () => JSON.stringify({ data: [{ period: per, partnerCode: 156, cmdCode: '721012', netWgt: 1000, primaryValue: 900 }] }) }; };
+  const waits = [];
+  const r = await createHsTrade({ fetch: f, wait: ms => { waits.push(ms); return Promise.resolve(); }, now: () => new Date('2026-10-15T00:00:00Z') }).comtrade('MX', ['CN'], ['721012'], 'import', 12);
+  assert.strictEqual(r.rows.length, 2);          // 1번째 달: 재시도 성공, 2번째 달 성공, 3번째 달 두 번 다 429 → 멈춤
+  assert.ok(waits.includes(3000) && waits.includes(1200));
+  assert.strictEqual(r.failed[0].status, '429');
+});
+
+test('키가 401로 거절되면 미리보기로 이어서 받는다', async () => {
+  process.env.COMTRADE_API_KEY = 'bad-key';
+  const f = async (url) => {
+    if (url.includes('/data/v1/get')) return { ok: false, status: 401, text: async () => '{"statusCode":401}' };
+    const per = new URL(url).searchParams.get('period');
+    return { ok: true, status: 200, text: async () => JSON.stringify({ data: [{ period: per, partnerCode: 156, cmdCode: '721012', netWgt: 1000, primaryValue: 900 }] }) };
+  };
+  const r = await createHsTrade({ fetch: f, wait: () => Promise.resolve(), now: () => new Date('2026-10-15T00:00:00Z') }).comtrade('MX', ['CN'], ['721012'], 'import', 3);
+  assert.deepStrictEqual([r.keyError, r.keyed, r.rows.length], ['401', false, 3]);
+  delete process.env.COMTRADE_API_KEY;
+});
+
+test('분석 문장: 규모·점유율·흐름·단가 격차·코드 구성·교차 확인', () => {
+  const { analyze, shape } = require('../lib/hstrade');
+  const months = ['202601', '202602', '202603', '202604', '202605', '202606'];
+  const rows = [];
+  months.forEach((m, i) => {
+    rows.push({ ym: m, code: '721012', partner: 'CN', kg: (i < 3 ? 2000 : 3000) * 1000, usd: (i < 3 ? 2000 : 3000) * 950 });
+    rows.push({ ym: m, code: '721011', partner: 'CN', kg: 500000, usd: 500 * 1000 });
+    rows.push({ ym: m, code: '721012', partner: 'KR', kg: 1000000, usd: 1000 * 1200 });
+    rows.push({ ym: m, code: '721012', partner: 'WD', kg: 8000000, usd: 8000 * 1000 });
+  });
+  const out = { marketName: '멕시코', codes: ['721011', '721012'], partners: [{ code: 'CN' }, { code: 'KR' }], main: shape(rows, ['CN', 'KR', 'WD'], ['721011', '721012']),
+    koreaExport: shape(months.map(m => ({ ym: m, code: '721012', partner: 'KR', kg: 500000, usd: 500 * 1150 })), ['KR'], ['721012']) };
+  const f = analyze(out), byK = k => f.find(x => x.kind === k).text;
+  assert.ok(/48,000t \(연간 환산 약 96,000t\)/.test(byK('volume')));
+  assert.ok(/중국산 18,000t\(37.5%\)/.test(byK('volume')));
+  assert.ok(/중국산 물량 \+40%/.test(byK('trend')));
+  assert.ok(/한국산이 중국산보다 톤당 \$\d+/.test(byK('price')));
+  assert.ok(/721012 83%/.test(byK('mix')));
+  assert.ok(/물량 차이 \+100%/.test(byK('cross')) && /제3국 경유/.test(byK('cross')));
+});
+
+test('시장 노트: 수입국·코드로 고르고, 관리자 저장값이 기본값을 덮어씀', async () => {
+  const { createHsNotes, applies } = require('../lib/hsnotes');
+  const { createKv } = require('../lib/kv');
+  assert.ok(applies({ market: 'MX', codes: ['72'] }, 'MX', ['721012']));
+  assert.ok(!applies({ market: 'MX', codes: ['72'] }, 'US', ['721012']));
+  const n = createHsNotes({ kv: createKv() });
+  assert.ok((await n.forQuery('MX', ['721012'])).length >= 2);
+  await n.save([{ market: 'mx', codes: '7210, 7212', title: 'T', body: 'B', sources: [{ url: 'javascript:x' }, { title: 'ok', url: 'https://ex.com' }] }]);
+  const r = await n.forQuery('MX', ['721210']);
+  assert.deepStrictEqual([r.length, r[0].sources.length, r[0].market], [1, 1, 'MX']);
 });
