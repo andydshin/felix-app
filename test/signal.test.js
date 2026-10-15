@@ -25,7 +25,7 @@ test('방향 신호: 요소 합산, 오래된 발표 제외, 물량 적은 값 �
   assert.strictEqual(hr.comps.reduce((a, c) => a + c.weight, 0) >= 99, true);
   const rebar = s.find(x => x.id === 'rebar');
   assert.ok(!rebar.comps.some(c => c.id === 'votes'));                       // 3명은 공개 기준 미달
-  assert.ok(/고철 비중/.test(rebar.comps[0].text));
+  assert.ok(/고철 영향/.test(rebar.comps[0].text));
   assert.strictEqual(s.find(x => x.id === 'plate').comps.some(c => c.id === 'china'), false); // cn:plate 없음
   assert.strictEqual(compute({ rows: [], today: '2026-10-15' })[0].dir, null);
 });
