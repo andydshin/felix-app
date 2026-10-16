@@ -6,18 +6,39 @@ const { createRemedies, shape } = require('../lib/remedies');
 test('무역 규제: 제목에서 단계·품목·대상국, DATES에서 앞으로의 기한', async () => {
   const a = shape({ title: 'Certain Corrosion-Resistant Steel Products From the Republic of Korea: Preliminary Results and Rescission, in Part, of Antidumping Duty Administrative Review; 2024-2025', html_url: 'https://www.federalregister.gov/d/1', publication_date: '2026-10-08', dates: 'Applicable October 8, 2026. Comments due November 7, 2026.', document_number: '1' }, '2026-10-16');
   assert.deepStrictEqual([a.stage, a.productKo, a.countriesKo, a.korea], ['prelim', '도금강판', ['한국'], true]);
-  assert.deepStrictEqual(a.deadlines, [{ date: '2026-11-07', what: '의견 제출 마감' }]);
+  assert.deepStrictEqual(a.deadlines, [{ date: '2026-11-07', what: '의견 제출 마감' }, { date: '2027-02-05', what: '최종 판정 예정', est: true }]);  // 연례 재심 예비 → 최종 120일
   const b = shape({ title: 'Certain Cut-to-Length Carbon Steel Plate From the People\'s Republic of China and the Russian Federation: Final Results of the Expedited Fifth Sunset Reviews of the Antidumping Duty Orders', html_url: 'https://x/2', publication_date: '2026-10-05' }, '2026-10-16');
   assert.deepStrictEqual([b.productKo, b.countriesKo, b.korea], ['후판', ['중국', '러시아'], false]);
-  assert.strictEqual(b.stage, 'final');
+  assert.strictEqual(b.stage, 'sunset');
   const c = shape({ title: 'Truck Bed Covers From the People\'s Republic of China: Preliminary Affirmative Determination of Sales at Less Than Fair Value, Postponement of Final Determination', html_url: 'https://x/3', publication_date: '2026-10-01', dates: 'The final determination will be issued no later than February 12, 2027.' }, '2026-10-16');
   assert.deepStrictEqual(c.deadlines, [{ date: '2027-02-12', what: '최종 판정 예정' }]);
   const f = async () => ({ ok: true, status: 200, text: async () => JSON.stringify({ results: [
     { title: 'Initiation of Antidumping and Countervailing Duty Administrative Reviews', html_url: 'https://x/0', publication_date: '2026-10-01' },
+    { title: 'Xanthan Gum From the People\'s Republic of China: Preliminary Results of Antidumping Duty Administrative Review', html_url: 'https://x/5', publication_date: '2026-10-08' },
+    { title: 'Common Alloy Aluminum Sheet From Taiwan: Final Determination of No Shipments', html_url: 'https://x/6', publication_date: '2026-10-08' },
     { title: 'Certain Steel Nails From the Republic of Korea: Preliminary Results of Antidumping Duty Administrative Review', html_url: 'https://x/4', publication_date: '2026-10-08', comments_close_on: '2026-11-09' }] }) });
   const r = await createRemedies({ fetch: f, now: () => new Date('2026-10-16T00:00:00Z') }).get();
-  assert.strictEqual(r.items.length, 1);                 // 연례 재심 일괄 공지는 뺀다
-  assert.deepStrictEqual(r.upcoming.map(u => [u.date, u.what, u.productKo]), [['2026-11-09', '의견 제출 마감', '못']]);
+  assert.strictEqual(r.items.length, 1);                 // 연례 재심 일괄 공지·비철강(잔탄검·알루미늄)은 뺀다
+  assert.deepStrictEqual(r.upcoming.map(u => [u.date, u.what, u.productKo, u.est]), [['2026-11-09', '의견 제출 마감', '못', false], ['2027-02-05', '최종 판정 예정', '못', true]]);
+});
+
+test('무역 규제: 실제 관보 제목의 단계 분류와 국가', () => {
+  const { stageOf, shape } = require('../lib/remedies');
+  const S = t => stageOf(t).stage;
+  assert.strictEqual(S('Forged Steel Fluid End Blocks from Italy: Notice of Court Decision Not in Harmony With the Results of Antidumping Administrative Review; Notice of Amended Final Results'), 'court');
+  assert.strictEqual(S('Certain Oil Country Tubular Goods From Austria: Preliminary Affirmative Countervailing Duty Determination and Alignment of Final Determination With Final Antidumping Duty Determination'), 'prelim');
+  assert.strictEqual(S('Boltless Steel Shelving Units Prepackaged for Sale From the People\'s Republic of China: Continuation of Antidumping Duty Order and Countervailing Duty Order'), 'sunset');
+  assert.strictEqual(S('Certain Corrosion-Resistant Steel Products From the People\'s Republic of China: Initiation of Circumvention Inquiry on the Antidumping and Countervailing Duty Orders'), 'scope');
+  assert.strictEqual(S('Carbon and Alloy Steel Wire Rod From the Republic of Korea: Notice of Reopening of, and Intent To Reconsider the Final Results of, Antidumping Duty Administrative Review'), 'notice');
+  assert.strictEqual(S('Non-Oriented Electrical Steel From Japan: Rescission of Antidumping Duty Administrative Review; 2024-2025'), 'notice');
+  assert.strictEqual(S('Carbon and Alloy Steel Wire Rod From Algeria: Final Affirmative Countervailing Duty Determination and Countervailing Duty Order'), 'order');
+  assert.strictEqual(S('Steel Concrete Reinforcing Bar From Egypt: Final Affirmative Countervailing Duty Determination'), 'final');
+  const r = shape({ title: 'Steel Concrete Reinforcing Bar From Bulgaria, Egypt, and the Socialist Republic of Vietnam: Antidumping Duty Orders', html_url: 'https://x/7', publication_date: '2026-09-01' }, '2026-10-16');
+  assert.deepStrictEqual([r.stage, r.productKo, r.countriesKo], ['order', '철근', ['불가리아', '이집트', '베트남']]);
+  const t = shape({ title: 'Steel Concrete Reinforcing Bar From the Republic of T[uuml]rkiye: Final Results of Countervailing Duty Administrative Review; 2023', html_url: 'https://x/8', publication_date: '2026-09-01' }, '2026-10-16');
+  assert.deepStrictEqual(t.countriesKo, ['튀르키예']);
+  const i = shape({ title: 'Welded Stainless Line and Pressure Pipe From India and the Republic of Türkiye: Initiation of Countervailing Duty Investigations', html_url: 'https://x/9', publication_date: '2026-09-20' }, '2026-10-16');
+  assert.deepStrictEqual([i.stage, i.productKo, i.deadlines], ['init', '스테인리스 강관', [{ date: '2026-11-24', what: '예비 판정 예정', est: true }]]);
 });
 
 test('DART: 회사 고유번호 찾기, 공급 관련 공시만, 키 없으면 건너뜀', async () => {

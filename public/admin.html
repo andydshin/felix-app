@@ -74,7 +74,8 @@
     <div class="card"><h2>진행 기록</h2><div id="log">대기 중</div></div>
     <div class="card" id="dataBox"><h2>수집한 숫자</h2><div class="muted">아직 없음</div></div>
     <div class="card" id="notesBox"><div class="row" style="justify-content:space-between"><h2 style="margin:0">시장 노트 (HS 검색)</h2><button id="bNotes" class="ghost">불러오기</button></div><div class="muted">수입국 × 품목별 관세·특례 제도·무역구제. 확인한 내용만, 출처와 확인일을 함께.</div><div id="notesList"></div></div>
-    <div class="card" id="panelBox"><div class="row" style="justify-content:space-between"><h2 style="margin:0">가격 패널 관심 등록</h2><button id="bPanel" class="ghost">불러오기</button></div><div class="muted">앱 제보 탭에서 등록한 휴대폰 번호(필수)와 회사명(선택). 패널 안내 연락에만 사용하고 외부에 공유하지 않습니다.</div><div id="panelList"></div></div>
+    <div class="card" id="panelBox"><div class="row" style="justify-content:space-between"><h2 style="margin:0">가격 패널 관심 등록</h2><button id="bPanel" class="ghost">불러오기</button></div><div class="muted">앱 내 정보 → 가격 패널에서 등록한 휴대폰 번호(필수)와 회사명(선택). 패널 안내 연락에만 사용하고 외부에 공유하지 않습니다.</div><div id="panelList"></div></div>
+    <div class="card" id="arcBox"><div class="row" style="justify-content:space-between"><h2 style="margin:0">일별 원자료 보관소</h2><div class="row"><button id="bArc" class="ghost">불러오기</button><button id="bArcVerify" class="ghost">지문 검증</button></div></div><div class="muted">매일 크론이 받은 원자료를 날짜별로 한 번만 저장합니다(덮어쓰기 없음). 외부 공개하지 않습니다. 한 달에 한 번은 내려받아 별도 보관하세요.</div><div id="arcList"></div></div>
     <div class="card" id="newsBox"><h2>수집한 뉴스·공고</h2><div class="muted">아직 없음</div></div>
   </aside>
 </main>
@@ -285,6 +286,17 @@
     box.appendChild(el('div', { class: 'muted', text: '총 ' + (j.count || 0) + '곳' }));
     (j.items || []).forEach(function (x) { box.appendChild(el('div', { class: 'newsitem' }, [el('b', { text: x.phone || x.email || '' }), ' ', el('span', { text: x.company || '(회사명 없음)' }), ' ', el('span', { class: 'pill', text: x.role || '-' }), el('span', { class: 'muted', text: ' · ' + (x.items || []).join(', ') + ' · ' + String(x.updatedAt || x.at || '').slice(0, 10) })])); });
   }); }); });
+  function fmtB(n) { return n > 1048576 ? (n / 1048576).toFixed(1) + 'MB' : Math.round(n / 1024) + 'KB'; }
+  function dl(name, obj) { var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(obj, null, 1)], { type: 'application/json' })); a.download = name; document.body.appendChild(a); a.click(); a.remove(); }
+  $('bArc').addEventListener('click', function () { run('보관소 불러오기', function () { return api({ action: 'archive-list' }).then(function (j) {
+    var box = $('arcList'); box.innerHTML = '';
+    box.appendChild(el('div', { class: 'muted', text: '보관 ' + (j.days || 0) + '일 · ' + (j.first || '-') + ' ~ ' + (j.last || '-') + ' · 누적 ' + fmtB(j.totalBytes || 0) + ' · 최신 지문 ' + String(j.head || '-').slice(0, 16) }));
+    (j.items || []).slice(0, 40).forEach(function (x) {
+      box.appendChild(el('div', { class: 'newsitem' }, [el('b', { text: x.d }), ' ', el('span', { class: 'muted', text: fmtB(x.bytes || 0) + ' · ' + (x.parts || []).join(', ') + ' · ' + String(x.sha).slice(0, 12) + ' ' }),
+        el('button', { class: 'ghost', text: '내려받기', on: { click: function () { run(x.d + ' 내려받기', function () { return api({ action: 'archive-get', day: x.d }).then(function (r) { dl('felix-archive-' + x.d + '.json', r); }); }); } } })]));
+    });
+  }); }); });
+  $('bArcVerify').addEventListener('click', function () { run('보관소 지문 검증(최근 120일)', function () { return api({ action: 'archive-verify', limit: 120 }).then(function (j) { log(j.ok ? '정상: ' + j.checked + '일 사슬 일치' : '불일치: ' + j.broken + '부터 지문이 맞지 않습니다'); }); }); });
   $('bNotes').addEventListener('click', function () { run('노트 불러오기', function () { return api({ action: 'notes-get' }).then(function (j) { notes = j.notes || []; renderNotes(); }); }); });
   if ($('token').value) refresh().catch(function (e) { log('불러오기 실패: ' + e.message); });
 })();

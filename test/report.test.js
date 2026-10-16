@@ -223,3 +223,24 @@ test('패널 관심 등록: 휴대폰만 필수, 같은 번호는 갱신, 동의
   assert.strictEqual(l.count, 1);
   assert.deepStrictEqual([l.items[0].phone, l.items[0].company, l.items[0].role, l.items[0].items], ['010-1234-5678', 'A철강b', '유통', ['hr']]);
 });
+
+test('매일 크론: 원자료 보관 + 신호 기록(지문) + 공개 신호 기록', async () => {
+  const { createArchive } = require('../lib/archive');
+  const { createHistory } = require('../lib/history');
+  const f = async (url) => { const s = require('../lib/report-data').SOURCES.find(x => url.endsWith(x.path)); return { ok: true, status: 200, json: async () => (s ? RAW[s.id] : {}) }; };
+  const kv = createKv(), now = () => new Date('2026-10-13T01:00:00Z');
+  const r = createReport({ fetch: f, kv, news: { collect: async () => ({ news: [], official: [], errors: {} }) }, ai: fakeAi(), now, history: createHistory({ kv, now }), archive: createArchive({ kv, now }) });
+  const o = await r.daily('http://x');
+  assert.strictEqual(o.mode, 'snapshot');
+  assert.ok(o.archive.parts.includes('raw') && o.archive.parts.includes('rows') && o.archive.parts.includes('signals'));
+  assert.strictEqual((await r.daily('http://x')).archive.skipped, 'exists');
+  const day = await r.archive.get('2026-10-13');
+  assert.ok(day.verified && day.payload.raw.cn);
+  const t = await r.track();
+  assert.strictEqual(t.status, 'ok');
+  assert.strictEqual(t.chain.ok, true);
+  assert.strictEqual(t.count, t.entries.length);
+  assert.ok(t.count > 0);
+  assert.strictEqual(t.chain.head, t.entries[0].h);
+  assert.strictEqual(t.entries[0].result.status, 'nobase' === t.entries[0].result.status ? 'nobase' : 'pending');
+});
