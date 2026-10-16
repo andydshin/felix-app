@@ -61,3 +61,25 @@ test('DART: 회사 고유번호 찾기, 공급 관련 공시만, 키 없으면 �
   assert.deepStrictEqual([r.items[0].title, r.items[0].date, r.items[0].url], ['현대제철 · 주요사항보고서(생산중단)', '2026-10-15', 'https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20261015000123']);
   delete process.env.DART_API_KEY;
 });
+
+test('한국 반덤핑: 기본 사건, 다음 일정(예상 포함), 관리자 저장·검증·초기화', async () => {
+  const { createKrRemedies, SEED } = require('../lib/krremedies');
+  const { createKv } = require('../lib/kv');
+  const kv = createKv();
+  const k = createKrRemedies({ kv, now: () => new Date('2026-10-16T00:00:00Z') });
+  const g = await k.get();
+  assert.strictEqual(g.cases.length, SEED.length);
+  const coated = g.cases.find(c => c.id === 'kr-coated');
+  assert.deepStrictEqual([coated.last.kind, coated.next.date], ['provisional', '2027-01-11']);
+  assert.ok(coated.rates.some(r => r.supplier === '그 밖의 공급자' && r.rate === 25.75));
+  assert.deepStrictEqual(g.upcoming.slice(0, 2).map(u => [u.date, u.est]), [['2026-11-18', true], ['2027-01-11', false]]);
+  g.cases.forEach(c => { assert.ok(c.sources.length > 0, c.id + ' 출처'); c.sources.forEach(s => assert.ok(/^https:\/\//.test(s.url))); });
+  // 관리자 수정
+  const edited = SEED.slice(0, 1).map(c => Object.assign({}, c, { events: c.events.concat([{ date: '2026-12-01', kind: 'order', label: '부과 시행' }, { date: 'bad', kind: 'x' }]) }));
+  assert.strictEqual((await k.save(edited, '2026-10-20')).count, 1);
+  const g2 = await k.get();
+  assert.deepStrictEqual([g2.edited, g2.verifiedAt, g2.cases[0].next.label], [true, '2026-10-20', '부과 시행']);
+  await assert.rejects(k.save([{ id: '' }]), /required/);
+  await k.reset();
+  assert.strictEqual((await k.get()).edited, false);
+});

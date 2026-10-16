@@ -229,10 +229,16 @@ a{color:#0072F5}a:hover{color:#0058CC}
           <div style="text-align: left"><div style="font-size: 14px; font-weight: 700; color: #0058CC">HS 코드로 무역 통계 검색</div><div style="font-size: 12px; color: #344054">예: 멕시코의 중국산·한국산 석도강판 수입 물량·단가</div></div>
           <span style="font-size: 16px; color: #0058CC">→</span>
         </button>
-        <button onClick="{{ openRemedies }}" style="display: flex; margin: 8px 20px 0; width: calc(100% - 40px); box-sizing: border-box; align-items: center; justify-content: space-between; gap: 10px; min-height: 52px; border-radius: 14px; border: 1px solid #EAECF0; background: #FFFFFF; padding: 0 16px">
-          <div style="text-align: left"><div style="font-size: 14px; font-weight: 700; color: #0B0D12">무역 규제 타임라인 <span style="font-size: 10px; font-weight: 800; border-radius: 6px; padding: 1px 6px; background: #0B1F3F; color: #FFFFFF; vertical-align: 2px">PRO</span></div><div style="font-size: 12px; color: #344054">반덤핑·상계관세 조사와 판정 일정, 한국 관련 건 표시</div></div>
-          <span style="font-size: 16px; color: #344054">→</span>
-        </button>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 20px 0">
+          <button onClick="{{ openRemedies }}" style="display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-width: 0; min-height: 64px; border-radius: 14px; border: 1px solid #EAECF0; background: #FFFFFF; padding: 10px 14px; text-align: left">
+            <div style="font-size: 14px; font-weight: 700; color: #0B0D12">무역 규제 <span style="font-size: 10px; font-weight: 800; border-radius: 6px; padding: 1px 6px; background: #0B1F3F; color: #FFFFFF; vertical-align: 2px">PRO</span></div>
+            <div style="font-size: 12px; color: #344054">한국·미국 반덤핑 일정과 세율</div>
+          </button>
+          <button onClick="{{ openLanded }}" style="display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-width: 0; min-height: 64px; border-radius: 14px; border: 1px solid #EAECF0; background: #FFFFFF; padding: 10px 14px; text-align: left">
+            <div style="font-size: 14px; font-weight: 700; color: #0B0D12">도착원가 계산 <span style="font-size: 10px; font-weight: 800; border-radius: 6px; padding: 1px 6px; background: #0B1F3F; color: #FFFFFF; vertical-align: 2px">PRO</span></div>
+            <div style="font-size: 12px; color: #344054">오퍼가 + 환율 + 반덤핑 → 원화</div>
+          </button>
+        </div>
         <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 14px 20px 0">
           <sc-for list="{{ cats }}" as="ca" hint-placeholder-count="8">
             <button onClick="{{ ca.pick }}" style="min-width: 0; min-height: 36px; border-radius: 10px; text-align: center; font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 4px; {{ ca.style }}">{{ ca.label }}</button>
@@ -1302,10 +1308,123 @@ a{color:#0072F5}a:hover{color:#0058CC}
       </div>
     </sc-if>
 
+    <sc-if value="{{ isLanded }}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-direction: column; gap: 12px; padding: 8px 20px 28px">
+        <button onClick="{{ back }}" style="align-self: flex-start; min-height: 44px; font-size: 14px; font-weight: 600; color: #0072F5">← 뒤로</button>
+        <div><h1 style="margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em">수입 도착원가 계산기</h1><div style="font-size: 13px; color: #667085">오퍼가에 환율·관세·반덤핑을 더해 원화 도착원가를 비교합니다</div></div>
+        <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
+          <div style="display: flex; justify-content: space-between; align-items: baseline"><div style="font-size: 13px; font-weight: 700; color: #667085">도착원가 비교</div><div style="font-size: 11.5px; color: #98A2B3">원/t · 부가세 제외</div></div>
+          <sc-if value="{{ ld.none }}" hint-placeholder-val="{{ false }}"><div style="padding: 14px 0 4px; font-size: 14px; color: #667085">아래에서 오퍼가를 넣으면 바로 계산됩니다.</div></sc-if>
+          <sc-for list="{{ ld.results }}" as="lr" hint-placeholder-count="2">
+            <div style="padding: 12px 0; border-bottom: 1px solid #F2F4F7">
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px">
+                <div style="min-width: 0"><div style="font-size: 14px; font-weight: 700"><span style="display: inline-block; width: 20px; height: 20px; border-radius: 10px; text-align: center; line-height: 20px; font-size: 11px; margin-right: 4px; {{ lr.badgeStyle }}">{{ lr.tag }}</span>{{ lr.title }}</div><div style="font-size: 12px; color: #667085; margin-top: 2px">{{ lr.sub }}</div></div>
+                <div style="flex: none; text-align: right"><div style="font-size: 17px; font-weight: 700; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace; {{ lr.valStyle }}">{{ lr.landed }}</div><sc-if value="{{ lr.best }}" hint-placeholder-val="{{ false }}"><div style="font-size: 11px; font-weight: 800; color: #12B76A">가장 낮음</div></sc-if></div>
+              </div>
+              <div style="display: flex; height: 8px; border-radius: 4px; overflow: hidden; margin-top: 8px; background: #F2F4F7"><div style="{{ lr.b1 }}"></div><div style="{{ lr.b2 }}"></div><div style="{{ lr.b3 }}"></div><div style="{{ lr.b4 }}"></div></div>
+              <div style="margin-top: 6px; font-size: 11.5px; color: #475467">{{ lr.breakdown }}</div>
+              <sc-if value="{{ lr.hasDom }}" hint-placeholder-val="{{ false }}"><div style="margin-top: 4px; font-size: 12px; font-weight: 700; {{ lr.domStyle }}">{{ lr.domText }}</div></sc-if>
+              <sc-if value="{{ lr.hasWarn }}" hint-placeholder-val="{{ false }}"><div style="margin-top: 4px; font-size: 12px; color: #B54708">{{ lr.warn }}</div></sc-if>
+            </div>
+          </sc-for>
+          <sc-if value="{{ ld.hasFlip }}" hint-placeholder-val="{{ false }}"><div style="margin-top: 10px; padding: 10px 12px; border-radius: 10px; background: #FEF3E2; font-size: 13px; font-weight: 600; line-height: 1.5; color: #93370D">{{ ld.flip }}</div></sc-if>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 10px; font-size: 11px; color: #667085"><span><i style="display: inline-block; width: 8px; height: 8px; border-radius: 2px; background: #9CC3FF"></i> 과세가격</span><span><i style="display: inline-block; width: 8px; height: 8px; border-radius: 2px; background: #FDB022"></i> 기본관세</span><span><i style="display: inline-block; width: 8px; height: 8px; border-radius: 2px; background: #F04452"></i> 반덤핑</span><span><i style="display: inline-block; width: 8px; height: 8px; border-radius: 2px; background: #98A2B3"></i> 부대비용</span></div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: #F2F4F7; border-radius: 10px; padding: 3px">
+          <sc-for list="{{ ld.tabs }}" as="lt" hint-placeholder-count="3"><button onClick="{{ lt.pick }}" style="min-height: 38px; border-radius: 8px; font-size: 13px; font-weight: 700; text-align: center; {{ lt.style }}">{{ lt.label }}</button></sc-for>
+        </div>
+        <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px; display: flex; flex-direction: column; gap: 12px">
+          <div>
+            <div style="font-size: 13px; font-weight: 700; color: #344054">품목</div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 6px"><sc-for list="{{ ld.items }}" as="li" hint-placeholder-count="9"><button onClick="{{ li.pick }}" style="min-height: 38px; border-radius: 10px; font-size: 13px; font-weight: 600; text-align: center; white-space: nowrap; {{ li.style }}">{{ li.label }}</button></sc-for></div>
+          </div>
+          <div>
+            <div style="font-size: 13px; font-weight: 700; color: #344054">원산지</div>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 6px"><sc-for list="{{ ld.origins }}" as="lo" hint-placeholder-count="7"><button onClick="{{ lo.pick }}" style="min-height: 38px; border-radius: 10px; font-size: 13px; font-weight: 600; text-align: center; white-space: nowrap; {{ lo.style }}">{{ lo.label }}</button></sc-for></div>
+          </div>
+          <div>
+            <div style="font-size: 13px; font-weight: 700; color: #344054">공급사 · 반덤핑 세율</div>
+            <sc-for list="{{ ld.sups }}" as="ls" hint-placeholder-count="3"><button onClick="{{ ls.pick }}" style="display: flex; width: 100%; justify-content: space-between; align-items: center; gap: 10px; min-height: 42px; margin-top: 6px; padding: 8px 12px; border-radius: 10px; text-align: left; {{ ls.style }}"><span style="min-width: 0; font-size: 13px; font-weight: 600">{{ ls.label }}</span><span style="flex: none; font-size: 13px; font-weight: 700; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ ls.rateText }}</span></button></sc-for>
+            <sc-if value="{{ ld.custom }}" hint-placeholder-val="{{ false }}">
+              <div style="display: flex; align-items: center; gap: 8px; margin-top: 8px"><input id="ld-ad" inputMode="decimal" value="{{ ld.adVal }}" onChange="{{ ld.setAd }}" placeholder="0" style="flex: 1; min-width: 0; min-height: 44px; box-sizing: border-box; border: 1px solid #D0D5DD; border-radius: 10px; padding: 0 12px; font-size: 15px"><span style="font-size: 14px; color: #667085">%</span></div>
+            </sc-if>
+          </div>
+          <div>
+            <label for="ld-price" style="font-size: 13px; font-weight: 700; color: #344054">오퍼가 (CFR, 달러/t)</label>
+            <input id="ld-price" inputMode="decimal" value="{{ ld.priceVal }}" onChange="{{ ld.setPrice }}" placeholder="예: 540" style="display: block; width: 100%; margin-top: 6px; min-height: 48px; box-sizing: border-box; border: 1px solid #D0D5DD; border-radius: 10px; padding: 0 14px; font-size: 17px; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">
+            <sc-if value="{{ ld.hasRef }}" hint-placeholder-val="{{ false }}"><div style="margin-top: 6px; font-size: 12px; color: #667085">{{ ld.ref }}</div></sc-if>
+          </div>
+          <button onClick="{{ ld.clear }}" style="align-self: flex-start; min-height: 32px; font-size: 12.5px; font-weight: 600; color: #667085">이 오퍼 지우기</button>
+        </div>
+
+        <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px">
+          <div style="grid-column: 1 / -1; font-size: 13px; font-weight: 700; color: #667085">공통 조건</div>
+          <div style="min-width: 0"><label for="ld-fx" style="font-size: 12.5px; font-weight: 600; color: #344054">환율 (원/달러)</label><input id="ld-fx" inputMode="decimal" value="{{ ld.fxVal }}" onChange="{{ ld.setFx }}" style="display: block; width: 100%; margin-top: 4px; min-height: 44px; box-sizing: border-box; border: 1px solid #D0D5DD; border-radius: 10px; padding: 0 12px; font-size: 15px"><div style="margin-top: 4px; font-size: 11px; color: #98A2B3">{{ ld.fxNote }}</div></div>
+          <div style="min-width: 0"><label for="ld-base" style="font-size: 12.5px; font-weight: 600; color: #344054">기본관세 (%)</label><input id="ld-base" inputMode="decimal" value="{{ ld.baseVal }}" onChange="{{ ld.setBase }}" style="display: block; width: 100%; margin-top: 4px; min-height: 44px; box-sizing: border-box; border: 1px solid #D0D5DD; border-radius: 10px; padding: 0 12px; font-size: 15px"><div style="margin-top: 4px; font-size: 11px; color: #98A2B3">철강재는 대부분 0%. HS별 확인</div></div>
+          <div style="min-width: 0"><label for="ld-extra" style="font-size: 12.5px; font-weight: 600; color: #344054">부대비용 (원/t)</label><input id="ld-extra" inputMode="numeric" value="{{ ld.extraVal }}" onChange="{{ ld.setExtra }}" placeholder="0" style="display: block; width: 100%; margin-top: 4px; min-height: 44px; box-sizing: border-box; border: 1px solid #D0D5DD; border-radius: 10px; padding: 0 12px; font-size: 15px"><div style="margin-top: 4px; font-size: 11px; color: #98A2B3">하역·통관·내륙운송·금융</div></div>
+          <div style="min-width: 0"><label for="ld-dom" style="font-size: 12.5px; font-weight: 600; color: #344054">국산 비교가 (원/t)</label><input id="ld-dom" inputMode="numeric" value="{{ ld.domVal }}" onChange="{{ ld.setDom }}" placeholder="선택" style="display: block; width: 100%; margin-top: 4px; min-height: 44px; box-sizing: border-box; border: 1px solid #D0D5DD; border-radius: 10px; padding: 0 12px; font-size: 15px"><div style="margin-top: 4px; font-size: 11px; color: #98A2B3">거래처 견적가 등</div></div>
+        </div>
+        <div style="font-size: 11.5px; line-height: 1.65; color: #98A2B3">과세가격은 오퍼가 × 환율로 계산합니다(보험료 미포함). 실제 관세는 관세청 과세환율과 CIF 가격 기준이라 조금 다를 수 있습니다. 부가세는 매입세액 공제 대상이라 뺐습니다. 반덤핑 세율은 {{ ld.verified }} 확인 기준 참고값이며, 통관 전 관세법령정보포털에서 확인하세요. 가격약속 업체는 최저수출가격 이상일 때만 관세가 면제됩니다.</div>
+      </div>
+    </sc-if>
+
     <sc-if value="{{ isRemedies }}" hint-placeholder-val="{{ false }}">
       <div style="display: flex; flex-direction: column; gap: 12px; padding: 8px 20px 28px">
         <button onClick="{{ back }}" style="align-self: flex-start; min-height: 44px; font-size: 14px; font-weight: 600; color: #0072F5">← 뒤로</button>
-        <div><h1 style="margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em">무역 규제 타임라인</h1><div style="font-size: 13px; color: #667085">미국 상무부 철강 관련 반덤핑·상계관세 공고 · 최근 4개월</div></div>
+        <div><h1 style="margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em">무역 규제 타임라인</h1><div style="font-size: 13px; color: #667085">{{ rm.sub }}</div></div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: #F2F4F7; border-radius: 10px; padding: 3px">
+          <sc-for list="{{ rm.regions }}" as="rr" hint-placeholder-count="2"><button onClick="{{ rr.pick }}" style="min-height: 38px; border-radius: 8px; font-size: 14px; font-weight: 700; text-align: center; {{ rr.style }}">{{ rr.label }}</button></sc-for>
+        </div>
+        <sc-if value="{{ kr.show }}" hint-placeholder-val="{{ true }}">
+          <sc-if value="{{ kr.loading }}" hint-placeholder-val="{{ false }}"><div style="padding: 24px; text-align: center; font-size: 14px; color: #667085">사건을 불러오고 있습니다.</div></sc-if>
+          <sc-if value="{{ kr.error }}" hint-placeholder-val="{{ false }}"><div style="padding: 12px; border-radius: 12px; background: #FEF3E2; color: #B54708; font-size: 13px">사건 정보를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</div></sc-if>
+          <sc-if value="{{ kr.hasUp }}" hint-placeholder-val="{{ true }}">
+            <div style="background: #F5F8FF; border-radius: 16px; padding: 14px 16px">
+              <div style="font-size: 13px; font-weight: 700; color: #0058CC">다가오는 일정</div>
+              <sc-for list="{{ kr.up }}" as="ku" hint-placeholder-count="3">
+                <div style="display: grid; grid-template-columns: 54px 1fr; gap: 10px; align-items: baseline; margin-top: 10px">
+                  <div style="font-size: 15px; font-weight: 700; color: #0072F5; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ ku.md }}</div>
+                  <div><div style="font-size: 14px; font-weight: 700">{{ ku.label }} <sc-if value="{{ ku.est }}" hint-placeholder-val="{{ false }}"><span style="font-size: 10.5px; font-weight: 800; border-radius: 5px; padding: 1px 5px; background: #EEF2F6; color: #475467">예상</span></sc-if></div><div style="font-size: 12px; color: #475467">{{ ku.sub }}</div></div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-for list="{{ kr.cases }}" as="kc" hint-placeholder-count="4">
+            <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px">
+                <span style="font-size: 11px; font-weight: 800; border-radius: 6px; padding: 2px 8px; {{ kc.stStyle }}">{{ kc.statusKo }}</span>
+                <span style="font-size: 12px; color: #667085">{{ kc.origins }}산</span>
+              </div>
+              <div style="margin-top: 8px; font-size: 17px; font-weight: 700">{{ kc.productKo }}</div>
+              <div style="margin-top: 2px; font-size: 14px; font-weight: 700; color: #D92D3A">{{ kc.rateText }}</div>
+              <div style="font-size: 12px; color: #667085; margin-top: 2px">{{ kc.product }}</div>
+              <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin-top: 12px">
+                <sc-for list="{{ kc.steps }}" as="ks" hint-placeholder-count="5"><div><div style="height: 4px; border-radius: 2px; {{ ks.bar }}"></div><div style="margin-top: 4px; font-size: 10.5px; text-align: center; {{ ks.txt }}">{{ ks.label }}</div></div></sc-for>
+              </div>
+              <div style="margin-top: 10px; font-size: 13px; color: #344054">{{ kc.lastText }}</div>
+              <sc-if value="{{ kc.hasNext }}" hint-placeholder-val="{{ true }}"><div style="margin-top: 2px; font-size: 13px; font-weight: 600; color: #0058CC">{{ kc.nextText }}</div></sc-if>
+              <sc-if value="{{ kc.open }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top: 12px; border-top: 1px solid #F2F4F7; padding-top: 10px">
+                  <div style="font-size: 12px; font-weight: 700; color: #667085">공급사별 세율</div>
+                  <sc-for list="{{ kc.rates }}" as="kq" hint-placeholder-count="3">
+                    <div style="display: flex; justify-content: space-between; gap: 10px; padding: 7px 0; border-bottom: 1px solid #F7F8FA; font-size: 13px"><div style="min-width: 0"><span style="color: #98A2B3">{{ kq.origin }}</span> {{ kq.supplier }}</div><div style="flex: none; font-weight: 700; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace; {{ kq.style }}">{{ kq.rateText }}</div></div>
+                  </sc-for>
+                  <sc-if value="{{ kc.hasUnd }}" hint-placeholder-val="{{ false }}"><div style="margin-top: 8px; font-size: 12px; line-height: 1.55; color: #475467">가격약속 · {{ kc.undertaking }}</div></sc-if>
+                  <sc-for list="{{ kc.events }}" as="ke" hint-placeholder-count="4"><div style="display: grid; grid-template-columns: 84px 1fr; gap: 8px; margin-top: 6px; font-size: 12.5px"><div style="color: #667085; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ ke.date }}</div><div style="{{ ke.style }}">{{ ke.label }}</div></div></sc-for>
+                  <sc-for list="{{ kc.notes }}" as="kn" hint-placeholder-count="1"><div style="margin-top: 8px; font-size: 12px; line-height: 1.55; color: #667085">{{ kn }}</div></sc-for>
+                  <sc-for list="{{ kc.sources }}" as="kx" hint-placeholder-count="1"><a href="{{ kx.url }}" target="_blank" rel="noopener noreferrer" style="display: block; margin-top: 6px; font-size: 12px; color: #0072F5">↗ {{ kx.title }}</a></sc-for>
+                </div>
+              </sc-if>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px">
+                <button onClick="{{ kc.toggle }}" style="min-height: 40px; border-radius: 20px; border: 1px solid #D0D5DD; font-size: 13px; font-weight: 600; color: #344054; text-align: center">{{ kc.toggleText }}</button>
+                <button onClick="{{ kc.calc }}" style="min-height: 40px; border-radius: 20px; background: #EEF6FF; font-size: 13px; font-weight: 700; color: #0058CC; text-align: center">도착원가 계산 →</button>
+              </div>
+            </div>
+          </sc-for>
+          <div style="font-size: 11.5px; line-height: 1.6; color: #98A2B3">{{ kr.foot }}</div>
+        </sc-if>
+        <sc-if value="{{ rm.isUs }}" hint-placeholder-val="{{ false }}">
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: #F2F4F7; border-radius: 10px; padding: 3px">
           <sc-for list="{{ rm.tabs }}" as="rt" hint-placeholder-count="2"><button onClick="{{ rt.pick }}" style="min-height: 36px; border-radius: 8px; font-size: 13px; font-weight: 700; text-align: center; {{ rt.style }}">{{ rt.label }}</button></sc-for>
         </div>
@@ -1338,6 +1457,7 @@ a{color:#0072F5}a:hover{color:#0058CC}
         </sc-for>
         <sc-if value="{{ rm.empty }}" hint-placeholder-val="{{ false }}"><div style="padding: 24px; text-align: center; font-size: 14px; color: #667085">해당하는 공고가 없습니다.</div></sc-if>
         <div style="font-size: 11.5px; line-height: 1.6; color: #98A2B3">출처: Federal Register (미국 상무부 국제무역청). 제목과 일정을 정리한 참고 정보이며, 세율 등 세부 내용은 원문에서 확인하세요.</div>
+        </sc-if>
       </div>
     </sc-if>
 
@@ -2176,7 +2296,7 @@ class Component extends DCLogic {
 
     // 한국: 관세청 품목별 국가별 수출입실적 → 수입 통관 단가 (달러/t). 서버 /api/kr-trade 경유.
     var kd = s.krData;
-    if ((isKr || isCmp || s.group === 'kr' || s.group === 'raw') && !kd && !self._krReq) {
+    if ((isKr || isCmp || s.group === 'kr' || s.group === 'raw' || s.sub === 'landed') && !kd && !self._krReq) {
       self._krReq = true;
       var putK = function (v) { self.setState({ krData: v }); };
       setTimeout(function () {
@@ -2275,7 +2395,7 @@ class Component extends DCLogic {
     }
     // 환율 탭 표시는 수출입은행 영업일 매매기준율을 우선한다(/api/fx-daily). 없으면 위의 관세청 과세환율을 그대로 보여 준다.
     var dd = s.fxDaily;
-    if (s.group === 'fx' && !dd && !self._fxdReq) {
+    if ((s.group === 'fx' || s.sub === 'landed') && !dd && !self._fxdReq) {
       self._fxdReq = true;
       setTimeout(function () {
         if (typeof fetch !== 'function') { self.setState({ fxDaily: { status: 'error' } }); return; }
@@ -3241,9 +3361,117 @@ class Component extends DCLogic {
         head: x.productKo + (x.countriesKo && x.countriesKo.length ? ' · ' + x.countriesKo.join('·') : ''), title: x.title, border: x.korea ? '#FBC5CA' : '#EAECF0' }); });
     var rmUp = rmd && rmd.status === 'ok' ? (rmd.j.upcoming || []).filter(function (u) { return !rmKr || u.korea; }).slice(0, 6).map(function (u) {
       return { url: u.url, md: Number(u.date.slice(5, 7)) + '/' + Number(u.date.slice(8, 10)), what: u.what, est: !!u.est, korea: u.korea, sub: u.productKo + (u.countriesKo && u.countriesKo.length ? ' · ' + u.countriesKo.join('·') : '') + ' · ' + u.stageKo }; }) : [];
-    var rm = { loading: !rmd, error: !!(rmd && rmd.status === 'error'), groups: rmMonths, up: rmUp, hasUp: rmUp.length > 0, hasEst: rmUp.some(function (u) { return u.est; }), empty: !!(rmd && rmd.status === 'ok' && !rmItems.length),
+    var rm = { sub: (s.rmRegion || 'kr') === 'us' ? '미국 상무부 철강 반덤핑·상계관세 공고 · 최근 4개월' : '한국 무역위원회 철강 반덤핑 조사와 부과 현황', regions: [['kr', '한국 반덤핑'], ['us', '미국 상무부']].map(function (t) { var on = (s.rmRegion || 'kr') === t[0]; return { label: t[1], style: on ? 'background:#FFFFFF;color:#0B0D12;box-shadow:0 1px 2px rgba(16,24,40,.1)' : 'color:#667085', pick: function () { set({ rmRegion: t[0] }); } }; }), isUs: (s.rmRegion || 'kr') === 'us', loading: !rmd, error: !!(rmd && rmd.status === 'error'), groups: rmMonths, up: rmUp, hasUp: rmUp.length > 0, hasEst: rmUp.some(function (u) { return u.est; }), empty: !!(rmd && rmd.status === 'ok' && !rmItems.length),
       tabs: [['all', '전체'], ['kr', '한국 관련']].map(function (t) { var on = (s.rmTab || 'all') === t[0]; return { label: t[1], style: on ? 'background:#FFFFFF;color:#0B0D12;box-shadow:0 1px 2px rgba(16,24,40,.1)' : 'color:#667085', pick: function () { set({ rmTab: t[0] }); } }; }) };
     var openRemedies = needPro(function () { set({ sub: 'remedies' }); });
+    // ===== 한국 반덤핑 사건 (/api/kr-remedies) — 무역 규제(한국)와 도착원가 계산기에서 함께 쓴다 =====
+    var krr = s.krRem;
+    if ((s.sub === 'remedies' || s.sub === 'landed') && !krr && !self._krrReq) {
+      self._krrReq = true;
+      setTimeout(function () {
+        if (typeof fetch !== 'function') { self.setState({ krRem: { status: 'error' } }); return; }
+        fetch('/api/kr-remedies').then(function (r) { return r.json(); }).then(function (j) { self.setState({ krRem: j && j.status === 'ok' ? { status: 'ok', j: j } : { status: 'error' } }); })
+          .catch(function () { self.setState({ krRem: { status: 'error' } }); self._krrReq = false; });
+      }, 0);
+    }
+    var krCases = krr && krr.status === 'ok' ? (krr.j.cases || []) : [];
+    var mdOf = function (d) { return Number(String(d).slice(5, 7)) + '/' + Number(String(d).slice(8, 10)); };
+    var ymdKo = function (d) { return Number(String(d).slice(0, 4)) + '. ' + Number(String(d).slice(5, 7)) + '. ' + Number(String(d).slice(8, 10)) + '.'; };
+    var KSTY = { order: 'background:#0B1F3F;color:#FFFFFF', provisional: 'background:#FEF0F1;color:#D92D3A', prelim: 'background:#FEF3E2;color:#B54708', init: 'background:#EEF6FF;color:#0058CC', sunset: 'background:#F2F4F7;color:#344054' };
+    var STEPK = [['init', '개시'], ['prelim', '예비'], ['provisional', '잠정'], ['final', '최종'], ['order', '부과']];
+    var rmRegion = s.rmRegion || 'kr';
+    var openLandedWith = function (pre) { return needPro(function () { var cur = Object.assign({}, s.ld || {}); var offs = (cur.offers || [{}, {}, {}]).slice(); offs[0] = Object.assign({}, offs[0] || {}, pre); cur.offers = offs; cur.tab = 0; set({ sub: 'landed', ld: cur }); }); };
+    var kr = {
+      show: s.sub === 'remedies' && rmRegion === 'kr', loading: !krr, error: !!(krr && krr.status === 'error'),
+      up: (krr && krr.status === 'ok' ? krr.j.upcoming || [] : []).slice(0, 5).map(function (u) { return { md: mdOf(u.date), label: u.label, est: !!u.est, sub: u.productKo + ' · ' + (u.origins || []).join('·') + '산' + (u.why ? ' · ' + u.why : '') }; }),
+      cases: krCases.map(function (c) {
+        var kinds = (c.events || []).filter(function (e) { return !e.est; }).map(function (e) { return e.kind; });
+        var reached = -1; STEPK.forEach(function (k, i) { if (kinds.indexOf(k[0]) >= 0) reached = i; });
+        if (c.status === 'order' || c.status === 'sunset') reached = 4;
+        var open = !!(s.krOpen && s.krOpen[c.id]);
+        var supOrigin = (c.origins || [])[0] || '';
+        var defRate = (c.rates || []).filter(function (r) { return !r.undertaking; })[0] || (c.rates || [])[0];
+        return {
+          id: c.id, productKo: c.productKo, product: c.product, origins: (c.origins || []).join('·'), statusKo: c.statusKo, stStyle: KSTY[c.status] || KSTY.sunset, rateText: c.rateText || '',
+          steps: STEPK.map(function (k, i) { return { label: k[1], bar: 'background:' + (i <= reached ? '#0072F5' : '#E4E7EC'), txt: 'color:' + (i <= reached ? '#0058CC;font-weight:700' : '#98A2B3') }; }),
+          lastText: c.last ? '최근 · ' + ymdKo(c.last.date) + ' ' + c.last.label : '',
+          hasNext: !!c.next, nextText: c.next ? '다음 · ' + ymdKo(c.next.date) + ' ' + c.next.label + (c.next.est ? ' (예상)' : '') : '',
+          open: open, toggleText: open ? '접기' : '세율·일정 보기', toggle: function () { var o = Object.assign({}, s.krOpen); o[c.id] = !open; set({ krOpen: o }); },
+          rates: (c.rates || []).map(function (r) { return { origin: r.origin, supplier: r.supplier, rateText: r.undertaking ? '약속 시 0%' : r.rate.toFixed(2) + '%', style: r.undertaking ? 'color:#067647' : 'color:#D92D3A' }; }),
+          hasUnd: !!c.undertaking, undertaking: c.undertaking || '',
+          events: (c.events || []).slice().reverse().map(function (e) { return { date: e.date, label: e.label + (e.est ? ' (예상)' : ''), style: e.est ? 'color:#667085' : 'color:#0B0D12' }; }),
+          notes: c.notes || [], sources: c.sources || [],
+          calc: openLandedWith({ item: c.item, origin: supOrigin, sup: defRate ? c.id + '|' + (c.rates || []).indexOf(defRate) : 'none' })
+        };
+      }),
+      foot: '출처: 무역위원회·재정경제부 발표와 업계 보도를 Felix가 정리했습니다' + (krr && krr.status === 'ok' ? ' (' + krr.j.verifiedAt + ' 확인)' : '') + '. 업체별 확정 세율은 부과 규칙 별표가 기준입니다. 통관 전 관세법령정보포털에서 확인하세요.'
+    };
+    kr.hasUp = kr.up.length > 0;
+
+    // ===== 수입 도착원가 계산기 =====
+    if (!self._ldLoaded) { self._ldLoaded = true; try { var lds = JSON.parse(localStorage.getItem('felix.landed') || 'null'); if (lds && lds.offers) setTimeout(function () { if (!self.state.ld) self.setState({ ld: lds }); }, 0); } catch (e) {} }
+    var LDI = [['hr', '열연', 'imp1'], ['plate', '후판', 'imp1'], ['cr', '냉연', 'imp2'], ['coated', '도금·컬러', 'imp3'], ['wire', '선재', 'imp5'], ['rebar', '철근', 'imp6'], ['section', 'H형강', 'imp7'], ['sts', '스테인리스', 'imp8'], ['bar', '특수강 봉강', null]];
+    var LDO = ['중국', '일본', '베트남', '대만', '인도네시아', '인도', '기타'];
+    var ld0 = s.ld || {}, ldOffers = (ld0.offers || [{}, {}, {}]).slice(0, 3); while (ldOffers.length < 3) ldOffers.push({});
+    var ldTab = ld0.tab || 0;
+    var numOf = function (v) { var n = Number(String(v == null ? '' : v).replace(/[^0-9.\-]/g, '')); return isFinite(n) ? n : NaN; };
+    var fxAuto = (s.fxDaily && s.fxDaily.status === 'ok' && s.fxDaily.j.rates.USD) || (s.fxData && s.fxData.status === 'ok' && s.fxData.j.rates.USD) || null;
+    var fxNote = s.fxDaily && s.fxDaily.status === 'ok' ? '수출입은행 매매기준율 ' + mdOf(s.fxDaily.j.date) : (fxAuto ? '관세청 과세환율' : '직접 입력');
+    var ldSave = function (next) { try { localStorage.setItem('felix.landed', JSON.stringify(next)); } catch (e) {} };
+    var ldSet = function (patch) { var n = Object.assign({}, ld0, { offers: ldOffers }, patch); ldSave(n); set({ ld: n }); };
+    var ldOffer = function (i, patch) { var offs = ldOffers.slice(); offs[i] = Object.assign({}, offs[i], patch); ldSet({ offers: offs }); };
+    var supOptions = function (o) {
+      var item = o.item || 'hr', origin = o.origin || '중국', opts = [];
+      krCases.forEach(function (c) { if (c.item !== item || (c.origins || []).indexOf(origin) < 0) return; (c.rates || []).forEach(function (r, ri) { if (r.origin && r.origin !== origin) return; opts.push({ key: c.id + '|' + ri, label: (krCases.filter(function (x) { return x.item === item; }).length > 1 ? c.productKo + ' · ' : '') + r.supplier, rate: r.rate, und: !!r.undertaking, caseKo: c.productKo + ' ' + c.statusKo }); }); });
+      if (!opts.length) opts.push({ key: 'none', label: '해당 반덤핑 조치 없음', rate: 0, und: false });
+      opts.push({ key: 'custom', label: '직접 입력', rate: null, und: false });
+      return opts;
+    };
+    var supOf = function (o) { var opts = supOptions(o); var k = o.sup && opts.filter(function (x) { return x.key === o.sup; })[0]; return k || opts.filter(function (x) { return !x.und && x.key !== 'custom'; })[0] || opts[0]; };
+    var fxV = numOf(ld0.fx != null && ld0.fx !== '' ? ld0.fx : fxAuto), baseV = numOf(ld0.base != null && ld0.base !== '' ? ld0.base : 0), extraV = numOf(ld0.extra || 0), domV = numOf(ld0.dom || '');
+    var fmtW = function (v) { return Math.round(v).toLocaleString('ko-KR'); };
+    var LBL = ['A', 'B', 'C'], LCOL = ['background:#0072F5;color:#FFFFFF', 'background:#12B76A;color:#FFFFFF', 'background:#7A5AF8;color:#FFFFFF'];
+    var calcs = ldOffers.map(function (o, i) {
+      var price = numOf(o.price); if (!(price > 0) || !(fxV > 0)) return null;
+      var sp = supOf(o), rate = sp.key === 'custom' ? (numOf(o.ad) || 0) : sp.rate;
+      var cv = price * fxV, duty = cv * (baseV > 0 ? baseV : 0) / 100, ad = cv * rate / 100, ex = extraV > 0 ? extraV : 0, tot = cv + duty + ad + ex;
+      var itemKo = (LDI.filter(function (x) { return x[0] === (o.item || 'hr'); })[0] || LDI[0])[1];
+      return { i: i, price: price, tot: tot, cv: cv, duty: duty, ad: ad, ex: ex, rate: rate, und: sp.und, title: (o.origin || '중국') + ' · ' + itemKo, supLabel: sp.label };
+    }).filter(Boolean);
+    var minTot = calcs.length ? Math.min.apply(null, calcs.map(function (c) { return c.tot; })) : 0;
+    var maxTot = calcs.length ? Math.max.apply(null, calcs.map(function (c) { return c.tot; })) : 1;
+    var byPrice = calcs.slice().sort(function (a, b) { return a.price - b.price; }), byTot = calcs.slice().sort(function (a, b) { return a.tot - b.tot; });
+    var flip = calcs.length > 1 && byPrice[0].i !== byTot[0].i ? '오퍼가는 ' + LBL[byPrice[0].i] + '가 가장 싸지만, 반덤핑·비용을 넣은 도착원가는 ' + LBL[byTot[0].i] + '가 톤당 ' + fmtW(byPrice[0].tot - byTot[0].tot) + '원 낮습니다.' : '';
+    var wPct = function (v) { return (v / maxTot * 100).toFixed(1) + '%'; };
+    var refItem = (LDI.filter(function (x) { return x[0] === (ldOffers[ldTab].item || 'hr'); })[0] || LDI[0])[2];
+    var refD = refItem && s.krData && s.krData.status === 'ok' && s.krData.items[refItem];
+    var curO = ldOffers[ldTab], curSp = supOf(curO);
+    var ld = {
+      none: calcs.length === 0, hasFlip: !!flip, flip: flip, verified: krr && krr.status === 'ok' ? krr.j.verifiedAt : '최근',
+      results: calcs.map(function (c) {
+        var d = domV > 0 ? c.tot - domV : null;
+        return { tag: LBL[c.i], badgeStyle: LCOL[c.i], title: c.title, sub: c.supLabel + ' · 반덤핑 ' + (c.und ? '약속 시 0%' : c.rate.toFixed(2) + '%') + ' · 오퍼 $' + c.price,
+          landed: fmtW(c.tot), best: calcs.length > 1 && c.tot === minTot, valStyle: calcs.length > 1 && c.tot === minTot ? 'color:#0B0D12' : 'color:#344054',
+          b1: 'width:' + wPct(c.cv) + ';background:#9CC3FF', b2: 'width:' + wPct(c.duty) + ';background:#FDB022', b3: 'width:' + wPct(c.ad) + ';background:#F04452', b4: 'width:' + wPct(c.ex) + ';background:#98A2B3',
+          breakdown: '과세가격 ' + fmtW(c.cv) + (c.duty ? ' + 관세 ' + fmtW(c.duty) : '') + (c.ad ? ' + 반덤핑 ' + fmtW(c.ad) : '') + (c.ex ? ' + 부대 ' + fmtW(c.ex) : ''),
+          hasDom: d != null, domText: d == null ? '' : (d < 0 ? '국산 비교가보다 톤당 ' + fmtW(-d) + '원 낮음' : '국산 비교가보다 톤당 ' + fmtW(d) + '원 높음'), domStyle: d != null && d < 0 ? 'color:#067647' : 'color:#D92D3A',
+          hasWarn: c.und, warn: '가격약속 업체: 최저수출가격 미만이면 반덤핑관세 대상입니다.' };
+      }),
+      tabs: [0, 1, 2].map(function (i) { var on = ldTab === i, o = ldOffers[i]; return { label: '오퍼 ' + LBL[i] + (numOf(o.price) > 0 ? ' · $' + numOf(o.price) : ''), style: on ? 'background:#FFFFFF;color:#0B0D12;box-shadow:0 1px 2px rgba(16,24,40,.1)' : 'color:#667085', pick: function () { ldSet({ tab: i }); } }; }),
+      items: LDI.map(function (x) { var on = (curO.item || 'hr') === x[0]; return { label: x[1], style: chip(on), pick: function () { ldOffer(ldTab, { item: x[0], sup: null }); } }; }),
+      origins: LDO.map(function (x) { var on = (curO.origin || '중국') === x; return { label: x, style: chip(on), pick: function () { ldOffer(ldTab, { origin: x, sup: null }); } }; }),
+      sups: supOptions(curO).map(function (x) { var on = curSp.key === x.key; return { label: x.label, rateText: x.key === 'custom' ? '' : (x.und ? '약속 시 0%' : x.rate.toFixed(2) + '%'), style: on ? 'background:#EEF6FF;border:1.5px solid #0072F5;color:#0B0D12' : 'background:#FFFFFF;border:1px solid #EAECF0;color:#344054', pick: function () { ldOffer(ldTab, { sup: x.key }); } }; }),
+      custom: curSp.key === 'custom', adVal: curO.ad || '', setAd: function (e) { ldOffer(ldTab, { ad: e.target.value }); },
+      priceVal: curO.price || '', setPrice: function (e) { ldOffer(ldTab, { price: e.target.value }); },
+      hasRef: !!(refD && refD.status === 'ok' && refD.unitPrice > 0), ref: refD && refD.unitPrice > 0 ? '참고: 최근 한국 수입 통관 평균 $' + Math.round(refD.unitPrice) + '/t (' + (s.krData.month || '') + ', 전체 국가, 관세청)' : '',
+      clear: function () { ldOffer(ldTab, { price: '', ad: '' }); },
+      fxVal: ld0.fx != null && ld0.fx !== '' ? ld0.fx : (fxAuto ? String(Math.round(fxAuto * 10) / 10) : ''), fxNote: ld0.fx ? '직접 입력' : fxNote, setFx: function (e) { ldSet({ fx: e.target.value }); },
+      baseVal: ld0.base != null ? ld0.base : '0', setBase: function (e) { ldSet({ base: e.target.value }); },
+      extraVal: ld0.extra || '', setExtra: function (e) { ldSet({ extra: e.target.value }); },
+      domVal: ld0.dom || '', setDom: function (e) { ldSet({ dom: e.target.value }); }
+    };
+    var openLanded = needPro(function () { set({ sub: 'landed' }); });
+
     // ===== 로그인 화면 =====
     var LGN = { kakao: '카카오 사용자', google: 'Google 사용자', apple: 'Apple 사용자' };
     var doLogin = function (method, email) {
@@ -3268,7 +3496,7 @@ class Component extends DCLogic {
     // ===== Pro =====
     var pro = {
       price: '190,000원', priceNote: '첫 1개월 무료 · 언제든 해지 · 부가세 별도', isPro: isPro, notPro: !isPro,
-      rows: [['8개국 시세·환율', '✓', '✓'], ['주간 리포트 최신 호', '✓', '✓'], ['가격 방향 신호 요약', '✓', '✓'], ['신호 기록·적중률', '✓', '✓'], ['시세 공유 카드', '✓', '✓'], ['지난 리포트 전체', '–', '✓'], ['신호 상세 분석', '–', '✓'], ['무역 규제 타임라인', '–', '✓'], ['철강 라디오 브리핑', '–', '✓'], ['HS 코드 무역 검색', '–', '✓'], ['두 품목 비교', '–', '✓'], ['재고 평가손익·목표가 알림', '–', '✓'], ['가격 급변·발표 직후 알림', '–', '✓']].map(function (r) { return { name: r[0], free: r[1], pro: r[2] }; }),
+      rows: [['8개국 시세·환율', '✓', '✓'], ['주간 리포트 최신 호', '✓', '✓'], ['가격 방향 신호 요약', '✓', '✓'], ['신호 기록·적중률', '✓', '✓'], ['시세 공유 카드', '✓', '✓'], ['지난 리포트 전체', '–', '✓'], ['신호 상세 분석', '–', '✓'], ['무역 규제 타임라인', '–', '✓'], ['수입 도착원가 계산기', '–', '✓'], ['철강 라디오 브리핑', '–', '✓'], ['HS 코드 무역 검색', '–', '✓'], ['두 품목 비교', '–', '✓'], ['재고 평가손익·목표가 알림', '–', '✓'], ['가격 급변·발표 직후 알림', '–', '✓']].map(function (r) { return { name: r[0], free: r[1], pro: r[2] }; }),
       buyText: s.proBusy ? '결제 확인 중…' : '1개월 무료로 시작하기',
       buy: function () { if (s.proBusy) return; set({ proBusy: true }); setTimeout(function () { saveAuth(s.auth, 'pro'); self.setState({ tier: 'pro', proBusy: false, sub: null }); toast('Felix Pro가 시작되었습니다.'); }, 900); },
       cancel: function () { saveAuth(s.auth, 'free'); set({ tier: 'free', sub: null }); toast('구독이 해지되었습니다.'); }
@@ -3339,7 +3567,7 @@ class Component extends DCLogic {
       tabHome: s.tab === 'home' ? tabOn : tabOff, tabBoard: s.tab === 'board' ? tabOn : tabOff, tabReports: s.tab === 'reports' ? tabOn : tabOff,
       tabMe: s.tab === 'me' ? tabOn : tabOff,
       movers: movers, upcoming: upcoming, watchItems: watchItems, noWatch: watchItems.length === 0,
-      radio: radio, spread: spread, rm: rm, isRemedies: s.sub === 'remedies', tk: tk, isTrack: s.sub === 'track', openTrack: function () { set({ sub: 'track' }); }, openRemedies: openRemedies, shareSummary: shareSummary, shareItem: shareItem, shareView: shareView, tg: tg, groups: groups, cats: cats, isNation: isNation, nats: nats, flows: flows, flowNote: flowNote, hasFlowNote: hasFlowNote, natHint: natHint, hasNatHint: !!natHint, goUsImp: goUsImp, isLive: isLive, lv: lv, isKrDom: isKrDom, sdRows: items.filter(function (it) { return it.group === 'sd'; }), sdNote: '관세청 · 세계철강협회 · 국토부', jpTitle: jpTitle,
+      radio: radio, spread: spread, rm: rm, kr: kr, ld: ld, isLanded: s.sub === 'landed', openLanded: openLanded, isRemedies: s.sub === 'remedies', tk: tk, isTrack: s.sub === 'track', openTrack: function () { set({ sub: 'track' }); }, openRemedies: openRemedies, shareSummary: shareSummary, shareItem: shareItem, shareView: shareView, tg: tg, groups: groups, cats: cats, isNation: isNation, nats: nats, flows: flows, flowNote: flowNote, hasFlowNote: hasFlowNote, natHint: natHint, hasNatHint: !!natHint, goUsImp: goUsImp, isLive: isLive, lv: lv, isKrDom: isKrDom, sdRows: items.filter(function (it) { return it.group === 'sd'; }), sdNote: '관세청 · 세계철강협회 · 국토부', jpTitle: jpTitle,
       rows: rows, isDataGroup: !isDom && !isCmp && !isUs && !isJp && !isKr && !isLive, isKrGroup: isKr, krTitle: isNf ? '비철 수입 통관 단가' : '한국 수입 통관 단가', krIsSteel: !isNf, krIsNf: isNf, krRows: krRows, krBanner: krBanner, krBannerStyle: krBannerStyle, krShowRetry: krStatus === 'error', krRetry: krRetry, krMonthLabel: krMonthLabel, isJpGroup: isJp, jpSections: jpSections, jpBanner: jpBanner, jpBannerStyle: jpBannerStyle, jpShowRetry: jpStatus === 'error', jpRetry: jpRetry, jpMonthLabel: jpMonthLabel, isDomGroup: isDom, isCmpGroup: isCmp, cmpRows: cmpRows, cmpCols: cmpCols, cmpItems: cmpItems, cmpList: cmpList, cmpMatrix: cmpMatrix, cmpTabs: cmpTabs, cmpTitle: ct.title, isUsGroup: isUs, usStates: usStates, usSections: usSections, usStateName: STATES.at(si)[1], usBanner: usBanner, usBannerStyle: usBannerStyle, usShowRetry: usStatus === 'error', usRetry: usRetry, usMonthLabel: usStatus === 'ok' ? monthLabel(ud.month) : (usStatus === 'error' ? '—' : '확인 중'),
       groupSrc: g.src, groupCycle: g.cycle, groupDate: g.date, groupNote: g.note,
       groupTag: gErr ? '불러오지 못함' : (g.real || s.group === 'sd' ? '공식 발표값' : '불러오는 중'), groupTagStyle: gErr ? 'color:#B54708' : (g.real || s.group === 'sd' ? 'color:#12B76A' : 'color:#98A2B3'),

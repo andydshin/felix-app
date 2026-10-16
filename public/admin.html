@@ -75,6 +75,7 @@
     <div class="card" id="dataBox"><h2>수집한 숫자</h2><div class="muted">아직 없음</div></div>
     <div class="card" id="notesBox"><div class="row" style="justify-content:space-between"><h2 style="margin:0">시장 노트 (HS 검색)</h2><button id="bNotes" class="ghost">불러오기</button></div><div class="muted">수입국 × 품목별 관세·특례 제도·무역구제. 확인한 내용만, 출처와 확인일을 함께.</div><div id="notesList"></div></div>
     <div class="card" id="panelBox"><div class="row" style="justify-content:space-between"><h2 style="margin:0">가격 패널 관심 등록</h2><button id="bPanel" class="ghost">불러오기</button></div><div class="muted">앱 내 정보 → 가격 패널에서 등록한 휴대폰 번호(필수)와 회사명(선택). 패널 안내 연락에만 사용하고 외부에 공유하지 않습니다.</div><div id="panelList"></div></div>
+    <div class="card" id="krBox"><div class="row" style="justify-content:space-between"><h2 style="margin:0">한국 반덤핑 사건 (무역 규제 · 도착원가 계산기)</h2><div class="row"><button id="bKr" class="ghost">불러오기</button><button id="bKrSave" class="primary">저장</button><button id="bKrReset" class="ghost">기본값으로</button></div></div><div class="muted">사건별 일정(events)과 공급사별 세율(rates)을 JSON으로 고칩니다. 확인한 내용만, 출처(sources)와 함께. 예상 일정은 "est": true. 저장하면 확인일이 오늘로 바뀝니다.</div><div id="krMeta" class="muted"></div><textarea id="krJson" spellcheck="false" style="width:100%;min-height:320px;font-family:ui-monospace,Menlo,monospace;font-size:12px;margin-top:8px;box-sizing:border-box"></textarea></div>
     <div class="card" id="arcBox"><div class="row" style="justify-content:space-between"><h2 style="margin:0">일별 원자료 보관소</h2><div class="row"><button id="bArc" class="ghost">불러오기</button><button id="bArcVerify" class="ghost">지문 검증</button></div></div><div class="muted">매일 크론이 받은 원자료를 날짜별로 한 번만 저장합니다(덮어쓰기 없음). 외부 공개하지 않습니다. 한 달에 한 번은 내려받아 별도 보관하세요.</div><div id="arcList"></div></div>
     <div class="card" id="newsBox"><h2>수집한 뉴스·공고</h2><div class="muted">아직 없음</div></div>
   </aside>
@@ -297,6 +298,9 @@
     });
   }); }); });
   $('bArcVerify').addEventListener('click', function () { run('보관소 지문 검증(최근 120일)', function () { return api({ action: 'archive-verify', limit: 120 }).then(function (j) { log(j.ok ? '정상: ' + j.checked + '일 사슬 일치' : '불일치: ' + j.broken + '부터 지문이 맞지 않습니다'); }); }); });
+  $('bKr').addEventListener('click', function () { run('한국 반덤핑 불러오기', function () { return api({ action: 'krrem-get' }).then(function (j) { $('krJson').value = JSON.stringify(j.cases || [], null, 1); $('krMeta').textContent = (j.edited ? '관리자 수정본' : '기본값') + ' · 확인일 ' + (j.verifiedAt || '-') + ' · ' + (j.cases || []).length + '건'; }); }); });
+  $('bKrSave').addEventListener('click', function () { run('한국 반덤핑 저장', function () { var cs; try { cs = JSON.parse($('krJson').value); } catch (e) { return Promise.reject(new Error('JSON 형식 오류: ' + e.message)); } return api({ action: 'krrem-save', cases: cs }).then(function (j) { if (j.error) throw new Error(j.message || j.error); $('krMeta').textContent = '저장됨 · 확인일 ' + j.verifiedAt + ' · ' + j.count + '건'; }); }); });
+  $('bKrReset').addEventListener('click', function () { run('한국 반덤핑 기본값', function () { return api({ action: 'krrem-reset' }).then(function () { $('krJson').value = ''; $('krMeta').textContent = '기본값으로 되돌렸습니다. 다시 불러오세요.'; }); }); });
   $('bNotes').addEventListener('click', function () { run('노트 불러오기', function () { return api({ action: 'notes-get' }).then(function (j) { notes = j.notes || []; renderNotes(); }); }); });
   if ($('token').value) refresh().catch(function (e) { log('불러오기 실패: ' + e.message); });
 })();
