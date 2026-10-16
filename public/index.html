@@ -37,8 +37,22 @@ a{color:#0072F5}a:hover{color:#0058CC}
 
   <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 20px 12px; background: #FFFFFF; border-bottom: 1px solid #EAECF0">
     <div style="display: flex; align-items: center; gap: 8px"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="6" style="fill: #EEF6FF; stroke: #0072F5; stroke-opacity: 0.5"></rect><path d="M6 16 L10 11 L13 13.5 L18 7" style="fill: none; stroke: #0072F5; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"></path></svg><div style="font-size: 16px; font-weight: 700; letter-spacing: 0.18em; color: #0B0D12">FELIX</div></div>
-    <div style="display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; color: #667085; border: 1px solid #EAECF0; border-radius: 12px; padding: 3px 10px"><span style="width: 6px; height: 6px; border-radius: 3px; background: #12B76A"></span>BETA</div>
+    <div style="display: flex; align-items: center; gap: 8px">
+      <sc-if value="{{ authed }}" hint-placeholder-val="{{ true }}">
+        <sc-if value="{{ isPro }}" hint-placeholder-val="{{ false }}"><span style="font-size: 11px; font-weight: 800; letter-spacing: 0.04em; border-radius: 8px; padding: 3px 8px; background: #0B1F3F; color: #FFFFFF">PRO</span></sc-if>
+        <button onClick="{{ nt2.open }}" aria-label="알림" style="position: relative; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; color: #344054">
+          <svg viewBox="0 0 24 24" width="23" height="23" aria-hidden="true" style="fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
+          <sc-if value="{{ nt2.hasUnread }}" hint-placeholder-val="{{ true }}"><span style="position: absolute; top: 4px; right: 3px; min-width: 17px; height: 17px; box-sizing: border-box; padding: 0 4px; border-radius: 9px; border: 2px solid #FFFFFF; background: #F04452; color: #FFFFFF; font-size: 10px; font-weight: 800; line-height: 13px; text-align: center">{{ nt2.unread }}</span></sc-if>
+        </button>
+      </sc-if>
+      <sc-if value="{{ guest }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ openLogin }}" style="min-height: 34px; padding: 0 14px; border-radius: 17px; background: #0072F5; color: #FFFFFF; font-size: 13px; font-weight: 700">로그인</button>
+      </sc-if>
+    </div>
   </div>
+  <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; top: 74px; left: 20px; right: 20px; z-index: 30; padding: 12px 16px; border-radius: 14px; background: rgba(11,13,18,0.88); color: #FFFFFF; font-size: 14px; font-weight: 600; text-align: center; box-shadow: 0 8px 24px rgba(16,24,40,0.2)">{{ toastText }}</div>
+  </sc-if>
 
   <div style="flex: 1; min-height: 0; overflow-y: auto">
 
@@ -56,10 +70,11 @@ a{color:#0072F5}a:hover{color:#0058CC}
           </div>
         </sc-for>
 
+        <sc-if value="{{ authed }}" hint-placeholder-val="{{ true }}">
         <div style="border-radius: 20px; padding: 18px; background: linear-gradient(135deg, #0058CC 0%, #0072F5 55%, #3D9BFF 100%); color: #FFFFFF">
           <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
             <div style="min-width: 0">
-              <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; letter-spacing: 0.02em; opacity: 0.9"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" style="fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round"><path d="M4 12a8 8 0 0 1 16 0"></path><path d="M7.5 12a4.5 4.5 0 0 1 9 0"></path><circle cx="12" cy="12" r="1.6" style="fill: currentColor; stroke: none"></circle></svg>FELIX 철강 라디오</div>
+              <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; letter-spacing: 0.02em; opacity: 0.9"><sc-if value="{{ radio.locked }}" hint-placeholder-val="{{ false }}"><span style="font-size: 10px; font-weight: 800; border-radius: 6px; padding: 1px 6px; background: #FFFFFF; color: #0058CC; margin-right: 2px">PRO</span></sc-if><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" style="fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round"><path d="M4 12a8 8 0 0 1 16 0"></path><path d="M7.5 12a4.5 4.5 0 0 1 9 0"></path><circle cx="12" cy="12" r="1.6" style="fill: currentColor; stroke: none"></circle></svg>FELIX 철강 라디오</div>
               <div style="margin-top: 4px; font-size: 18px; font-weight: 700; line-height: 1.35">운전하면서 듣는 오늘의 시세</div>
               <div style="margin-top: 2px; font-size: 12px; opacity: 0.85">{{ radio.meta }}</div>
             </div>
@@ -83,12 +98,14 @@ a{color:#0072F5}a:hover{color:#0058CC}
           <sc-if value="{{ radio.unsupported }}" hint-placeholder-val="{{ false }}"><div style="margin-top: 10px; font-size: 12px; opacity: 0.9">이 브라우저에서는 음성 재생을 지원하지 않습니다. 대본 보기로 내용을 확인하세요.</div></sc-if>
         </div>
 
+        </sc-if>
         <button onClick="{{ openReport }}" style="display: block; width: 100%; box-sizing: border-box; text-align: left; background: linear-gradient(135deg, #EEF6FF 0%, #FFFFFF 70%); border: 1px solid #CFE3FF; color: #0B0D12; border-radius: 16px; padding: 20px">
           <div style="font-size: 12px; font-weight: 600; color: #0072F5; letter-spacing: 0.02em">{{ homeRepTag }}</div>
           <div style="margin-top: 8px; font-size: 17px; font-weight: 600; line-height: 1.5">{{ homeRepLine }}</div>
           <div style="margin-top: 14px; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #0072F5">{{ homeRepCta }} <span aria-hidden="true">→</span></div>
         </button>
 
+        <sc-if value="{{ authed }}" hint-placeholder-val="{{ true }}">
         <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 16px">
           <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px"><div style="font-size: 15px; font-weight: 700">가격 방향 신호 <span style="font-size: 12px; font-weight: 500; color: #98A2B3">향후 1~3개월</span></div><div style="font-size: 11px; color: #98A2B3">{{ sg.meta }}</div></div>
           <sc-if value="{{ sg.hasHead }}" hint-placeholder-val="{{ true }}">
@@ -116,6 +133,7 @@ a{color:#0072F5}a:hover{color:#0058CC}
           <div style="margin-top: 6px; padding-top: 8px; border-top: 1px solid #F2F4F7; font-size: 11px; line-height: 1.55; color: #98A2B3">{{ sg.note }}</div>
         </div>
 
+        </sc-if>
         <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
           <div style="display: flex; justify-content: space-between; align-items: center"><div style="font-size: 13px; font-weight: 700; color: #667085">크게 움직인 항목 · 직전 발표 대비</div><button onClick="{{ shareSummary }}" style="display: flex; align-items: center; gap: 4px; min-height: 30px; padding: 0 10px; border-radius: 15px; background: #EEF6FF; color: #0058CC; font-size: 12px; font-weight: 700"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" style="fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round"><path d="M12 15V3"></path><path d="M7 8l5-5 5 5"></path><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"></path></svg>공유</button></div>
           <sc-for list="{{ movers }}" as="m" hint-placeholder-count="3">
@@ -132,6 +150,19 @@ a{color:#0072F5}a:hover{color:#0058CC}
             </button>
           </sc-for>
         </div>
+        <sc-if value="{{ guest }}" hint-placeholder-val="{{ false }}">
+          <div style="border-radius: 20px; padding: 20px; background: #F5F8FF; border: 1px solid #DCE8FF">
+            <div style="font-size: 18px; font-weight: 700; line-height: 1.4">로그인하고 전체 시세를 보세요</div>
+            <div style="margin-top: 6px; font-size: 13px; line-height: 1.6; color: #475467">무료로 가입하면 아래 기능을 바로 쓸 수 있습니다.</div>
+            <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 8px; font-size: 14px; color: #0B0D12">
+              <div>✓ 8개국 철강·원료·비철 시세와 환율</div>
+              <div>✓ 가격 방향 신호와 주간 리포트</div>
+              <div>✓ 관심 품목, 체감 투표, 리포트 발행 알림</div>
+            </div>
+            <button onClick="{{ openLogin }}" style="margin-top: 16px; width: 100%; min-height: 50px; border-radius: 25px; background: #0072F5; color: #FFFFFF; font-size: 15px; font-weight: 700; text-align: center">3초 만에 시작하기</button>
+          </div>
+        </sc-if>
+        <sc-if value="{{ authed }}" hint-placeholder-val="{{ true }}">
 
         <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
           <div style="display: flex; justify-content: space-between; align-items: center">
@@ -176,6 +207,26 @@ a{color:#0072F5}a:hover{color:#0058CC}
               <div><div style="font-size: 14px; font-weight: 600">{{ up.title }}</div><div style="font-size: 12px; color: #667085">{{ up.why }}</div></div>
             </div>
           </sc-for>
+        </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isGate }}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-direction: column; gap: 14px; padding: 18px 20px 28px">
+        <h1 style="margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em">{{ gate.title }}</h1>
+        <div style="position: relative; border-radius: 18px; overflow: hidden; border: 1px solid #EAECF0">
+          <div style="padding: 14px 16px; filter: blur(4px); opacity: 0.55">
+            <sc-for list="{{ gate.preview }}" as="gp" hint-placeholder-count="5">
+              <div style="display: flex; justify-content: space-between; min-height: 52px; align-items: center; border-top: 1px solid #F2F4F7"><div><div style="font-size: 15px; font-weight: 600">{{ gp.a }}</div><div style="font-size: 12px; color: #667085">{{ gp.b }}</div></div><div style="font-size: 16px; font-weight: 700; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ gp.c }}</div></div>
+            </sc-for>
+          </div>
+          <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; background: linear-gradient(180deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.92) 60%); padding: 20px; text-align: center">
+            <div style="width: 48px; height: 48px; border-radius: 24px; background: #EEF6FF; color: #0072F5; display: flex; align-items: center; justify-content: center"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" style="fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"><rect x="4" y="11" width="16" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg></div>
+            <div style="font-size: 17px; font-weight: 700">{{ gate.head }}</div>
+            <div style="font-size: 13px; line-height: 1.6; color: #475467">{{ gate.body }}</div>
+            <button onClick="{{ openLogin }}" style="margin-top: 4px; min-height: 48px; padding: 0 28px; border-radius: 24px; background: #0072F5; color: #FFFFFF; font-size: 15px; font-weight: 700">로그인하고 보기</button>
+          </div>
         </div>
       </div>
     </sc-if>
@@ -1161,6 +1212,23 @@ a{color:#0072F5}a:hover{color:#0058CC}
     <sc-if value="{{ isMe }}" hint-placeholder-val="{{ false }}">
       <div style="display: flex; flex-direction: column; gap: 14px; padding: 18px 20px 28px">
         <h1 style="margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em">내 정보</h1>
+        <div style="display: flex; align-items: center; gap: 12px; background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
+          <div style="flex: none; width: 46px; height: 46px; border-radius: 23px; background: #EEF6FF; color: #0058CC; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 800">{{ me.initial }}</div>
+          <div style="flex: 1; min-width: 0"><div style="font-size: 16px; font-weight: 700">{{ me.name }}</div><div style="font-size: 12px; color: #667085; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ me.sub }}</div></div>
+          <button onClick="{{ me.logout }}" style="flex: none; min-height: 34px; padding: 0 12px; border-radius: 17px; border: 1px solid #D0D5DD; font-size: 12px; font-weight: 600; color: #475467">로그아웃</button>
+        </div>
+        <button onClick="{{ openPro }}" style="display: flex; align-items: center; justify-content: space-between; gap: 12px; border-radius: 16px; padding: 16px; text-align: left; {{ me.planStyle }}">
+          <div><div style="font-size: 12px; font-weight: 800; letter-spacing: 0.06em; opacity: 0.85">{{ me.planTag }}</div><div style="margin-top: 2px; font-size: 16px; font-weight: 700">{{ me.planTitle }}</div><div style="margin-top: 2px; font-size: 12.5px; opacity: 0.85">{{ me.planSub }}</div></div>
+          <span aria-hidden="true" style="flex: none; font-size: 18px">→</span>
+        </button>
+        <sc-if value="{{ notPro }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ openPro }}" style="display: block; width: 100%; text-align: left; background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 16px">
+            <div style="display: flex; justify-content: space-between; align-items: center"><div style="font-size: 15px; font-weight: 700">내 재고 평가 · 목표가 알림</div><span style="font-size: 10px; font-weight: 800; border-radius: 6px; padding: 2px 7px; background: #0B1F3F; color: #FFFFFF">PRO</span></div>
+            <div style="margin-top: 6px; font-size: 13px; line-height: 1.6; color: #475467">보유 재고를 넣으면 오늘 시세로 평가액과 매입가 대비 손익을 계산하고, 목표 가격에 닿으면 알려 드립니다.</div>
+            <div style="margin-top: 10px; font-size: 13px; font-weight: 700; color: #0072F5">Pro로 열기 →</div>
+          </button>
+        </sc-if>
+        <sc-if value="{{ isPro }}" hint-placeholder-val="{{ true }}">
         <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 16px">
           <div style="display: flex; justify-content: space-between; align-items: baseline"><div style="font-size: 15px; font-weight: 700">내 재고 평가</div><div style="font-size: 11px; color: #98A2B3">이 기기에만 저장</div></div>
           <sc-if value="{{ inv.has }}" hint-placeholder-val="{{ true }}">
@@ -1223,33 +1291,108 @@ a{color:#0072F5}a:hover{color:#0058CC}
           <div style="margin-top: 8px; font-size: 11px; line-height: 1.5; color: #98A2B3">새 발표값이 목표에 닿으면 홈 화면 맨 위에 알려 드립니다. 앱 출시 후에는 푸시 알림으로도 받으실 수 있습니다.</div>
         </div>
 
+        </sc-if>
+
         <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 6px 16px">
           <div style="padding: 10px 0 4px; font-size: 13px; font-weight: 700; color: #667085">알림</div>
           <sc-for list="{{ notis }}" as="nt" hint-placeholder-count="3">
             <div style="display: flex; min-height: 56px; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid #F2F4F7">
-              <div style="font-size: 15px; font-weight: 600">{{ nt.label }}</div>
+              <div style="font-size: 15px; font-weight: 600">{{ nt.label }} <sc-if value="{{ nt.pro }}" hint-placeholder-val="{{ false }}"><span style="font-size: 10px; font-weight: 800; border-radius: 6px; padding: 1px 6px; background: #0B1F3F; color: #FFFFFF; vertical-align: 2px">PRO</span></sc-if></div>
               <button onClick="{{ nt.toggle }}" aria-pressed="{{ nt.on }}" style="min-width: 64px; min-height: 44px; border-radius: 22px; font-size: 13px; font-weight: 700; text-align: center; {{ nt.style }}">{{ nt.text }}</button>
             </div>
           </sc-for>
         </div>
 
-        <div>
-          <div style="font-size: 13px; font-weight: 700; color: #667085">요금제</div>
-          <div style="font-size: 13px; color: #344054">베타 기간에는 모든 기능을 무료로 제공합니다. 플랜 구성과 가격은 정식 출시 때 확정됩니다.</div>
-        </div>
-        <sc-for list="{{ plans }}" as="p" hint-placeholder-count="4">
-          <button onClick="{{ p.pick }}" aria-pressed="{{ p.on }}" style="display: block; width: 100%; box-sizing: border-box; border-radius: 16px; padding: 14px 16px; {{ p.style }}">
-            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px">
-              <div style="font-size: 16px; font-weight: 700">{{ p.name }}</div>
-              <div style="font-size: 14px; font-weight: 700; color: #0072F5; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ p.price }}</div>
-            </div>
-            <div style="font-size: 13px; color: #667085">{{ p.who }}</div>
-            <div style="margin-top: 6px; font-size: 14px">{{ p.feats }}</div>
-          </button>
-        </sc-for>
-        <div style="font-size: 13px; color: #344054">{{ planMsg }}</div>
 
         <button onClick="{{ openSources }}" style="display: flex; width: 100%; min-height: 56px; box-sizing: border-box; align-items: center; justify-content: space-between; background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 0 16px; font-size: 15px; font-weight: 600"><span>데이터 출처</span><span style="color: #0072F5">→</span></button>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isLogin }}" hint-placeholder-val="{{ false }}">
+      <div style="min-height: 100%; box-sizing: border-box; display: flex; flex-direction: column; padding: 8px 24px 28px">
+        <button onClick="{{ back }}" aria-label="닫기" style="align-self: flex-end; width: 40px; height: 44px; font-size: 22px; color: #667085; text-align: center">×</button>
+        <div style="margin-top: 24px">
+          <svg viewBox="0 0 24 24" width="44" height="44" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="6" style="fill: #EEF6FF; stroke: #0072F5; stroke-opacity: 0.5"></rect><path d="M6 16 L10 11 L13 13.5 L18 7" style="fill: none; stroke: #0072F5; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"></path></svg>
+          <h1 style="margin: 16px 0 0; font-size: 26px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.35">세계 철강 시세,<br>Felix에서 한 번에</h1>
+          <div style="margin-top: 8px; font-size: 14px; line-height: 1.6; color: #475467">8개국 시세와 주간 리포트, 가격 방향 신호를 무료로 받아 보세요.</div>
+        </div>
+        <sc-if value="{{ lg.methods }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 36px; display: flex; flex-direction: column; gap: 10px">
+            <button onClick="{{ lg.kakao }}" style="display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 52px; border-radius: 12px; background: #FEE500; color: #191919; font-size: 15px; font-weight: 700">
+              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 4C7 4 3 7.1 3 11c0 2.5 1.7 4.7 4.2 5.9l-1 3.6c-.1.3.3.6.6.4l4.2-2.8c.3 0 .7.1 1 .1 5 0 9-3.1 9-7S17 4 12 4z" style="fill: #191919"></path></svg>{{ lg.kakaoText }}</button>
+            <button onClick="{{ lg.google }}" style="display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 52px; border-radius: 12px; background: #FFFFFF; border: 1px solid #D0D5DD; color: #0B0D12; font-size: 15px; font-weight: 700">
+              <svg viewBox="0 0 24 24" width="19" height="19" aria-hidden="true"><path d="M21.6 12.2c0-.7-.1-1.4-.2-2H12v3.8h5.4a4.6 4.6 0 0 1-2 3v2.5h3.2c1.9-1.7 3-4.3 3-7.3z" style="fill: #4285F4"></path><path d="M12 22c2.7 0 5-.9 6.6-2.4l-3.2-2.5c-.9.6-2 1-3.4 1-2.6 0-4.8-1.8-5.6-4.1H3.1v2.6A10 10 0 0 0 12 22z" style="fill: #34A853"></path><path d="M6.4 14c-.2-.6-.3-1.3-.3-2s.1-1.4.3-2V7.4H3.1a10 10 0 0 0 0 9.2L6.4 14z" style="fill: #FBBC05"></path><path d="M12 6c1.5 0 2.8.5 3.8 1.5l2.9-2.9A10 10 0 0 0 3.1 7.4L6.4 10C7.2 7.8 9.4 6 12 6z" style="fill: #EA4335"></path></svg>{{ lg.googleText }}</button>
+            <button onClick="{{ lg.apple }}" style="display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 52px; border-radius: 12px; background: #000000; color: #FFFFFF; font-size: 15px; font-weight: 700">
+              <svg viewBox="0 0 24 24" width="19" height="19" aria-hidden="true"><path d="M16.4 12.6c0-2.5 2-3.7 2.1-3.8-1.2-1.7-3-1.9-3.6-2-1.5-.2-3 .9-3.8.9-.8 0-2-.9-3.3-.8-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8s2 .8 3.3.8c1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9-.1 0-2.8-1.1-2.8-4.3zM14 5.2c.7-.9 1.2-2 1-3.2-1 0-2.3.7-3 1.6-.7.8-1.3 2-1.1 3.1 1.2.1 2.3-.6 3.1-1.5z" style="fill: #FFFFFF"></path></svg>{{ lg.appleText }}</button>
+            <button onClick="{{ lg.emailStep }}" style="display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 52px; border-radius: 12px; background: #F2F4F7; color: #0B0D12; font-size: 15px; font-weight: 700">
+              <svg viewBox="0 0 24 24" width="19" height="19" aria-hidden="true" style="fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg>이메일로 계속하기</button>
+          </div>
+        </sc-if>
+        <sc-if value="{{ lg.emailForm }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top: 32px; display: flex; flex-direction: column; gap: 10px">
+            <label for="lg-email" style="font-size: 13px; font-weight: 600; color: #344054">이메일</label>
+            <input id="lg-email" type="email" inputMode="email" autocomplete="email" value="{{ lg.email }}" onChange="{{ lg.setEmail }}" placeholder="name@company.com" style="min-height: 52px; box-sizing: border-box; border: 1px solid #D0D5DD; border-radius: 12px; padding: 0 16px; font-size: 16px">
+            <button onClick="{{ lg.emailGo }}" style="min-height: 52px; border-radius: 12px; background: #0072F5; color: #FFFFFF; font-size: 15px; font-weight: 700">{{ lg.emailText }}</button>
+            <button onClick="{{ lg.backMethods }}" style="min-height: 40px; font-size: 13px; font-weight: 600; color: #667085">다른 방법으로 로그인</button>
+          </div>
+        </sc-if>
+        <div style="margin-top: auto; padding-top: 28px; font-size: 11.5px; line-height: 1.6; color: #98A2B3; text-align: center">계속하면 Felix 이용약관과 개인정보 처리방침에 동의하는 것으로 봅니다.</div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isProPage }}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-direction: column; gap: 14px; padding: 8px 20px 28px">
+        <button onClick="{{ back }}" aria-label="닫기" style="align-self: flex-end; width: 40px; height: 44px; font-size: 22px; color: #667085; text-align: center">×</button>
+        <div style="border-radius: 22px; padding: 22px; background: linear-gradient(140deg, #0B1F3F 0%, #0058CC 70%, #0072F5 100%); color: #FFFFFF">
+          <div style="font-size: 12px; font-weight: 800; letter-spacing: 0.12em; opacity: 0.85">FELIX PRO</div>
+          <div style="margin-top: 6px; font-size: 24px; font-weight: 700; line-height: 1.35">시세를 보는 것에서<br>판단하는 것까지</div>
+          <div style="margin-top: 14px; display: flex; align-items: baseline; gap: 6px"><span style="font-size: 30px; font-weight: 800; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ pro.price }}</span><span style="font-size: 14px; opacity: 0.85">/ 월</span></div>
+          <div style="margin-top: 2px; font-size: 12px; opacity: 0.8">{{ pro.priceNote }}</div>
+        </div>
+        <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 4px 16px 8px">
+          <div style="display: grid; grid-template-columns: 1fr 52px 52px; gap: 8px; padding: 12px 0 8px; font-size: 12px; font-weight: 700; color: #667085"><div>기능</div><div style="text-align: center">무료</div><div style="text-align: center; color: #0058CC">Pro</div></div>
+          <sc-for list="{{ pro.rows }}" as="pf" hint-placeholder-count="8">
+            <div style="display: grid; grid-template-columns: 1fr 52px 52px; gap: 8px; align-items: center; min-height: 44px; border-top: 1px solid #F2F4F7; font-size: 14px"><div>{{ pf.name }}</div><div style="text-align: center; color: #98A2B3; font-size: 13px">{{ pf.free }}</div><div style="text-align: center; color: #0072F5; font-weight: 700">{{ pf.pro }}</div></div>
+          </sc-for>
+        </div>
+        <sc-if value="{{ pro.isPro }}" hint-placeholder-val="{{ false }}">
+          <div style="padding: 14px 16px; border-radius: 14px; background: #ECFDF3; color: #067647; font-size: 14px; font-weight: 600; text-align: center">Pro를 이용하고 있습니다</div>
+          <button onClick="{{ pro.cancel }}" style="min-height: 44px; font-size: 13px; font-weight: 600; color: #667085">구독 해지</button>
+        </sc-if>
+        <sc-if value="{{ pro.notPro }}" hint-placeholder-val="{{ true }}">
+          <button onClick="{{ pro.buy }}" style="min-height: 54px; border-radius: 27px; background: #0072F5; color: #FFFFFF; font-size: 16px; font-weight: 700">{{ pro.buyText }}</button>
+          <div style="font-size: 11.5px; line-height: 1.6; color: #98A2B3; text-align: center">언제든 해지할 수 있습니다. 구독은 앱 스토어 계정으로 결제됩니다.</div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isNotis }}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-direction: column; padding: 8px 0 28px">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 20px">
+          <button onClick="{{ back }}" style="min-height: 44px; font-size: 14px; font-weight: 600; color: #0072F5">← 뒤로</button>
+          <button onClick="{{ nt2.readAll }}" style="min-height: 44px; font-size: 13px; font-weight: 600; color: #667085">모두 읽음</button>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: baseline; padding: 0 20px"><h1 style="margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em">알림</h1><button onClick="{{ nt2.settings }}" style="min-height: 36px; font-size: 13px; font-weight: 600; color: #0072F5">알림 설정</button></div>
+        <sc-for list="{{ nt2.groups }}" as="ng" hint-placeholder-count="2">
+          <div style="margin: 18px 20px 4px; font-size: 13px; font-weight: 700; color: #667085">{{ ng.label }}</div>
+          <sc-for list="{{ ng.items }}" as="ni" hint-placeholder-count="3">
+            <button onClick="{{ ni.open }}" style="display: flex; width: 100%; gap: 12px; align-items: flex-start; padding: 14px 20px; text-align: left; {{ ni.bg }}">
+              <div style="flex: none; width: 38px; height: 38px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; {{ ni.iconStyle }}">{{ ni.icon }}</div>
+              <div style="flex: 1; min-width: 0">
+                <div style="display: flex; justify-content: space-between; gap: 8px"><div style="font-size: 12px; font-weight: 700; color: #667085">{{ ni.kind }}</div><div style="flex: none; font-size: 12px; color: #98A2B3">{{ ni.time }}</div></div>
+                <div style="margin-top: 2px; font-size: 15px; font-weight: 700; line-height: 1.4">{{ ni.title }}</div>
+                <div style="margin-top: 2px; font-size: 13px; line-height: 1.5; color: #475467">{{ ni.body }}</div>
+              </div>
+              <sc-if value="{{ ni.unread }}" hint-placeholder-val="{{ false }}"><span style="flex: none; width: 8px; height: 8px; margin-top: 6px; border-radius: 4px; background: #0072F5"></span></sc-if>
+            </button>
+          </sc-for>
+        </sc-for>
+        <sc-if value="{{ nt2.lockNote }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ openPro }}" style="margin: 18px 20px 0; padding: 14px 16px; border-radius: 14px; background: #F5F8FF; border: 1px dashed #9CC3FF; text-align: left">
+            <div style="font-size: 14px; font-weight: 700; color: #0058CC">Pro 알림 받기 →</div>
+            <div style="margin-top: 2px; font-size: 12.5px; color: #475467">관심 품목 급변, 목표가 도달, 발표 직후 시세 알림은 Pro에서 받을 수 있습니다.</div>
+          </button>
+        </sc-if>
       </div>
     </sc-if>
 
@@ -1554,6 +1697,14 @@ class Component extends DCLogic {
     });
     var byId = {};
     items.forEach(function (it) { byId[it.id] = it; });
+    // 로그인·요금제 (지금은 화면만: 누르면 바로 로그인·구독 처리. 실제 인증·결제는 앱 단계에서 연결)
+    if (!self._authLoaded) { self._authLoaded = true; try { var av = JSON.parse(localStorage.getItem('felix.auth') || 'null'); if (av && av.method) setTimeout(function () { self.setState({ auth: av.user, tier: av.tier || 'free' }); }, 0); } catch (e) {} }
+    var authed = !!s.auth, isPro = authed && s.tier === 'pro';
+    var saveAuth = function (user, tier) { try { if (user) localStorage.setItem('felix.auth', JSON.stringify({ method: user.method, user: user, tier: tier })); else localStorage.removeItem('felix.auth'); } catch (e) {} };
+    var toast = function (msg) { self._toastT && clearTimeout(self._toastT); self.setState({ toast: msg }); self._toastT = setTimeout(function () { self.setState({ toast: '' }); }, 2200); };
+    var openLogin = function () { set({ sub: 'login', loginStep: null, loginBusy: null }); };
+    var openPro = function () { if (!authed) return openLogin(); set({ sub: 'pro', proBusy: false }); };
+    var needPro = function (fn) { return isPro ? fn : openPro; };
     var niceName = function (it) {
       var base = String(it.name).split(' (')[0];
       if (it.group === 'cn') { var f0 = base.split(' ')[0]; return '중국 ' + ({ '점결탄': '원료탄', '중후판': '후판' }[f0] || f0); }
@@ -1643,7 +1794,7 @@ class Component extends DCLogic {
     };
     var openRep = function (no) { return function () { if (no) loadIssue(no); set({ tab: 'reports', sub: 'report', repNo: no || null, repOpen: null, repSec: 'all', repRegion: null }); }; };
     var repList = repOk
-      ? rd.j.list.map(function (x, i) { return { tag: (i === 0 ? '최신 · ' : '') + '제' + x.no + '호 · ' + x.weekLabel, title: x.title, sub: x.date, border: i === 0 ? '#0072F5' : '#EAECF0', tagColor: i === 0 ? '#0072F5' : '#667085', open: openRep(x.no) }; })
+      ? rd.j.list.map(function (x, i) { return { tag: (i === 0 ? '최신 · ' : '') + '제' + x.no + '호 · ' + x.weekLabel, title: x.title, sub: x.date, border: i === 0 ? '#0072F5' : '#EAECF0', tagColor: i === 0 ? '#0072F5' : '#667085', open: i === 0 ? openRep(x.no) : needPro(openRep(x.no)) }; })
       : [];
     var repListNote = repOk ? '' : (rd ? '첫 주간 리포트를 준비하고 있습니다. 매주 목요일에 발행합니다.' : '리포트를 불러오고 있습니다.');
     var homeRepTag = repLatest ? '주간 리포트 제' + repLatest.no + '호 · ' + repLatest.weekLabel.replace(/^\d+년 /, '') : '주간 리포트';
@@ -1786,10 +1937,10 @@ class Component extends DCLogic {
     var myPosText = !priceOk ? '' : (Math.abs(diff) < 0.05 ? '내 가격은 평가가와 같습니다.' : '내 가격 ' + fmt(priceNum, 1) + '은 평가가보다 ' + fmt(Math.abs(diff), 1) + '만원 ' + (diff > 0 ? '높습니다.' : '낮습니다.'));
     var pos = Math.max(0, Math.min(1, (priceNum - 88) / 4.5));
 
-    var NT = [['report', '리포트 발행'], ['price', '관심 품목 가격 급변'], ['policy', '정책·무역 일정']];
+    var NT = [['report', '리포트 발행', 0], ['policy', '발표 일정·신호 갱신', 0], ['price', '관심 품목 가격 급변', 1], ['target', '목표가 도달', 1]];
     var notis = NT.map(function (n) {
-      var on = !!s.noti[n[0]];
-      return { label: n[1], on: on, text: on ? '켜짐' : '꺼짐', style: on ? onChip : 'background:#F2F4F7;color:#344054;border:1px solid #D0D5DD', toggle: function () { var o = Object.assign({}, s.noti); o[n[0]] = !on; set({ noti: o }); } };
+      var locked = n[2] && !isPro, on = !locked && !!s.noti[n[0]];
+      return { label: n[1], pro: !!n[2], on: on, text: locked ? '잠김' : (on ? '켜짐' : '꺼짐'), style: on ? onChip : 'background:#F2F4F7;color:#344054;border:1px solid #D0D5DD', toggle: locked ? openPro : function () { var o = Object.assign({}, s.noti); o[n[0]] = !on; set({ noti: o }); } };
     });
     var PL = [
       ['beta', '무료 베타', '0원', '지금 모든 사용자', '전 품목 시세, 주간 리포트, 알림, 제보 참여'],
@@ -2460,7 +2611,7 @@ class Component extends DCLogic {
 
     movers = items.slice().sort(function (a, b) { return b.rank - a.rank; }).slice(0, 3).map(function (it) {
       var h = it.hist && it.hist.length >= 3 ? it.hist.slice(-12) : null, w = whyFor(it).filter(function (o) { return o.sc >= 2; })[0];
-      return Object.assign({}, it, { hasSpark: !!h, spark: h ? sparkPts(h, 64, 24, 2).join(' ') : '', sparkColor: it.pct > 0 ? '#F04452' : (it.pct < 0 ? '#1B64DA' : '#98A2B3'), sparkLabel: h ? '최근 ' + h.length + '회' : '',
+      return Object.assign({}, it, { open: authed ? it.open : openLogin, hasSpark: !!h, spark: h ? sparkPts(h, 64, 24, 2).join(' ') : '', sparkColor: it.pct > 0 ? '#F04452' : (it.pct < 0 ? '#1B64DA' : '#98A2B3'), sparkLabel: h ? '최근 ' + h.length + '회' : '',
         hasWhy: !!w, whyLine: w ? '이슈 · ' + w.x.title : '' });
     });
 
@@ -2501,7 +2652,7 @@ class Component extends DCLogic {
       d.whySrc = repLatest ? '주간 리포트 제' + repLatest.no + '호 · ' + repLatest.date : '';
       d.whyEmpty = !d.hasWhy && !!rd;
       d.whyEmptyText = repLatest ? '이번 주 리포트에는 이 품목과 직접 연결된 이슈가 없습니다.' : '주간 리포트가 발행되면 관련 이슈를 함께 보여 드립니다.';
-      d.openCompare = function () { set({ sub: 'compare' }); };
+      d.openCompare = needPro(function () { set({ sub: 'compare' }); });
       d.canCalc = /달러\/t/.test(itd.unit || '');
       d.openCalc = function () { set({ sub: 'calc', calc: { price: String(Math.round(itd.val)), fx: null, duty: '0', ad: '0', freight: '0', other: '15000', from: itd.id } }); };
     }
@@ -2702,7 +2853,7 @@ class Component extends DCLogic {
         return { name: p.name, level: l === '보합' && ln ? '보합 ' + (ln === 'up' ? '↗' : '↘') : (l || '자료 부족'), chip: LVSTY[l] || LVSTY['보합'], meter: meterOf(l, ln),
           stripe: 'background:' + (l === '보합' && ln ? (ln === 'up' ? '#FBC5CA' : '#C7D7F5') : (STRIPE[l] || '#EAECF0')),
           brief: im.length ? im.map(function (x) { return briefOf(x.c); }).join(' · ') : '큰 움직임 없음',
-          open: function () { set({ sub: 'signal', sigId: p.id }); } }; }),
+          open: needPro(function () { set({ sub: 'signal', sigId: p.id }); }) }; }),
       hasHead: !!head, head: head, why: why, basis: basis, hasWhy: !!why,
       meta: sgd && sgd.status === 'ok' ? sgd.j.today + ' 기준' : '',
       note: !sgd ? '신호를 계산하고 있습니다.' : (sgd.status !== 'ok' ? '신호를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.' : (trk && trk.graded ? '지난 신호 ' + trk.graded + '건 중 ' + trk.hits + '건 적중 (' + trk.rate + '%). ' : '') + '원가·중국 가격·제철소 발표·세계 이슈·현장 체감을 종합한 참고 지표입니다.' + (trk && trk.graded ? '' : ' 적중률은 신호 기록 2개월 뒤부터 공개합니다.')) };
@@ -2729,7 +2880,7 @@ class Component extends DCLogic {
       var kk = String(ITEM2KEY[s.itemId] || '').split(':')[1];
       var sp2 = SIGP.filter(function (p) { return p.id === kk; })[0];
       d.hasSig = !!(sp2 && sp2.dir);
-      if (d.hasSig) Object.assign(d, { sigText: sp2.name + ' 방향 신호 · ' + lvOf(sp2), sigConf: '확실성 ' + sp2.conf, sigChip: LVSTY[lvOf(sp2)] || dirChip(sp2.dir), openSig: function () { set({ sub: 'signal', sigId: sp2.id }); } });
+      if (d.hasSig) Object.assign(d, { sigText: sp2.name + ' 방향 신호 · ' + lvOf(sp2), sigConf: '확실성 ' + sp2.conf, sigChip: LVSTY[lvOf(sp2)] || dirChip(sp2.dir), openSig: needPro(function () { set({ sub: 'signal', sigId: sp2.id }); }) });
     }
     // 리포트의 제철소 발표
     if (rp) { rp.mills = (repCur.mills || []).map(millView); rp.hasMills = rp.mills.length > 0 && rp.secIssue; }
@@ -2912,10 +3063,10 @@ class Component extends DCLogic {
       supported: FelixRadio.supported(), unsupported: !FelixRadio.supported(), on: !!RS.on, paused: !!RS.paused, playing: !!RS.on && !RS.paused, notPlaying: !(RS.on && !RS.paused),
       meta: '오늘 브리핑 · 약 ' + Math.max(1, Math.round(radioSec / 60)) + '분 · ' + radioSegs.length + '개 코너',
       cur: RS.on ? ((radioSegs[RS.si] || {}).title || '') : '', pos: RS.on ? (RS.si + 1) + '/' + radioSegs.length : '',
-      segs: radioSegs.map(function (g2, k) { var on = RS.on && RS.si === k; return { label: g2.title, style: on ? 'background:#FFFFFF;color:#0058CC' : 'background:rgba(255,255,255,0.18);color:#FFFFFF', pick: function () { FelixRadio.start(radioSegs, k); } }; }),
+      segs: radioSegs.map(function (g2, k) { var on = RS.on && RS.si === k; return { label: g2.title, style: on ? 'background:#FFFFFF;color:#0058CC' : 'background:rgba(255,255,255,0.18);color:#FFFFFF', pick: isPro ? function () { FelixRadio.start(radioSegs, k); } : openPro }; }),
       rateText: (RS.rate || 1) === 1 ? '1.0×' : '1.2×',
       toggleRate: function () { FelixRadio.setRate((RS.rate || 1) === 1 ? 1.2 : 1); },
-      main: function () { if (!RS.on) FelixRadio.start(radioSegs, 0); else if (RS.paused) FelixRadio.resume(); else FelixRadio.pause(); },
+      main: !isPro ? openPro : function () { if (!RS.on) FelixRadio.start(radioSegs, 0); else if (RS.paused) FelixRadio.resume(); else FelixRadio.pause(); }, locked: !isPro,
       mainLabel: !RS.on ? '듣기' : (RS.paused ? '이어 듣기' : '일시정지'),
       next: function () { FelixRadio.next(); }, prev: function () { FelixRadio.prev(); }, stop: function () { FelixRadio.stop(); },
       script: radioSegs.map(function (g2) { return { title: g2.title, text: g2.lines.join(' ') }; }), showScript: !!s.radioScript, scriptLabel: s.radioScript ? '대본 접기' : '대본 보기', toggleScript: function () { set({ radioScript: !s.radioScript }); }
@@ -2981,16 +3132,94 @@ class Component extends DCLogic {
       addStyle: tgNum > 0 ? 'background:#0072F5;color:#FFFFFF' : 'background:#F2F4F7;color:#98A2B3',
       add: function () { if (!(tgNum > 0) || !tgSel) return; saveTg(tgList.concat([{ id: tgSel, dir: tgDir, v: tgNum }])); set({ tgVal: '' }); }
     };
+
+    // ===== 로그인 화면 =====
+    var LGN = { kakao: '카카오 사용자', google: 'Google 사용자', apple: 'Apple 사용자' };
+    var doLogin = function (method, email) {
+      set({ loginBusy: method });
+      setTimeout(function () {
+        var user = { method: method, email: email || '', name: email ? String(email).split('@')[0] : LGN[method] };
+        saveAuth(user, 'free');
+        self.setState({ auth: user, tier: 'free', sub: null, loginBusy: null, loginStep: null, loginAt: Date.now(), notiRead: [] });
+        toast('로그인되었습니다. 반갑습니다!');
+      }, 700);
+    };
+    var lb = s.loginBusy;
+    var lg = {
+      methods: s.loginStep !== 'email', emailForm: s.loginStep === 'email',
+      kakao: function () { doLogin('kakao'); }, google: function () { doLogin('google'); }, apple: function () { doLogin('apple'); },
+      kakaoText: lb === 'kakao' ? '카카오 연결 중…' : '카카오로 시작하기', googleText: lb === 'google' ? 'Google 연결 중…' : 'Google로 계속하기', appleText: lb === 'apple' ? 'Apple 연결 중…' : 'Apple로 계속하기',
+      emailStep: function () { set({ loginStep: 'email' }); }, backMethods: function () { set({ loginStep: null }); },
+      email: s.lgEmail || '', setEmail: function (e) { set({ lgEmail: e.target.value }); },
+      emailText: lb === 'email' ? '확인 중…' : '계속하기',
+      emailGo: function () { var em = String(s.lgEmail || '').trim(); if (!/^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(em)) { toast('이메일 주소를 확인해 주세요.'); return; } doLogin('email', em); }
+    };
+    // ===== Pro =====
+    var pro = {
+      price: '39,000원', priceNote: '첫 1개월 무료 · 언제든 해지', isPro: isPro, notPro: !isPro,
+      rows: [['8개국 시세·환율', '✓', '✓'], ['주간 리포트 최신 호', '✓', '✓'], ['가격 방향 신호 요약', '✓', '✓'], ['시세 공유 카드', '✓', '✓'], ['지난 리포트 전체', '–', '✓'], ['신호 상세 분석·적중률', '–', '✓'], ['철강 라디오 브리핑', '–', '✓'], ['HS 코드 무역 검색', '–', '✓'], ['두 품목 비교', '–', '✓'], ['재고 평가손익·목표가 알림', '–', '✓'], ['가격 급변·발표 직후 알림', '–', '✓']].map(function (r) { return { name: r[0], free: r[1], pro: r[2] }; }),
+      buyText: s.proBusy ? '결제 확인 중…' : '1개월 무료로 시작하기',
+      buy: function () { if (s.proBusy) return; set({ proBusy: true }); setTimeout(function () { saveAuth(s.auth, 'pro'); self.setState({ tier: 'pro', proBusy: false, sub: null }); toast('Felix Pro가 시작되었습니다.'); }, 900); },
+      cancel: function () { saveAuth(s.auth, 'free'); set({ tier: 'free', sub: null }); toast('구독이 해지되었습니다.'); }
+    };
+    // ===== 알림 목록 =====
+    if (!self._nrLoaded) { self._nrLoaded = true; try { var nr = JSON.parse(localStorage.getItem('felix.notiread') || '[]'); if (Array.isArray(nr) && nr.length) setTimeout(function () { self.setState({ notiRead: nr }); }, 0); } catch (e) {} }
+    var readL = s.notiRead || [];
+    var markRead = function (ids) { var l = readL.concat(ids.filter(function (x) { return readL.indexOf(x) < 0; })); try { localStorage.setItem('felix.notiread', JSON.stringify(l)); } catch (e) {} return l; };
+    var NI = [];
+    var ICON = { report: ['R', 'background:#EEF6FF;color:#0058CC'], up: ['▲', 'background:#FEF0F1;color:#D92D3A'], down: ['▼', 'background:#EAF1FD;color:#1B64DA'], target: ['✓', 'background:#ECFDF3;color:#067647'], cal: ['D', 'background:#FEF3E2;color:#B54708'], sig: ['S', 'background:#F2F4F7;color:#344054'], hi: ['F', 'background:#0B1F3F;color:#FFFFFF'] };
+    if (isPro) tgHits.forEach(function (h, k) { NI.push({ id: 'tg' + k + h.text, g: 0, ic: 'target', kind: '목표가 도달', time: '방금', title: h.text, body: h.sub, open: h.open }); });
+    if (isPro) items.filter(function (it) { return it.real && it.rank >= 0 && Math.abs(it.pct || 0) >= 1 && it.group !== 'fx'; }).sort(function (a, b) { return b.rank - a.rank; }).slice(0, 2).forEach(function (it) {
+      NI.push({ id: 'mv' + it.id + it.valText, g: 0, ic: it.pct > 0 ? 'up' : 'down', kind: '가격 급변', time: '오늘', title: niceName(it) + ' ' + it.pctText, body: '직전 발표 대비 크게 움직였습니다. 지금 ' + it.valText + ' ' + String(it.unit).split(' ·')[0], open: openItem(it.id) });
+    });
+    if (repLatest) NI.push({ id: 'rep' + repLatest.no, g: 0, ic: 'report', kind: '주간 리포트', time: repLatest.date || '이번 주', title: '주간 리포트 제' + repLatest.no + '호가 발행됐습니다', body: repLatest.oneLiner || repLatest.title, open: openRep(repLatest.no) });
+    if (head) NI.push({ id: 'sig' + (sgd && sgd.j ? sgd.j.today : ''), g: 0, ic: 'sig', kind: '가격 방향 신호', time: '오늘', title: '이번 주 방향 신호가 갱신됐습니다', body: head, open: function () { set({ tab: 'home', sub: null }); } });
+    if (upcoming && upcoming[0]) NI.push({ id: 'cal' + upcoming[0].md + upcoming[0].title, g: 0, ic: 'cal', kind: '발표 일정', time: '오늘', title: upcoming[0].md.replace('/', '월 ') + '일 ' + upcoming[0].title + ' 발표 예정', body: upcoming[0].why + ' 가격이 새로 나옵니다.', open: function () { set({ tab: 'home', sub: null }); } });
+    if (!repLatest) NI.push({ id: 'rep0', g: 1, ic: 'report', kind: '주간 리포트', time: '이번 주', title: '첫 주간 리포트를 준비하고 있습니다', body: '매주 목요일 발행되면 바로 알려 드립니다.', open: openRep(null) });
+    NI.push({ id: 'welcome', g: 1, ic: 'hi', kind: 'Felix', time: '이번 주', title: 'Felix에 오신 것을 환영합니다', body: '관심 품목을 추가하면 그 품목 소식을 먼저 알려 드립니다.', open: function () { set({ tab: 'board', sub: null }); } });
+    var unreadN = NI.filter(function (n) { return readL.indexOf(n.id) < 0; }).length;
+    var nt2 = {
+      unread: unreadN > 9 ? '9+' : String(unreadN), hasUnread: unreadN > 0,
+      open: function () { set({ sub: 'notis' }); },
+      readAll: function () { set({ notiRead: markRead(NI.map(function (n) { return n.id; })) }); },
+      settings: function () { set({ tab: 'me', sub: null }); },
+      lockNote: !isPro,
+      groups: [['오늘', 0], ['이번 주', 1]].map(function (gq) {
+        return { label: gq[0], items: NI.filter(function (n) { return n.g === gq[1]; }).map(function (n) {
+          var un = readL.indexOf(n.id) < 0;
+          return { kind: n.kind, time: n.time, title: n.title, body: n.body, icon: ICON[n.ic][0], iconStyle: ICON[n.ic][1], unread: un, bg: un ? 'background:#F7FAFF' : 'background:#FFFFFF',
+            open: function () { self.setState({ notiRead: markRead([n.id]) }); n.open(); } };
+        }) };
+      }).filter(function (gq) { return gq.items.length; })
+    };
+    // ===== 비로그인 잠금 화면 =====
+    var gp = items.filter(function (it) { return it.group !== 'dom'; }).slice(0, 6).map(function (it) { return { a: niceName(it), b: it.groupLabel, c: it.real ? it.valText : '0,000' }; });
+    var GATES = {
+      board: { title: '시세', head: '로그인하면 전체 시세를 볼 수 있어요', body: '8개국 철강·원료·비철 가격과 환율을 무료로 확인하세요.' },
+      reports: { title: '리포트', head: '주간 리포트는 로그인 후 볼 수 있어요', body: '매주 목요일, 세계 철강 가격과 주요 이슈를 정리해 드립니다.' },
+      tips: { title: '제보', head: '로그인하고 시장 체감에 참여하세요', body: '이번 주 가격 체감을 남기면 다른 유통 현장의 분위기도 함께 볼 수 있습니다.' },
+      me: { title: '내 정보', head: '로그인하고 나만의 Felix를 만드세요', body: '관심 품목, 알림, 재고 평가를 한곳에서 관리하세요.' }
+    };
+    var gate = Object.assign({ preview: gp }, GATES[s.tab] || GATES.board);
+    var me = authed ? {
+      name: s.auth.name, initial: String(s.auth.name || 'F').charAt(0).toUpperCase(), sub: ({ kakao: '카카오', google: 'Google', apple: 'Apple', email: '이메일' }[s.auth.method] || '') + ' 계정' + (s.auth.email ? ' · ' + s.auth.email : ''),
+      logout: function () { saveAuth(null); FelixRadio.stop(); set({ auth: null, tier: 'free', tab: 'home', sub: null }); toast('로그아웃되었습니다.'); },
+      planTag: isPro ? 'PRO' : 'FREE', planTitle: isPro ? 'Felix Pro 이용 중' : 'Felix Pro로 업그레이드',
+      planSub: isPro ? '구독 관리 · 모든 기능 사용 중' : '라디오 브리핑, 신호 상세, 재고 손익, 급변 알림까지',
+      planStyle: isPro ? 'background:linear-gradient(140deg,#0B1F3F 0%,#0058CC 100%);color:#FFFFFF' : 'background:#EEF6FF;color:#0B0D12;border:1px solid #CFE3FF'
+    } : {};
     var GSRC = { kr: pd, gl: ud2, cn: cd, raw: wd, fx: dd, sd: kd }[s.group], gErr = !!(GSRC && GSRC.status === 'error') && !g.real;
     if (gErr) rows = rows.map(function (r) { return r.real ? r : Object.assign({}, r, { chgText: '' }); });
     return {
       todayLabel: (function () { var d = new Date(); return d.getFullYear() + '년 ' + (d.getMonth() + 1) + '월 ' + d.getDate() + '일 ' + ['일', '월', '화', '수', '목', '금', '토'][d.getDay()] + '요일'; })(),
-      isHome: top && s.tab === 'home', isBoard: top && s.tab === 'board', isReports: top && s.tab === 'reports',
-      isTips: top && s.tab === 'tips', isMe: top && s.tab === 'me',
+      isHome: top && s.tab === 'home', isBoard: top && authed && s.tab === 'board', isReports: top && authed && s.tab === 'reports',
+      isGate: top && !authed && s.tab !== 'home', gate: gate, authed: authed, guest: !authed, isPro: isPro, notPro: authed && !isPro, openLogin: openLogin, openPro: openPro,
+      isLogin: s.sub === 'login', lg: lg, isProPage: s.sub === 'pro', pro: pro, isNotis: s.sub === 'notis', nt2: nt2, me: me, hasToast: !!s.toast, toastText: s.toast || '',
+      isTips: top && authed && s.tab === 'tips', isMe: top && authed && s.tab === 'me',
       isDetail: s.sub === 'detail', isReport: s.sub === 'report', isSources: s.sub === 'sources',
       goHome: go('home'), goBoard: go('board'), goReports: go('reports'), goTips: go('tips'), goMe: go('me'),
       back: function () { set({ sub: null }); }, backDetail: function () { set({ sub: 'detail' }); },
-      isHs: s.sub === 'hs', hs: hs, openHs: function () { set({ sub: 'hs' }); },
+      isHs: s.sub === 'hs', hs: hs, openHs: needPro(function () { set({ sub: 'hs' }); }),
       isSignal: s.sub === 'signal', sg: sg, sd: sd,
       isCompare: s.sub === 'compare', isCalc: s.sub === 'calc', cp: cp, cc: cc, vh: vh, inv: inv, voteMeta: voteMeta,
       openReport: openRep(repLatest ? repLatest.no : null),
