@@ -140,13 +140,13 @@ a{color:#0072F5}a:hover{color:#0058CC}
             <button onClick="{{ m.open }}" style="display: flex; width: 100%; min-height: 60px; align-items: center; gap: 12px; border-top: 1px solid #F2F4F7; margin-top: 8px; padding-top: 8px">
               <div style="flex: 1; min-width: 0">
                 <div style="font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ m.name }}</div>
-                <div style="font-size: 12px; color: #667085; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ m.groupLabel }} · <span style="font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ m.valText }}</span> {{ m.unit }}</div>
+                <div style="font-size: 12px; color: #667085; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ m.groupLabel }} · <span style="font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ m.valText }}</span> {{ m.unitShort }}</div>
                 <sc-if value="{{ m.hasWhy }}" hint-placeholder-val="{{ false }}"><div style="font-size: 12px; font-weight: 600; color: #0058CC; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ m.whyLine }}</div></sc-if>
               </div>
               <sc-if value="{{ m.hasSpark }}" hint-placeholder-val="{{ true }}">
                 <svg viewBox="0 0 64 24" width="64" height="24" style="flex: none" role="img" aria-label="{{ m.sparkLabel }} 추이"><polyline points="{{ m.spark }}" style="fill: none; stroke: {{ m.sparkColor }}; stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round"></polyline></svg>
               </sc-if>
-              <div style="flex: none; min-width: 64px; text-align: right; white-space: nowrap; font-size: 16px; font-weight: 700; {{ m.chgStyle }}; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ m.pctText }}</div>
+              <div style="flex: none; min-width: 64px; text-align: right; white-space: nowrap"><div style="font-size: 16px; font-weight: 700; {{ m.chgStyle }}; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ m.pctText }}</div><div style="margin-top: 2px; display: inline-block; font-size: 10.5px; font-weight: 600; color: #667085; background: #F2F4F7; border-radius: 6px; padding: 1px 6px">{{ m.per }}</div></div>
             </button>
           </sc-for>
         </div>
@@ -241,6 +241,10 @@ a{color:#0072F5}a:hover{color:#0058CC}
           <div style="text-align: left"><div style="font-size: 14px; font-weight: 700; color: #0058CC">HS 코드로 무역 통계 검색</div><div style="font-size: 12px; color: #344054">예: 멕시코의 중국산·한국산 석도강판 수입 물량·단가</div></div>
           <span style="font-size: 16px; color: #0058CC">→</span>
         </button>
+        <button onClick="{{ openRemedies }}" style="display: flex; margin: 8px 20px 0; width: calc(100% - 40px); box-sizing: border-box; align-items: center; justify-content: space-between; gap: 10px; min-height: 52px; border-radius: 14px; border: 1px solid #EAECF0; background: #FFFFFF; padding: 0 16px">
+          <div style="text-align: left"><div style="font-size: 14px; font-weight: 700; color: #0B0D12">무역 규제 타임라인 <span style="font-size: 10px; font-weight: 800; border-radius: 6px; padding: 1px 6px; background: #0B1F3F; color: #FFFFFF; vertical-align: 2px">PRO</span></div><div style="font-size: 12px; color: #344054">반덤핑·상계관세 조사와 판정 일정, 한국 관련 건 표시</div></div>
+          <span style="font-size: 16px; color: #344054">→</span>
+        </button>
         <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 14px 20px 0">
           <sc-for list="{{ cats }}" as="ca" hint-placeholder-count="8">
             <button onClick="{{ ca.pick }}" style="min-width: 0; min-height: 36px; border-radius: 10px; text-align: center; font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 4px; {{ ca.style }}">{{ ca.label }}</button>
@@ -263,6 +267,23 @@ a{color:#0072F5}a:hover{color:#0058CC}
           </div>
         </sc-if>
 
+        <sc-if value="{{ spread.show }}" hint-placeholder-val="{{ false }}">
+          <div style="position: relative; margin: 12px 20px 0; background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px; overflow: hidden">
+            <div style="display: flex; justify-content: space-between; align-items: baseline"><div style="font-size: 15px; font-weight: 700">마진 스프레드</div><span style="font-size: 10px; font-weight: 800; border-radius: 6px; padding: 2px 7px; background: #0B1F3F; color: #FFFFFF">PRO</span></div>
+            <div style="font-size: 12px; color: #667085">원료와 제품의 가격 차. 같은 단위끼리만 계산합니다.</div>
+            <div style="{{ spread.blur }}">
+              <sc-for list="{{ spread.rows }}" as="sp" hint-placeholder-count="3">
+                <div style="display: flex; justify-content: space-between; gap: 10px; align-items: center; min-height: 60px; border-top: 1px solid #F2F4F7; margin-top: 8px; padding-top: 8px">
+                  <div style="min-width: 0"><div style="font-size: 14px; font-weight: 700">{{ sp.name }}</div><div style="font-size: 11.5px; line-height: 1.45; color: #667085">{{ sp.formula }}</div></div>
+                  <div style="flex: none; text-align: right"><div style="font-size: 16px; font-weight: 700; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ sp.val }} <span style="font-size: 11px; font-weight: 500; color: #667085">{{ sp.unit }}</span></div><div style="font-size: 12px; font-weight: 600; {{ sp.chgStyle }}">{{ sp.chg }}</div><div style="font-size: 10.5px; color: #98A2B3">{{ sp.per }}</div></div>
+                </div>
+              </sc-for>
+            </div>
+            <sc-if value="{{ spread.locked }}" hint-placeholder-val="{{ false }}">
+              <button onClick="{{ openPro }}" style="position: absolute; inset: 56px 0 0 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; background: rgba(255,255,255,0.55)"><span style="font-size: 14px; font-weight: 700">Pro에서 마진 흐름을 확인하세요</span><span style="font-size: 13px; font-weight: 700; color: #0072F5">Pro로 열기 →</span></button>
+            </sc-if>
+          </div>
+        </sc-if>
         <sc-if value="{{ isDataGroup }}" hint-placeholder-val="{{ true }}">
           <div style="margin: 8px 20px 0; background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 4px 16px 6px">
             <div style="display: flex; justify-content: space-between; gap: 10px; padding: 12px 0 8px; font-size: 12px; color: #667085">
@@ -1308,6 +1329,44 @@ a{color:#0072F5}a:hover{color:#0058CC}
       </div>
     </sc-if>
 
+    <sc-if value="{{ isRemedies }}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-direction: column; gap: 12px; padding: 8px 20px 28px">
+        <button onClick="{{ back }}" style="align-self: flex-start; min-height: 44px; font-size: 14px; font-weight: 600; color: #0072F5">← 뒤로</button>
+        <div><h1 style="margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em">무역 규제 타임라인</h1><div style="font-size: 13px; color: #667085">미국 상무부 철강 관련 반덤핑·상계관세 공고 · 최근 4개월</div></div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: #F2F4F7; border-radius: 10px; padding: 3px">
+          <sc-for list="{{ rm.tabs }}" as="rt" hint-placeholder-count="2"><button onClick="{{ rt.pick }}" style="min-height: 36px; border-radius: 8px; font-size: 13px; font-weight: 700; text-align: center; {{ rt.style }}">{{ rt.label }}</button></sc-for>
+        </div>
+        <sc-if value="{{ rm.loading }}" hint-placeholder-val="{{ false }}"><div style="padding: 24px; text-align: center; font-size: 14px; color: #667085">공고를 불러오고 있습니다.</div></sc-if>
+        <sc-if value="{{ rm.error }}" hint-placeholder-val="{{ false }}"><div style="padding: 12px; border-radius: 12px; background: #FEF3E2; color: #B54708; font-size: 13px">공고를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</div></sc-if>
+        <sc-if value="{{ rm.hasUp }}" hint-placeholder-val="{{ true }}">
+          <div style="background: #F5F8FF; border-radius: 16px; padding: 14px 16px">
+            <div style="font-size: 13px; font-weight: 700; color: #0058CC">다가오는 일정</div>
+            <sc-for list="{{ rm.up }}" as="ru" hint-placeholder-count="3">
+              <a href="{{ ru.url }}" target="_blank" rel="noopener noreferrer" style="display: grid; grid-template-columns: 54px 1fr; gap: 10px; align-items: baseline; margin-top: 10px; text-decoration: none; color: #0B0D12">
+                <div style="font-size: 15px; font-weight: 700; color: #0072F5; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ ru.md }}</div>
+                <div><div style="font-size: 14px; font-weight: 700">{{ ru.what }} <sc-if value="{{ ru.korea }}" hint-placeholder-val="{{ false }}"><span style="font-size: 10.5px; font-weight: 800; border-radius: 5px; padding: 1px 5px; background: #FEF0F1; color: #D92D3A">한국</span></sc-if></div><div style="font-size: 12px; color: #475467">{{ ru.sub }}</div></div>
+              </a>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-for list="{{ rm.groups }}" as="rg" hint-placeholder-count="2">
+          <div style="margin-top: 6px; font-size: 13px; font-weight: 700; color: #667085">{{ rg.label }}</div>
+          <sc-for list="{{ rg.items }}" as="ri" hint-placeholder-count="4">
+            <a href="{{ ri.url }}" target="_blank" rel="noopener noreferrer" style="display: block; background: #FFFFFF; border: 1px solid {{ ri.border }}; border-radius: 14px; padding: 12px 14px; text-decoration: none; color: #0B0D12">
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px">
+                <div style="display: flex; gap: 6px; align-items: center"><span style="font-size: 11px; font-weight: 800; border-radius: 6px; padding: 2px 7px; {{ ri.stageStyle }}">{{ ri.stage }}</span><sc-if value="{{ ri.korea }}" hint-placeholder-val="{{ false }}"><span style="font-size: 11px; font-weight: 800; border-radius: 6px; padding: 2px 7px; background: #FEF0F1; color: #D92D3A">한국</span></sc-if></div>
+                <div style="font-size: 12px; color: #98A2B3">{{ ri.date }}</div>
+              </div>
+              <div style="margin-top: 6px; font-size: 15px; font-weight: 700">{{ ri.head }}</div>
+              <div style="margin-top: 2px; font-size: 12px; line-height: 1.45; color: #667085; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical">{{ ri.title }}</div>
+            </a>
+          </sc-for>
+        </sc-for>
+        <sc-if value="{{ rm.empty }}" hint-placeholder-val="{{ false }}"><div style="padding: 24px; text-align: center; font-size: 14px; color: #667085">해당하는 공고가 없습니다.</div></sc-if>
+        <div style="font-size: 11.5px; line-height: 1.6; color: #98A2B3">출처: Federal Register (미국 상무부 국제무역청). 제목과 일정을 정리한 참고 정보이며, 세율 등 세부 내용은 원문에서 확인하세요.</div>
+      </div>
+    </sc-if>
+
     <sc-if value="{{ isLogin }}" hint-placeholder-val="{{ false }}">
       <div style="min-height: 100%; box-sizing: border-box; display: flex; flex-direction: column; padding: 8px 24px 28px">
         <button onClick="{{ back }}" aria-label="닫기" style="align-self: flex-end; width: 40px; height: 44px; font-size: 22px; color: #667085; text-align: center">×</button>
@@ -1666,7 +1725,7 @@ class Component extends DCLogic {
       ['kr1','kr','철근',118.4,0.6,1,'지수 2020=100'],['kr2','kr','형강',121.0,-0.3,1,'지수 2020=100'],['kr3','kr','열연강판',124.7,0.4,1,'지수 2020=100'],['kr4','kr','냉연강판',119.2,0,1,'지수 2020=100'],
       ['kr5','kr','아연도강판',122.9,0.8,1,'지수 2020=100'],['kr6','kr','중후판',126.3,0.2,1,'지수 2020=100'],['kr7','kr','강관',131.5,-0.5,1,'지수 2020=100'],['kr8','kr','스테인리스강판',115.8,1.1,1,'지수 2020=100'],
       ['imp1','imp','열연 (HS 7208)',512,-6,0,'달러/t'],['imp2','imp','냉연 (HS 7209)',598,-2,0,'달러/t'],['imp3','imp','도금·컬러강판 (HS 7210)',702,5,0,'달러/t'],['imp4','imp','합금강 판재 (HS 7225)',534,-9,0,'달러/t'],
-      ['imp5','imp','선재 (HS 7213)',548,1,0,'달러/t'],['imp6','imp','철근 (HS 7214.20)',521,-4,0,'달러/t'],['imp7','imp','H형강 (HS 7216.33)',640,0,0,'달러/t'],['imp8','imp','STS 판재 (HS 7219)',2015,32,0,'달러/t'],['imp9','imp','철스크랩 (HS 7204)',372,-8,0,'달러/t'],
+      ['imp5','imp','선재 (HS 7213)',548,1,0,'달러/t'],['imp6','imp','철근 (HS 7214.20)',521,-4,0,'달러/t'],['imp7','imp','H형강 (HS 7216.33)',640,0,0,'달러/t'],['imp8','imp','STS 판재 (HS 7219)',2015,32,0,'달러/t'],['imp9','imp','철스크랩 (탄소강 HS 7204.41·49)',372,-8,0,'달러/t'],
       ['cn1','cn','철근 Φ20 HRB400E',3165.1,-17.6,1,'위안/t'],['cn2','cn','선재 Φ8-10 HPB300',3353.7,-13.4,1,'위안/t'],['cn3','cn','중후판 20mm Q235',3548.0,-16.7,1,'위안/t'],['cn4','cn','열연 4.75-11.5mm Q235',3308.9,-42.7,1,'위안/t'],
       ['cn5','cn','무계목강관 219×6',4022.4,-4.5,1,'위안/t'],['cn6','cn','앵글 5#',3433.1,-36.7,1,'위안/t'],['cn7','cn','점결탄',2549.3,-48.2,1,'위안/t'],['cn8','cn','코크스',2096.4,112.5,1,'위안/t'],
       ['raw1','raw','철광석',96.3,-1.9,1,'달러/t'],['raw2','raw','호주산 연료탄',135.2,3.3,1,'달러/t'],['raw3','raw','철광석 (한국 수입 CIF)',98.4,-1.2,1,'달러/t',{ real: false }],['raw4','raw','역청탄 (한국 수입 CIF)',152.0,2.1,1,'달러/t',{ real: false }],
@@ -1705,6 +1764,12 @@ class Component extends DCLogic {
     var openLogin = function () { set({ sub: 'login', loginStep: null, loginBusy: null }); };
     var openPro = function () { if (!authed) return openLogin(); set({ sub: 'pro', proBusy: false }); };
     var needPro = function (fn) { return isPro ? fn : openPro; };
+    var perOf = function (u) {
+      u = String(u || ''); var m = u.match(/(\d{1,2})월\s*(상순|중순|하순)/); if (m) return m[1] + '월 ' + m[2];
+      m = u.match(/(\d{4})-(\d{2})-(\d{2})/); if (m) return Number(m[2]) + '/' + Number(m[3]);
+      m = u.match(/(\d{4})년\s*(\d{1,2})월/); if (m) return m[2] + '월' + (/관세청/.test(u) ? ' 통관' : (/평균/.test(u) ? ' 평균' : ''));
+      return '';
+    };
     var niceName = function (it) {
       var base = String(it.name).split(' (')[0];
       if (it.group === 'cn') { var f0 = base.split(' ')[0]; return '중국 ' + ({ '점결탄': '원료탄', '중후판': '후판' }[f0] || f0); }
@@ -2611,7 +2676,7 @@ class Component extends DCLogic {
 
     movers = items.slice().sort(function (a, b) { return b.rank - a.rank; }).slice(0, 3).map(function (it) {
       var h = it.hist && it.hist.length >= 3 ? it.hist.slice(-12) : null, w = whyFor(it).filter(function (o) { return o.sc >= 2; })[0];
-      return Object.assign({}, it, { open: authed ? it.open : openLogin, hasSpark: !!h, spark: h ? sparkPts(h, 64, 24, 2).join(' ') : '', sparkColor: it.pct > 0 ? '#F04452' : (it.pct < 0 ? '#1B64DA' : '#98A2B3'), sparkLabel: h ? '최근 ' + h.length + '회' : '',
+      return Object.assign({}, it, { per: perOf(it.unit), unitShort: String(it.unit).split(' ·')[0], open: authed ? it.open : openLogin, hasSpark: !!h, spark: h ? sparkPts(h, 64, 24, 2).join(' ') : '', sparkColor: it.pct > 0 ? '#F04452' : (it.pct < 0 ? '#1B64DA' : '#98A2B3'), sparkLabel: h ? '최근 ' + h.length + '회' : '',
         hasWhy: !!w, whyLine: w ? '이슈 · ' + w.x.title : '' });
     });
 
@@ -2986,6 +3051,25 @@ class Component extends DCLogic {
     var go = function (t) { return function () { set({ tab: t, sub: null }); }; };
     var top = !s.sub;
     if (s.group === 'raw') ['cn7', 'cn8', 'imp9', 'gl3'].forEach(function (id) { if (byId[id]) { var o = Object.assign({}, byId[id]); o.name = ({ cn7: '원료탄 (중국 유통가)', cn8: '코크스 (중국 유통가)', imp9: '철스크랩 (한국 수입 통관)', gl3: '철스크랩 (미국 생산자물가)' })[id]; rows.push(o); } });
+
+    // ===== 마진 스프레드: 같은 단위끼리만 계산 =====
+    var spV = function (it) { return it && it.real ? { v: it.val, p: it.val - (it.chg || 0) } : null; };
+    var SPR = [];
+    (function () {
+      var kv2 = function (id) { var d = kd && kd.status === 'ok' && kd.items ? kd.items[id] : null; return d && d.status === 'ok' && d.unitPrice > 0 ? { v: d.unitPrice, p: d.prev && d.prev.status === 'ok' ? d.prev.unitPrice : null } : null; };
+      var rb = kv2('imp6'), sc = kv2('imp9');
+      SPR.push({ name: '전기로 마진 (한국 수입)', formula: '수입 철근 단가 − 수입 탄소강 고철 단가', unit: '달러/t', v: rb && sc ? rb.v - sc.v : null, p: rb && sc && rb.p != null && sc.p != null ? rb.p - sc.p : null, per: kd && kd.month ? Number(String(kd.month).slice(5, 7)) + '월 통관' : '' });
+      var hr = spV(byId.cn4), rr = spV(byId.cn1);
+      SPR.push({ gap: true, name: '판재–봉형강 가격 차 (중국)', formula: '열연 − 철근 유통가', unit: '위안/t', v: hr && rr ? hr.v - rr.v : null, p: hr && rr ? hr.p - rr.p : null, per: perOf(byId.cn4 && byId.cn4.unit) });
+      var ore = spV(byId.raw1), ck = spV(byId.cn8), u1 = byId.fx1, c1 = byId.fx2, cny = u1 && c1 && u1.real && c1.real && c1.val ? u1.val / c1.val : null;
+      var ok3 = hr && ore && ck && cny;
+      SPR.push({ name: '추정 고로 마진 (중국)', formula: '열연 − (철광석 1.6t + 코크스 0.5t)', unit: '위안/t', v: ok3 ? hr.v - (1.6 * ore.v * cny + 0.5 * ck.v) : null, p: ok3 ? hr.p - (1.6 * ore.p * cny + 0.5 * ck.p) : null, per: perOf(byId.cn4 && byId.cn4.unit), note: '철광석은 세계은행 월평균을 환율로 환산한 참고치' });
+    })();
+    var spread = { rows: SPR.map(function (x) {
+      var has = x.v != null, c = has && x.p != null ? x.v - x.p : 0;
+      return { name: x.name, formula: x.formula + (x.note ? ' · ' + x.note : ''), val: has ? fmt(Math.round(x.v), 0) : '—', unit: x.unit, per: x.per,
+        chg: !has ? '자료 부족' : (c === 0 ? '변동 없음' : (c > 0 ? '▲' : '▼') + fmt(Math.abs(Math.round(c)), 0) + ' · ' + (x.gap ? '격차 ' : '마진 ') + (c > 0 ? '확대' : '축소')), chgStyle: !has ? FLAT : (c > 0 ? UP : (c < 0 ? DOWN : FLAT)) };
+    }), show: s.group === 'raw', locked: !isPro, blur: isPro ? '' : 'filter: blur(5px); pointer-events: none' };
     // ===== 라디오 브리핑 =====
     if (!self._radioHooked) { self._radioHooked = true; FelixRadio.onChange(function (x) { self.setState({ radio: x }); }); }
     var RS = s.radio || { on: false, paused: false, si: 0, n: 0, rate: 1 };
@@ -3077,13 +3161,13 @@ class Component extends DCLogic {
     var openShare = function (kind, o, title) { set({ share: { busy: true, title: title } }); FelixCard.make(kind, o, function (url) { self.setState({ share: url ? { url: url, title: title } : null, shareMsg: url ? '' : '이미지를 만들지 못했습니다.' }); }); };
     var shareSummary = function () {
       var rowsS = items.filter(function (it) { return it.real && it.rank >= 0 && it.group !== 'fx'; }).sort(function (a, b) { return b.rank - a.rank; }).slice(0, 4).map(function (it) {
-        return { name: niceName(it), sub: it.groupLabel + ' · ' + String(it.unit).split(' ·')[0], val: it.valText, chg: it.pctText, dir: it.pct };
+        return { name: niceName(it), sub: it.groupLabel + ' · ' + String(it.unit).split(' ·')[0] + (perOf(it.unit) ? ' · ' + perOf(it.unit) + ' 기준' : ''), val: it.valText, chg: it.pctText, dir: it.pct };
       });
       openShare('summary', { date: todayDot, title: '이번 주 철강 시세', sub: '직전 발표 대비 크게 움직인 항목', rows: rowsS, note: head || '', noteTitle: '가격 방향 신호 · 향후 1~3개월', src: '출처: 각국 정부·국제기구 공개 통계 · 참고용 정보' }, '이번 주 철강 시세');
     };
     var shareItem = function () {
       var it = byId[s.itemId]; if (!it) return;
-      openShare('item', { date: todayDot, group: it.groupLabel, name: niceName(it), val: it.valText, unit: String(it.unit).split(' ·')[0], chg: it.real ? it.chgLine : '', dir: it.pct, hist: (it.hist || []).slice(-24), note: '', src: '출처: ' + ((G[it.group] || {}).src || '공개 통계') + ' · 참고용 정보' }, niceName(it) + ' 시세');
+      openShare('item', { date: todayDot, group: it.groupLabel, name: niceName(it), val: it.valText, unit: String(it.unit).split(' ·')[0] + (perOf(it.unit) ? ' · ' + perOf(it.unit) : ''), chg: it.real ? it.chgLine : '', dir: it.pct, hist: (it.hist || []).slice(-24), note: '', src: '출처: ' + ((G[it.group] || {}).src || '공개 통계') + ' · 참고용 정보' }, niceName(it) + ' 시세');
     };
     var SH = s.share;
     var shareView = {
@@ -3133,6 +3217,28 @@ class Component extends DCLogic {
       add: function () { if (!(tgNum > 0) || !tgSel) return; saveTg(tgList.concat([{ id: tgSel, dir: tgDir, v: tgNum }])); set({ tgVal: '' }); }
     };
 
+
+    // ===== 무역 규제 타임라인 (/api/remedies) =====
+    var rmd = s.rmData;
+    if (s.sub === 'remedies' && !rmd && !self._rmReq) {
+      self._rmReq = true;
+      setTimeout(function () {
+        if (typeof fetch !== 'function') { self.setState({ rmData: { status: 'error' } }); return; }
+        fetch('/api/remedies').then(function (r) { return r.json(); }).then(function (j) { self.setState({ rmData: j && j.status === 'ok' ? { status: 'ok', j: j } : { status: 'error' } }); })
+          .catch(function () { self.setState({ rmData: { status: 'error' } }); self._rmReq = false; });
+      }, 0);
+    }
+    var STG = { init: 'background:#EEF6FF;color:#0058CC', prelim: 'background:#FEF3E2;color:#B54708', final: 'background:#FEF0F1;color:#D92D3A', order: 'background:#0B1F3F;color:#FFFFFF', sunset: 'background:#F2F4F7;color:#344054', scope: 'background:#F4F0FF;color:#6941C6', s232: 'background:#0B1F3F;color:#FFFFFF' };
+    var rmKr = s.rmTab === 'kr', rmItems = rmd && rmd.status === 'ok' ? (rmd.j.items || []).filter(function (x) { return !rmKr || x.korea; }) : [];
+    var rmMonths = [];
+    rmItems.forEach(function (x) { var mk = String(x.date).slice(0, 7); var g2 = rmMonths.filter(function (y) { return y.k === mk; })[0]; if (!g2) { g2 = { k: mk, label: Number(mk.slice(0, 4)) + '년 ' + Number(mk.slice(5, 7)) + '월', items: [] }; rmMonths.push(g2); }
+      g2.items.push({ url: x.url, date: Number(String(x.date).slice(5, 7)) + '/' + Number(String(x.date).slice(8, 10)), stage: x.stageKo, stageStyle: STG[x.stage] || 'background:#F2F4F7;color:#475467', korea: x.korea,
+        head: x.productKo + (x.countriesKo && x.countriesKo.length ? ' · ' + x.countriesKo.join('·') : ''), title: x.title, border: x.korea ? '#FBC5CA' : '#EAECF0' }); });
+    var rmUp = rmd && rmd.status === 'ok' ? (rmd.j.upcoming || []).filter(function (u) { return !rmKr || u.korea; }).slice(0, 6).map(function (u) {
+      return { url: u.url, md: Number(u.date.slice(5, 7)) + '/' + Number(u.date.slice(8, 10)), what: u.what, korea: u.korea, sub: u.productKo + (u.countriesKo && u.countriesKo.length ? ' · ' + u.countriesKo.join('·') : '') + ' · ' + u.stageKo }; }) : [];
+    var rm = { loading: !rmd, error: !!(rmd && rmd.status === 'error'), groups: rmMonths, up: rmUp, hasUp: rmUp.length > 0, empty: !!(rmd && rmd.status === 'ok' && !rmItems.length),
+      tabs: [['all', '전체'], ['kr', '한국 관련']].map(function (t) { var on = (s.rmTab || 'all') === t[0]; return { label: t[1], style: on ? 'background:#FFFFFF;color:#0B0D12;box-shadow:0 1px 2px rgba(16,24,40,.1)' : 'color:#667085', pick: function () { set({ rmTab: t[0] }); } }; }) };
+    var openRemedies = needPro(function () { set({ sub: 'remedies' }); });
     // ===== 로그인 화면 =====
     var LGN = { kakao: '카카오 사용자', google: 'Google 사용자', apple: 'Apple 사용자' };
     var doLogin = function (method, email) {
@@ -3156,7 +3262,7 @@ class Component extends DCLogic {
     };
     // ===== Pro =====
     var pro = {
-      price: '39,000원', priceNote: '첫 1개월 무료 · 언제든 해지', isPro: isPro, notPro: !isPro,
+      price: '190,000원', priceNote: '첫 1개월 무료 · 언제든 해지 · 부가세 별도', isPro: isPro, notPro: !isPro,
       rows: [['8개국 시세·환율', '✓', '✓'], ['주간 리포트 최신 호', '✓', '✓'], ['가격 방향 신호 요약', '✓', '✓'], ['시세 공유 카드', '✓', '✓'], ['지난 리포트 전체', '–', '✓'], ['신호 상세 분석·적중률', '–', '✓'], ['철강 라디오 브리핑', '–', '✓'], ['HS 코드 무역 검색', '–', '✓'], ['두 품목 비교', '–', '✓'], ['재고 평가손익·목표가 알림', '–', '✓'], ['가격 급변·발표 직후 알림', '–', '✓']].map(function (r) { return { name: r[0], free: r[1], pro: r[2] }; }),
       buyText: s.proBusy ? '결제 확인 중…' : '1개월 무료로 시작하기',
       buy: function () { if (s.proBusy) return; set({ proBusy: true }); setTimeout(function () { saveAuth(s.auth, 'pro'); self.setState({ tier: 'pro', proBusy: false, sub: null }); toast('Felix Pro가 시작되었습니다.'); }, 900); },
@@ -3172,6 +3278,7 @@ class Component extends DCLogic {
     if (isPro) items.filter(function (it) { return it.real && it.rank >= 0 && Math.abs(it.pct || 0) >= 1 && it.group !== 'fx'; }).sort(function (a, b) { return b.rank - a.rank; }).slice(0, 2).forEach(function (it) {
       NI.push({ id: 'mv' + it.id + it.valText, g: 0, ic: it.pct > 0 ? 'up' : 'down', kind: '가격 급변', time: '오늘', title: niceName(it) + ' ' + it.pctText, body: '직전 발표 대비 크게 움직였습니다. 지금 ' + it.valText + ' ' + String(it.unit).split(' ·')[0], open: openItem(it.id) });
     });
+    if (isPro && rmd && rmd.status === 'ok') (rmd.j.items || []).filter(function (x) { return x.korea; }).slice(0, 1).forEach(function (x) { NI.push({ id: 'rm' + x.id, g: 0, ic: 'cal', kind: '무역 규제 · 한국', time: Number(String(x.date).slice(5, 7)) + '/' + Number(String(x.date).slice(8, 10)), title: '미국, ' + x.productKo + ' ' + x.stageKo, body: x.title, open: function () { set({ sub: 'remedies' }); } }); });
     if (repLatest) NI.push({ id: 'rep' + repLatest.no, g: 0, ic: 'report', kind: '주간 리포트', time: repLatest.date || '이번 주', title: '주간 리포트 제' + repLatest.no + '호가 발행됐습니다', body: repLatest.oneLiner || repLatest.title, open: openRep(repLatest.no) });
     if (head) NI.push({ id: 'sig' + (sgd && sgd.j ? sgd.j.today : ''), g: 0, ic: 'sig', kind: '가격 방향 신호', time: '오늘', title: '이번 주 방향 신호가 갱신됐습니다', body: head, open: function () { set({ tab: 'home', sub: null }); } });
     if (upcoming && upcoming[0]) NI.push({ id: 'cal' + upcoming[0].md + upcoming[0].title, g: 0, ic: 'cal', kind: '발표 일정', time: '오늘', title: upcoming[0].md.replace('/', '월 ') + '일 ' + upcoming[0].title + ' 발표 예정', body: upcoming[0].why + ' 가격이 새로 나옵니다.', open: function () { set({ tab: 'home', sub: null }); } });
@@ -3228,7 +3335,7 @@ class Component extends DCLogic {
       tabHome: s.tab === 'home' ? tabOn : tabOff, tabBoard: s.tab === 'board' ? tabOn : tabOff, tabReports: s.tab === 'reports' ? tabOn : tabOff,
       tabTips: s.tab === 'tips' ? tabOn : tabOff, tabMe: s.tab === 'me' ? tabOn : tabOff,
       movers: movers, upcoming: upcoming, watchItems: watchItems, noWatch: watchItems.length === 0,
-      radio: radio, shareSummary: shareSummary, shareItem: shareItem, shareView: shareView, tg: tg, groups: groups, cats: cats, isNation: isNation, nats: nats, flows: flows, flowNote: flowNote, hasFlowNote: hasFlowNote, natHint: natHint, hasNatHint: !!natHint, goUsImp: goUsImp, isLive: isLive, lv: lv, isKrDom: isKrDom, sdRows: items.filter(function (it) { return it.group === 'sd'; }), sdNote: '관세청 · 세계철강협회 · 국토부', jpTitle: jpTitle,
+      radio: radio, spread: spread, rm: rm, isRemedies: s.sub === 'remedies', openRemedies: openRemedies, shareSummary: shareSummary, shareItem: shareItem, shareView: shareView, tg: tg, groups: groups, cats: cats, isNation: isNation, nats: nats, flows: flows, flowNote: flowNote, hasFlowNote: hasFlowNote, natHint: natHint, hasNatHint: !!natHint, goUsImp: goUsImp, isLive: isLive, lv: lv, isKrDom: isKrDom, sdRows: items.filter(function (it) { return it.group === 'sd'; }), sdNote: '관세청 · 세계철강협회 · 국토부', jpTitle: jpTitle,
       rows: rows, isDataGroup: !isDom && !isCmp && !isUs && !isJp && !isKr && !isLive, isKrGroup: isKr, krTitle: isNf ? '비철 수입 통관 단가' : '한국 수입 통관 단가', krIsSteel: !isNf, krIsNf: isNf, krRows: krRows, krBanner: krBanner, krBannerStyle: krBannerStyle, krShowRetry: krStatus === 'error', krRetry: krRetry, krMonthLabel: krMonthLabel, isJpGroup: isJp, jpSections: jpSections, jpBanner: jpBanner, jpBannerStyle: jpBannerStyle, jpShowRetry: jpStatus === 'error', jpRetry: jpRetry, jpMonthLabel: jpMonthLabel, isDomGroup: isDom, isCmpGroup: isCmp, cmpRows: cmpRows, cmpCols: cmpCols, cmpItems: cmpItems, cmpList: cmpList, cmpMatrix: cmpMatrix, cmpTabs: cmpTabs, cmpTitle: ct.title, isUsGroup: isUs, usStates: usStates, usSections: usSections, usStateName: STATES.at(si)[1], usBanner: usBanner, usBannerStyle: usBannerStyle, usShowRetry: usStatus === 'error', usRetry: usRetry, usMonthLabel: usStatus === 'ok' ? monthLabel(ud.month) : (usStatus === 'error' ? '—' : '확인 중'),
       groupSrc: g.src, groupCycle: g.cycle, groupDate: g.date, groupNote: g.note,
       groupTag: gErr ? '불러오지 못함' : (g.real || s.group === 'sd' ? '공식 발표값' : '불러오는 중'), groupTagStyle: gErr ? 'color:#B54708' : (g.real || s.group === 'sd' ? 'color:#12B76A' : 'color:#98A2B3'),

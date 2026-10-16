@@ -59,12 +59,12 @@ test('한국 수입 단가: 최신 월, 전월비용 전월, 중국산·일본�
   assert.strictEqual(h.lowVolume, true);
   assert.strictEqual(h.prev.status, 'nodata');
   assert.strictEqual(r.items.find(i => i.id === 'imp2').status, 'nodata');
-  assert.strictEqual(calls.length, 18);
+  assert.strictEqual(calls.length, 19);                // 고철은 탄소강 두 코드(720441, 720449)로 조회
   assert.strictEqual(r.items.find(i => i.id === 'nf1').status, 'nodata');
   const sd = r.items.find(i => i.id === 'sd1');
   assert.strictEqual(sd.tons, 100000);                  // 스크랩(7204)은 빼고 철강재만
   assert.strictEqual(sd.prev.tons, 80000);
   await svc.latest();
-  assert.strictEqual(calls.length, 18);                  // 캐시
+  assert.strictEqual(calls.length, 19);                  // 캐시
   assert.ok(!(JSON.stringify(r) + logs.join('')).includes(KEY));
 });
