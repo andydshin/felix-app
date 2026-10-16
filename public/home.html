@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Felix · 세계 철강 시세와 가격 방향</title>
+<meta name="description" content="세계 철강 시세와 가격 방향 신호, 주간 리포트. 철강 유통·구매 실무자를 위한 Felix.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Noto+Sans+KR:wght@400;500;700;800&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+/* Layout: 앱과 같은 결 — 흰 바탕 위 시세 보드. 히어로는 실제 앱 신호 카드, 강조는 '신호 기록' 파란 띠 한 곳에만. */
+:root {
+  --page: #FFFFFF;
+  --wash: #F5F8FC;
+  --line: #EAECF0;
+  --ink: #0B0D12;
+  --body: #344054;
+  --sub: #667085;
+  --faint: #98A2B3;
+  --blue: #0072F5;
+  --blue-deep: #0058CC;
+  --sky: #EEF6FF;
+  --up: #D92D3A;
+  --up-soft: #FEF0F1;
+  --down: #1B64DA;
+  --down-soft: #EAF1FD;
+  --flat-soft: #F2F4F7;
+  --card: #FFFFFF;
+  --phone: #FFFFFF;
+  --phone-edge: #E4E9F0;
+  --band: #0072F5;
+  --band-ink: #FFFFFF;
+  --band-sub: rgba(255,255,255,.78);
+  --band-card: rgba(255,255,255,.12);
+  --f-sans: 'Pretendard Variable', Pretendard, 'Noto Sans KR', -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  --f-num: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --wrap: 1120px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --page: #0B0F17; --wash: #101622; --line: #1F2836; --ink: #F2F5F9; --body: #C3CBD6; --sub: #8D98A8; --faint: #677284;
+    --blue: #3D95FF; --blue-deep: #6AAEFF; --sky: #12233D; --up: #FF6B76; --up-soft: #3A1A1F; --down: #6BA2FF; --down-soft: #16243F; --flat-soft: #1B2330;
+    --card: #121925; --phone: #121925; --phone-edge: #273243; --band: #0B5FD0; --band-ink: #FFFFFF; --band-sub: rgba(255,255,255,.78); --band-card: rgba(255,255,255,.10);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --page: #0B0F17; --wash: #101622; --line: #1F2836; --ink: #F2F5F9; --body: #C3CBD6; --sub: #8D98A8; --faint: #677284;
+  --blue: #3D95FF; --blue-deep: #6AAEFF; --sky: #12233D; --up: #FF6B76; --up-soft: #3A1A1F; --down: #6BA2FF; --down-soft: #16243F; --flat-soft: #1B2330;
+  --card: #121925; --phone: #121925; --phone-edge: #273243; --band: #0B5FD0; --band-ink: #FFFFFF; --band-sub: rgba(255,255,255,.78); --band-card: rgba(255,255,255,.10);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { background: var(--page); color: var(--ink); font-family: var(--f-sans); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; word-break: keep-all; }
+a { color: var(--blue); text-decoration: none; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; border-radius: 6px; }
+h1, h2, h3 { margin: 0; text-wrap: balance; letter-spacing: -0.025em; }
+p { margin: 0; }
+.num { font-family: var(--f-num); font-variant-numeric: tabular-nums; }
+.wrap { max-width: var(--wrap); margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
+
+/* 상단 */
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--page); }
+.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; background: color-mix(in srgb, var(--page) 88%, transparent); backdrop-filter: saturate(160%) blur(12px); border-bottom: 1px solid var(--line); }
+.nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 64px; }
+.brand { display: flex; align-items: center; gap: 10px; color: var(--ink); }
+.brand .mark { width: 30px; height: 30px; border-radius: 9px; background: var(--sky); border: 1px solid color-mix(in srgb, var(--blue) 30%, transparent); display: grid; place-items: center; }
+.brand .word { font-weight: 800; font-size: 17px; letter-spacing: 0.32em; }
+.nav-links { display: flex; align-items: center; gap: 26px; font-size: 15px; font-weight: 600; }
+.nav-links a { color: var(--body); }
+.nav-links a:hover { color: var(--ink); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 22px; border-radius: 24px; font-weight: 700; font-size: 15px; white-space: nowrap; transition: background .15s, transform .15s; }
+.btn-primary { background: var(--blue); color: #FFFFFF; }
+.btn-primary:hover { background: var(--blue-deep); color: #FFFFFF; }
+.btn-ghost { background: var(--flat-soft); color: var(--ink); }
+.btn-ghost:hover { background: var(--line); color: var(--ink); }
+.btn-sm { min-height: 40px; padding: 0 16px; font-size: 14px; }
+@media (max-width: 760px) { .nav-links a:not(.btn) { display: none; } }
+
+/* 히어로 */
+.hero { padding-block: 72px 56px; background: linear-gradient(180deg, var(--sky) 0%, var(--page) 78%); }
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr); gap: 56px; align-items: center; }
+.kicker { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: var(--blue-deep); background: var(--card); border: 1px solid color-mix(in srgb, var(--blue) 25%, transparent); border-radius: 999px; padding: 6px 14px; }
+.kicker .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--blue); }
+.hero h1 { margin-top: 20px; font-size: clamp(36px, 5.4vw, 60px); line-height: 1.16; font-weight: 800; }
+.hero h1 em { font-style: normal; color: var(--blue); }
+.hero .lede { margin-top: 20px; max-width: 34em; font-size: 18px; color: var(--body); }
+.hero .ctas { margin-top: 32px; display: flex; flex-wrap: wrap; gap: 10px; }
+.hero .fine { margin-top: 14px; font-size: 13.5px; color: var(--sub); }
+.facts { margin-top: 40px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--line); }
+.facts div { padding-top: 16px; padding-right: 12px; }
+.facts b { display: block; font-size: 26px; font-weight: 800; letter-spacing: -0.02em; }
+.facts span { font-size: 13.5px; color: var(--sub); }
+
+/* 폰 목업 = 실제 앱 신호 카드 */
+.phone { justify-self: center; width: 100%; max-width: 360px; background: var(--phone); border: 1px solid var(--phone-edge); border-radius: 32px; padding: 14px; box-shadow: 0 30px 60px -20px rgba(0, 60, 140, .22), 0 8px 20px rgba(16, 24, 40, .06); position: relative; }
+.phone .bar { display: flex; justify-content: space-between; align-items: center; padding: 6px 8px 12px; }
+.phone .bar .word { font-weight: 800; font-size: 13px; letter-spacing: .3em; }
+.sample { font-size: 11px; font-weight: 700; color: var(--sub); background: var(--flat-soft); border-radius: 6px; padding: 2px 8px; }
+.sig { border: 1px solid var(--line); border-radius: 18px; padding: 14px 14px 10px; background: var(--card); }
+.sig-h { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.sig-h b { font-size: 15px; }
+.sig-h span { font-size: 11.5px; color: var(--faint); }
+.sig-lead { margin-top: 10px; padding: 10px 12px; border-radius: 12px; background: var(--wash); font-size: 13px; font-weight: 600; line-height: 1.5; }
+.sig-lead small { display: block; margin-top: 3px; font-size: 11.5px; font-weight: 500; color: var(--faint); }
+.row { display: grid; grid-template-columns: 4px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--line); }
+.row:last-child { border-bottom: 0; }
+.row .stripe { align-self: stretch; border-radius: 2px; background: var(--flat-soft); }
+.row .stripe.dn { background: color-mix(in srgb, var(--down) 55%, transparent); }
+.row .stripe.dn2 { background: color-mix(in srgb, var(--down) 25%, transparent); }
+.row .nm { font-size: 14.5px; font-weight: 700; }
+.row .why { font-size: 12px; color: var(--sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lv { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
+.pill { font-size: 12px; font-weight: 800; border-radius: 8px; padding: 3px 9px; white-space: nowrap; }
+.p-flat { background: var(--flat-soft); color: var(--body); }
+.p-dn { background: var(--down-soft); color: var(--down); }
+.p-up { background: var(--up-soft); color: var(--up); }
+.meter { display: flex; gap: 3px; }
+.meter i { width: 10px; height: 4px; border-radius: 2px; background: var(--flat-soft); }
+.meter i.on { background: var(--ink); }
+.meter i.dn { background: var(--down); }
+.meter i.lt { background: color-mix(in srgb, var(--down) 35%, transparent); }
+
+/* 섹션 공통 */
+section { padding-block: 88px; }
+.eyebrow { font-size: 14px; font-weight: 700; color: var(--blue); letter-spacing: .02em; }
+.sec-h { margin-top: 10px; font-size: clamp(28px, 3.6vw, 40px); line-height: 1.25; font-weight: 800; }
+.sec-p { margin-top: 14px; max-width: 40em; font-size: 17px; color: var(--body); }
+
+/* 주요 기능 3줄 */
+.feat { margin-top: 56px; display: grid; gap: 72px; }
+.feat-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 56px; align-items: center; }
+.feat-row:nth-child(even) .feat-copy { order: 2; }
+.feat-copy h3 { font-size: 26px; line-height: 1.35; font-weight: 800; }
+.feat-copy p { margin-top: 12px; color: var(--body); max-width: 30em; }
+.feat-copy ul { margin: 18px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.feat-copy li { display: flex; gap: 10px; font-size: 15px; color: var(--body); }
+.feat-copy li::before { content: ""; flex: none; width: 6px; height: 6px; margin-top: 10px; border-radius: 50%; background: var(--blue); }
+.panel { background: var(--wash); border: 1px solid var(--line); border-radius: 24px; padding: 22px; min-width: 0; }
+.panel-h { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 12px; }
+.panel-h b { font-size: 14px; }
+.mini { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 4px 14px; }
+.mrow { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 14px; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+.mrow:last-child { border-bottom: 0; }
+.mrow .cty { font-weight: 700; }
+.mrow .cty small { display: block; font-size: 11.5px; font-weight: 500; color: var(--faint); }
+.mrow .v { font-size: 13.5px; color: var(--body); text-align: right; }
+.mrow .d { font-size: 14px; font-weight: 700; text-align: right; min-width: 64px; }
+.d.up { color: var(--up); } .d.dn { color: var(--down); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.chip { font-size: 12.5px; font-weight: 700; padding: 6px 11px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); color: var(--body); }
+.chip.on { background: var(--ink); border-color: var(--ink); color: var(--page); }
+.up-item { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.up-item:last-child { border-bottom: 0; }
+.up-item .md { font-size: 15px; font-weight: 700; color: var(--blue); }
+.up-item b { font-size: 14px; }
+.tag { display: inline-block; margin-left: 4px; font-size: 10.5px; font-weight: 800; border-radius: 5px; padding: 1px 6px; vertical-align: 1px; }
+.tag.est { background: var(--flat-soft); color: var(--sub); }
+.tag.kr { background: var(--up-soft); color: var(--up); }
+.up-item small { display: block; font-size: 12px; color: var(--sub); }
+.rep { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px; }
+.rep .no { font-size: 12px; font-weight: 700; color: var(--blue); }
+.rep h4 { margin: 8px 0 0; font-size: 19px; line-height: 1.4; letter-spacing: -0.02em; }
+.rep p { margin-top: 10px; font-size: 14px; color: var(--body); line-height: 1.7; }
+.rep .news { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); display: grid; gap: 6px; font-size: 13px; color: var(--sub); }
+.rep .news span::before { content: "↗ "; color: var(--blue); }
+
+.gauge { margin-top: 14px; display: grid; grid-template-columns: 25% 16.25% 17.5% 16.25% 25%; gap: 3px; }
+.gauge i { height: 8px; border-radius: 4px; background: var(--flat-soft); }
+.gauge i.g0 { background: color-mix(in srgb, var(--down) 30%, var(--flat-soft)); }
+.gauge i.g1 { background: color-mix(in srgb, var(--down) 18%, var(--flat-soft)); }
+.gauge i.g3 { background: color-mix(in srgb, var(--up) 18%, var(--flat-soft)); }
+.gauge i.g4 { background: color-mix(in srgb, var(--up) 30%, var(--flat-soft)); }
+.gauge i.on { background: var(--down); box-shadow: 0 0 0 3px color-mix(in srgb, var(--down) 22%, transparent); }
+.gl { margin-top: 6px; display: grid; grid-template-columns: 25% 16.25% 17.5% 16.25% 25%; font-size: 10.5px; color: var(--faint); text-align: center; }
+.gl span:first-child { text-align: left; } .gl span:last-child { text-align: right; }
+.fac { display: grid; grid-template-columns: minmax(0, 1fr) 72px; gap: 12px; align-items: center; padding-top: 12px; margin-top: 12px; border-top: 1px solid var(--line); }
+.fac b { font-size: 14px; } .fac small { display: block; font-size: 12px; color: var(--sub); }
+.fbar { height: 6px; border-radius: 3px; background: var(--flat-soft); display: flex; justify-content: flex-end; overflow: hidden; }
+.fbar i { display: block; height: 100%; background: var(--down); border-radius: 3px; }
+
+/* 도구 그리드 */
+.tools { margin-top: 48px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.tool { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.tool .ic { width: 40px; height: 40px; border-radius: 12px; background: var(--sky); color: var(--blue); display: grid; place-items: center; }
+.tool h3 { font-size: 18px; }
+.tool p { font-size: 14.5px; color: var(--body); }
+.tool .pro { align-self: flex-start; font-size: 11px; font-weight: 800; letter-spacing: .04em; border-radius: 6px; padding: 2px 7px; background: var(--ink); color: var(--page); }
+
+/* 신호 기록 띠 */
+.band { background: var(--band); color: var(--band-ink); }
+.band .eyebrow { color: var(--band-sub); }
+.band .sec-p { color: var(--band-sub); }
+.band .wrap { display: grid; grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr); gap: 56px; align-items: center; }
+.steps { margin-top: 28px; display: grid; gap: 14px; }
+.step { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 12px; }
+.step .n { width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--band-sub); display: grid; place-items: center; font-size: 13px; font-weight: 700; }
+.step b { display: block; font-size: 16px; }
+.step span { font-size: 14.5px; color: var(--band-sub); }
+.chain { display: grid; gap: 0; }
+.blk { background: var(--band-card); border: 1px solid rgba(255,255,255,.22); border-radius: 16px; padding: 14px 16px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 12px; }
+.blk .t { font-size: 15px; font-weight: 700; }
+.blk .t small { font-weight: 500; color: var(--band-sub); margin-right: 6px; }
+.blk .res { font-size: 13px; font-weight: 700; text-align: right; }
+.blk .h { grid-column: 1 / -1; font-family: var(--f-num); font-size: 12px; color: var(--band-sub); overflow-wrap: anywhere; }
+.blk .h b { color: var(--band-ink); font-weight: 700; }
+.link { height: 26px; margin-left: 28px; border-left: 1.5px dashed rgba(255,255,255,.5); position: relative; }
+.link::after { content: "직전 지문을 이어 붙여 저장"; position: absolute; left: 12px; top: 4px; font-size: 11.5px; color: var(--band-sub); }
+.band-note { margin-top: 18px; font-size: 13.5px; color: var(--band-sub); }
+
+/* 데이터 출처 */
+.src-wrap { margin-top: 40px; overflow-x: auto; border: 1px solid var(--line); border-radius: 20px; }
+table { width: 100%; border-collapse: collapse; min-width: 560px; font-size: 15px; }
+th, td { text-align: left; padding: 14px 18px; border-bottom: 1px solid var(--line); }
+th { font-size: 13px; font-weight: 700; color: var(--sub); background: var(--wash); }
+tr:last-child td { border-bottom: 0; }
+td:first-child { font-weight: 700; }
+td.c { color: var(--sub); white-space: nowrap; }
+
+/* 요금 */
+.plans { margin-top: 44px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; max-width: 880px; }
+.plan { border: 1px solid var(--line); border-radius: 24px; padding: 28px; background: var(--card); display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.plan.pro { border: 2px solid var(--blue); background: linear-gradient(180deg, var(--sky), var(--card) 46%); }
+.plan .pn { font-size: 15px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+.plan .price { margin-top: 6px; font-size: 38px; font-weight: 800; letter-spacing: -0.03em; }
+.plan .price small { font-size: 16px; font-weight: 600; color: var(--sub); letter-spacing: 0; }
+.plan .note { font-size: 13.5px; color: var(--sub); }
+.plan ul { margin: 18px 0 22px; padding: 0; list-style: none; display: grid; gap: 9px; flex: 1; }
+.plan li { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 8px; font-size: 15px; color: var(--body); }
+.plan li::before { content: "✓"; color: var(--blue); font-weight: 800; }
+.plan li.inh { color: var(--sub); }
+.plan li.inh::before { content: "·"; color: var(--faint); }
+
+/* 패널 */
+.pnl { padding-block: 0 88px; }
+.pnl-box { border-radius: 24px; background: var(--wash); border: 1px solid var(--line); padding: 32px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: center; }
+.pnl-box h3 { font-size: 22px; }
+.pnl-box p { margin-top: 8px; color: var(--body); max-width: 40em; }
+.pnl-box ul { margin: 12px 0 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13.5px; color: var(--sub); }
+
+/* 마지막 CTA + 하단 */
+.final { padding-block: 72px; border-top: 1px solid var(--line); text-align: left; }
+.final .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 24px; }
+.final h2 { font-size: clamp(26px, 3.4vw, 36px); font-weight: 800; }
+footer { background: var(--wash); border-top: 1px solid var(--line); padding-block: 40px 48px; font-size: 13px; color: var(--sub); }
+footer .wrap { display: grid; gap: 14px; }
+footer .top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; align-items: center; }
+footer .legal { line-height: 1.75; max-width: 60em; }
+footer .attr { line-height: 1.75; color: var(--faint); word-break: normal; overflow-wrap: anywhere; }
+footer .wrap > * { min-width: 0; }
+
+/* 반응형 */
+@media (max-width: 960px) {
+  .hero .wrap, .band .wrap { grid-template-columns: minmax(0, 1fr); gap: 44px; }
+  .feat-row { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .feat-row:nth-child(even) .feat-copy { order: 0; }
+  .tools { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  section { padding-block: 64px; }
+  .hero { padding-block: 44px 40px; }
+  .hero .lede { font-size: 16.5px; }
+  .facts b { font-size: 19px; white-space: nowrap; }
+  .facts span { font-size: 12.5px; }
+  .tools, .plans { grid-template-columns: minmax(0, 1fr); }
+  .pnl-box { grid-template-columns: minmax(0, 1fr); padding: 24px; }
+  .panel { padding: 14px; border-radius: 20px; }
+  .mrow { grid-template-columns: minmax(0, 1fr) auto; }
+  .mrow .v { display: none; }
+  table { min-width: 0; font-size: 14px; }
+  th, td { padding: 12px 12px; }
+  td.c { white-space: normal; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .phone { animation: rise .7s cubic-bezier(.2,.7,.2,1) both; }
+  .row { animation: fade .5s ease both; }
+  .row:nth-child(2) { animation-delay: .15s; } .row:nth-child(3) { animation-delay: .2s; } .row:nth-child(4) { animation-delay: .25s; }
+  .row:nth-child(5) { animation-delay: .3s; } .row:nth-child(6) { animation-delay: .35s; } .row:nth-child(7) { animation-delay: .4s; }
+  .btn:hover { transform: translateY(-1px); }
+}
+@keyframes rise { from { transform: translateY(14px); } to { transform: none; } }
+@keyframes fade { from { opacity: .35; } to { opacity: 1; } }
+</style>
+
+</head>
+<body>
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Felix 홈">
+      <span class="mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="color: var(--blue)"><path d="M3 17l6-6 4 4 8-8"/></svg></span>
+      <span class="word">FELIX</span>
+    </a>
+    <nav class="nav-links" aria-label="주요 메뉴">
+      <a href="#features">기능</a>
+      <a href="#track">신호 기록</a>
+      <a href="#sources">데이터</a>
+      <a href="#pricing">요금</a>
+      <a class="btn btn-primary btn-sm" href="/">웹에서 시작</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero" aria-labelledby="hero-h">
+    <div class="wrap">
+      <div>
+        <span class="kicker"><span class="dot"></span>철강 유통·구매 실무자를 위한 시세 앱</span>
+        <h1 id="hero-h">철강 가격,<br>어디로 갈지 <em>먼저</em> 봅니다</h1>
+        <p class="lede">8개국 통계와 수입 통관 단가, 제철소 가격 발표, 무역 규제까지 매일 모읍니다. 품목별로 앞으로 1~3개월의 가격 방향을 정리해 드립니다.</p>
+        <div class="ctas">
+          <a class="btn btn-primary" href="/">웹에서 바로 시작하기</a>
+          <a class="btn btn-ghost" href="#pricing">요금 보기</a>
+        </div>
+        <p class="fine">가입은 무료입니다. iOS·Android 앱은 준비 중입니다.</p>
+        <div class="facts">
+          <div><b class="num">8개국</b><span>철강·원료·비철·환율</span></div>
+          <div><b class="num">6개 품목</b><span>가격 방향 신호</span></div>
+          <div><b>매주 목요일</b><span>주간 리포트 발행</span></div>
+        </div>
+      </div>
+
+      <div class="phone" role="img" aria-label="Felix 앱의 가격 방향 신호 화면 예시">
+        <div class="bar">
+          <span class="word">FELIX</span>
+          <span class="sample">화면 예시</span>
+        </div>
+        <div class="sig">
+          <div class="sig-h"><b>가격 방향 신호</b><span>향후 1~3개월</span></div>
+          <div class="sig-lead">형강은 하락 우위, 나머지 판재는 보합 속 약세
+            <small>원가·중국 가격·제철소 발표·세계 이슈 종합</small>
+          </div>
+          <div class="rows">
+            <div class="row"><span class="stripe dn2"></span><div style="min-width:0"><div class="nm">열연</div><div class="why">중국 열연 <span class="num">▼0.5%</span></div></div><div class="lv"><span class="pill p-flat">보합 ↘</span><span class="meter"><i></i><i class="lt"></i><i class="on"></i><i></i><i></i></span></div></div>
+            <div class="row"><span class="stripe dn2"></span><div style="min-width:0"><div class="nm">냉연</div><div class="why">중국 열연 <span class="num">▼0.5%</span></div></div><div class="lv"><span class="pill p-flat">보합 ↘</span><span class="meter"><i></i><i class="lt"></i><i class="on"></i><i></i><i></i></span></div></div>
+            <div class="row"><span class="stripe dn2"></span><div style="min-width:0"><div class="nm">도금강판</div><div class="why">코크스 <span class="num">▼0.6%</span> 등 혼조</div></div><div class="lv"><span class="pill p-flat">보합 ↘</span><span class="meter"><i></i><i class="lt"></i><i class="on"></i><i></i><i></i></span></div></div>
+            <div class="row"><span class="stripe dn2"></span><div style="min-width:0"><div class="nm">후판</div><div class="why">중국 중후판 <span class="num">▼0.6%</span></div></div><div class="lv"><span class="pill p-flat">보합 ↘</span><span class="meter"><i></i><i class="lt"></i><i class="on"></i><i></i><i></i></span></div></div>
+            <div class="row"><span class="stripe"></span><div style="min-width:0"><div class="nm">철근</div><div class="why">고철 <span class="num">▼0.9%</span></div></div><div class="lv"><span class="pill p-flat">보합</span><span class="meter"><i></i><i></i><i class="on"></i><i></i><i></i></span></div></div>
+            <div class="row"><span class="stripe dn"></span><div style="min-width:0"><div class="nm">형강</div><div class="why">중국 앵글 <span class="num">▼2.4%</span> · 고철 <span class="num">▼0.9%</span></div></div><div class="lv"><span class="pill p-dn">하락 우위</span><span class="meter"><i></i><i class="dn"></i><i></i><i></i><i></i></span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="features" aria-labelledby="feat-h">
+    <div class="wrap">
+      <p class="eyebrow">매일 여는 이유</p>
+      <h2 class="sec-h" id="feat-h">흩어진 숫자를 한 화면에, 판단은 빠르게</h2>
+      <p class="sec-p">통계청, 세관, 해외 통계 사이트를 하나씩 열어 볼 필요가 없습니다. Felix가 매일 모아 같은 기준으로 정리합니다.</p>
+
+      <div class="feat">
+        <div class="feat-row">
+          <div class="feat-copy">
+            <h3>세계 시세를 나라별로,<br>같은 품목끼리 나란히</h3>
+            <p>한국·중국·일본·미국·인도·멕시코·유럽의 철강 가격과 원료, 비철, 환율을 한 보드에서 봅니다.</p>
+            <ul>
+              <li>국가 비교: 품목 하나를 고르면 나라별 변동률을 한눈에</li>
+              <li>나라별 내수·수출·수입 가격, 미국은 주(州) 단위까지</li>
+              <li>한국 수입 통관 단가와 국내 생산자물가로 보는 국내 방향</li>
+            </ul>
+          </div>
+          <div class="panel" aria-label="국가 비교 화면 예시">
+            <div class="panel-h"><b>국가 비교 · 열연</b><span class="sample">화면 예시</span></div>
+            <div class="chips"><span class="chip on">열연</span><span class="chip">냉연</span><span class="chip">후판</span><span class="chip">철근</span><span class="chip">형강</span></div>
+            <div class="mini">
+              <div class="mrow"><div class="cty">한국<small>수입 통관 단가</small></div><div class="v">9월</div><div class="d dn num">▼1.2%</div></div>
+              <div class="mrow"><div class="cty">중국<small>유통가 · 열흘 단위</small></div><div class="v">10월 중순</div><div class="d dn num">▼0.5%</div></div>
+              <div class="mrow"><div class="cty">일본<small>수출 단가</small></div><div class="v">9월</div><div class="d up num">▲0.8%</div></div>
+              <div class="mrow"><div class="cty">미국<small>생산자물가</small></div><div class="v">9월</div><div class="d up num">▲0.3%</div></div>
+              <div class="mrow"><div class="cty">유럽<small>역외 수입 단가</small></div><div class="v">8월</div><div class="d dn num">▼0.9%</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="feat-row">
+          <div class="feat-copy">
+            <h3>가격 방향 신호는<br>근거와 함께 다섯 단계로</h3>
+            <p>원가 압력, 중국 가격, 제철소 가격 발표, 세계 이슈를 정해진 규칙으로 종합합니다. 평소 변동폭에 견줘 얼마나 큰 움직임인지 따져서, 작은 출렁임에 흔들리지 않습니다.</p>
+            <ul>
+              <li>강한 하락 · 하락 우위 · 보합 · 상승 우위 · 강한 상승</li>
+              <li>품목마다 가장 크게 작용한 요인을 한 줄로</li>
+              <li>고로재는 철광석·원료탄, 전기로재는 고철 비중을 반영</li>
+            </ul>
+          </div>
+          <div class="panel" aria-label="신호 상세 화면 예시">
+            <div class="panel-h"><b>형강 · 신호 상세</b><span class="sample">화면 예시</span></div>
+            <div class="mini" style="padding: 16px">
+              <div style="display:flex;justify-content:space-between;align-items:center"><span class="pill p-dn" style="font-size:14px;padding:5px 12px">하락 우위</span><span style="font-size:12px;color:var(--sub)">향후 1~3개월</span></div>
+              <div class="gauge" aria-hidden="true"><i class="g0"></i><i class="g1 on"></i><i class="g2"></i><i class="g3"></i><i class="g4"></i></div>
+              <div class="gl"><span>강한 하락</span><span>하락 우위</span><span>보합</span><span>상승 우위</span><span>강한 상승</span></div>
+              <div class="fac"><div><b>중국 가격</b><small>중국 앵글 <span class="num">▼2.4%</span> · 평소의 1.8배</small></div><span class="fbar"><i style="width:72%"></i></span></div>
+              <div class="fac"><div><b>원가 압력</b><small>고철 <span class="num">▼0.9%</span> · 전기로재라 고철 비중 큼</small></div><span class="fbar"><i style="width:38%"></i></span></div>
+              <div class="fac"><div><b>제철소 발표</b><small>이번 주 형강 가격 발표 없음</small></div><span class="fbar"><i style="width:0"></i></span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="feat-row">
+          <div class="feat-copy">
+            <h3>매주 목요일,<br>기자가 쓰듯 읽히는 리포트</h3>
+            <p>한 주 동안 크게 움직인 가격과 그 배경, 다음 주에 볼 발표 일정을 정리합니다. 관련 기사와 공시는 원문 링크로 바로 확인할 수 있습니다.</p>
+            <ul>
+              <li>지역별 흐름, 원료에서 제품까지 이어지는 가격 전달</li>
+              <li>지난 호 전망이 맞았는지 다음 호에서 채점</li>
+              <li>DART 공시와 미국 관보 공고를 함께 정리</li>
+            </ul>
+          </div>
+          <div class="panel" aria-label="주간 리포트 화면 예시">
+            <div class="panel-h"><b>주간 리포트</b><span class="sample">화면 예시</span></div>
+            <div class="rep">
+              <div class="no">2026년 10월 3주</div>
+              <h4>중국 판재 약세 이어져… 국내 형강 하락 압력 커진다</h4>
+              <p>중국 유통가가 두 차례 연속 내렸고, 고철 가격도 약세로 돌아섰습니다. 전기로 원가 부담이 줄면서 형강과 철근 가격의 하방 압력이 커지고 있습니다.</p>
+              <div class="news"><span>관련 기사 · 원문 링크</span><span>DART 공시 · 원문 링크</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="background: var(--wash); border-block: 1px solid var(--line)" aria-labelledby="tools-h">
+    <div class="wrap">
+      <p class="eyebrow">현장에서 쓰는 도구</p>
+      <h2 class="sec-h" id="tools-h">시세를 본 다음에 필요한 것까지</h2>
+      <div class="tools">
+        <article class="tool">
+          <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 15l3-4 3 2 5-6"/></svg></span>
+          <h3>원료 스프레드</h3>
+          <p>제품 가격에서 원료 원가를 뺀 마진 흐름을 봅니다. 전기로 마진, 판재와 봉형강의 가격 차이를 함께 봅니다.</p>
+          <span class="pro">PRO</span>
+        </article>
+        <article class="tool">
+          <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></span>
+          <h3>HS 코드 무역 검색</h3>
+          <p>HS 코드로 나라별 수출입 물량과 단가를 찾고, 관세와 무역구제 메모까지 한 번에 확인합니다.</p>
+          <span class="pro">PRO</span>
+        </article>
+        <article class="tool">
+          <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span>
+          <h3>무역 규제 타임라인</h3>
+          <p>미국 상무부의 철강 반덤핑·상계관세 공고를 단계별로 정리하고, 다가오는 판정 일정을 알려 드립니다.</p>
+          <span class="pro">PRO</span>
+        </article>
+        <article class="tool">
+          <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14v-2a8 8 0 0116 0v2"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/></svg></span>
+          <h3>철강 라디오 브리핑</h3>
+          <p>운전하면서 듣는 오늘의 시세. 화면을 보지 않아도 주요 변동과 신호를 짧게 들려 드립니다.</p>
+          <span class="pro">PRO</span>
+        </article>
+        <article class="tool">
+          <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4M3 17l9 4 9-4"/></svg></span>
+          <h3>재고 평가·목표가 알림</h3>
+          <p>보유 재고의 매입 단가를 넣으면 지금 시세 기준 평가손익을 계산하고, 정한 가격에 닿으면 알려 드립니다.</p>
+          <span class="pro">PRO</span>
+        </article>
+        <article class="tool">
+          <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 8l5-5 5 5"/><path d="M5 14v5a2 2 0 002 2h10a2 2 0 002-2v-5"/></svg></span>
+          <h3>시세 공유 카드</h3>
+          <p>오늘의 시세와 신호를 이미지 카드로 만들어 거래처와 사내 메신저에 바로 보냅니다.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="track" aria-labelledby="track-h">
+    <div class="wrap">
+      <div>
+        <p class="eyebrow">신호 기록</p>
+        <h2 class="sec-h" id="track-h">맞았는지 틀렸는지,<br>전부 남기고 공개합니다</h2>
+        <p class="sec-p">방향 신호는 낸 날 그대로 기록하고, 2개월 뒤 실제 가격으로 채점합니다. 좋은 결과만 골라 보여 드리지 않습니다.</p>
+        <div class="steps">
+          <div class="step"><span class="n num">1</span><div><b>그날 기록</b><span>품목·방향·근거·기준 가격을 신호를 낸 날 저장합니다.</span></div></div>
+          <div class="step"><span class="n num">2</span><div><b>2개월 뒤 채점</b><span>국내 생산자물가가 ±0.5%를 넘게 움직였는지로 상승·하락·보합을 가립니다.</span></div></div>
+          <div class="step"><span class="n num">3</span><div><b>고칠 수 없게 잠금</b><span>기록마다 직전 기록의 지문(SHA-256)을 이어 붙입니다. 지난 기록을 하나라도 고치면 그 뒤가 모두 어긋납니다.</span></div></div>
+        </div>
+      </div>
+      <div>
+        <div class="chain" aria-label="신호 기록 지문 사슬 예시">
+          <div class="blk"><div class="t"><small class="num">9/20</small>열연 · 상승</div><div class="res">채점 대기</div><div class="h">이전 <span class="num">c3a06359…</span> → 지문 <b class="num">2f81d0a7…</b></div></div>
+          <div class="link" aria-hidden="true"></div>
+          <div class="blk"><div class="t"><small class="num">10/6</small>철근 · 하락</div><div class="res">채점 대기</div><div class="h">이전 <span class="num">2f81d0a7…</span> → 지문 <b class="num">9b4e17c2…</b></div></div>
+          <div class="link" aria-hidden="true"></div>
+          <div class="blk"><div class="t"><small class="num">10/13</small>형강 · 하락 우위</div><div class="res">채점 대기</div><div class="h">이전 <span class="num">9b4e17c2…</span> → 지문 <b class="num">eabdb271…</b></div></div>
+        </div>
+        <p class="band-note">기록 예시입니다. 최신 지문은 매주 리포트에 함께 실어, 나중에 누구든 대조할 수 있게 합니다. 적중률은 앱의 ‘신호 기록’에서 무료로 공개합니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="sources" aria-labelledby="src-h">
+    <div class="wrap">
+      <p class="eyebrow">데이터 출처</p>
+      <h2 class="sec-h" id="src-h">공식 통계에서 직접 받습니다</h2>
+      <p class="sec-p">정부·국제기구가 공개하는 원자료를 발표 주기에 맞춰 가져오고, 화면마다 출처와 기준 시점을 표시합니다.</p>
+      <div class="src-wrap">
+        <table>
+          <thead><tr><th scope="col">자료</th><th scope="col">출처</th><th scope="col">주기</th></tr></thead>
+          <tbody>
+            <tr><td>한국 생산자물가</td><td>한국은행 · KOSIS</td><td class="c">월 1회</td></tr>
+            <tr><td>한국 수출입 통관 단가</td><td>관세청</td><td class="c">월 1회</td></tr>
+            <tr><td>환율</td><td>한국수출입은행 · 관세청</td><td class="c">매일 · 주 1회</td></tr>
+            <tr><td>중국 유통가</td><td>중국 국가통계국</td><td class="c">열흘</td></tr>
+            <tr><td>미국 생산자물가</td><td>미국 노동통계국(BLS)</td><td class="c">월 1회</td></tr>
+            <tr><td>미국 수입 통계 · 주별</td><td>미국 인구조사국(Census)</td><td class="c">월 1회</td></tr>
+            <tr><td>일본 무역통계</td><td>일본 재무성 · e-Stat</td><td class="c">월 1회</td></tr>
+            <tr><td>인도 도매물가</td><td>인도 상공부 경제자문실</td><td class="c">월 1회</td></tr>
+            <tr><td>멕시코 물가</td><td>INEGI</td><td class="c">월 1회</td></tr>
+            <tr><td>유럽 수입 단가·생산자물가</td><td>Eurostat</td><td class="c">월 1회</td></tr>
+            <tr><td>국제 원자재 가격</td><td>세계은행</td><td class="c">월 1회</td></tr>
+            <tr><td>무역 규제 · 기업 공시 · 뉴스</td><td>미국 관보 · DART · GDELT · Google 뉴스</td><td class="c">매일</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="pricing" style="padding-top: 0" aria-labelledby="price-h">
+    <div class="wrap">
+      <p class="eyebrow">요금</p>
+      <h2 class="sec-h" id="price-h">무료로 시작하고, 필요할 때 Pro로</h2>
+      <div class="plans">
+        <div class="plan">
+          <div class="pn">무료</div>
+          <div class="price num">0<small>원</small></div>
+          <div class="note">회원가입만 하면 계속 무료</div>
+          <ul>
+            <li>8개국 시세·환율</li>
+            <li>주간 리포트 최신 호</li>
+            <li>가격 방향 신호 요약</li>
+            <li>신호 기록·적중률</li>
+            <li>시세 공유 카드</li>
+          </ul>
+          <a class="btn btn-ghost" href="/">무료로 시작</a>
+        </div>
+        <div class="plan pro">
+          <div class="pn">Felix Pro</div>
+          <div class="price"><span class="num">190,000</span><small>원 / 월</small></div>
+          <div class="note">첫 1개월 무료 · 언제든 해지 · 부가세 별도</div>
+          <ul>
+            <li class="inh">무료의 모든 기능</li>
+            <li>신호 상세 분석과 품목별 근거</li>
+            <li>지난 리포트 전체</li>
+            <li>원료 스프레드 · 두 품목 비교</li>
+            <li>HS 코드 무역 검색 · 무역 규제 타임라인</li>
+            <li>철강 라디오 브리핑</li>
+            <li>재고 평가손익 · 목표가 알림</li>
+            <li>가격 급변 · 발표 직후 알림</li>
+          </ul>
+          <a class="btn btn-primary" href="/">1개월 무료로 시작하기</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="pnl">
+    <div class="wrap">
+      <div class="pnl-box">
+        <div>
+          <h3>국내 유통가 패널을 모집합니다</h3>
+          <p>국내 유통 실거래가는 공개 통계가 없습니다. 참여 유통사의 체결가로 국내 유통 평가가를 만들고 있습니다.</p>
+          <ul><li>이미 끝난 거래만 받습니다</li><li>개별 회사 값은 공개하지 않습니다</li><li>3개사 이상 모인 품목만 집계해 늦춰서 공개합니다</li></ul>
+        </div>
+        <a class="btn btn-ghost" href="/">앱에서 신청하기</a>
+      </div>
+    </div>
+  </div>
+
+  <section class="final" aria-labelledby="final-h">
+    <div class="wrap">
+      <h2 id="final-h">내일 아침 시세, Felix에서 확인하세요</h2>
+      <a class="btn btn-primary" href="/">웹에서 바로 시작하기</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="top">
+      <span class="brand"><span class="word" style="font-size:14px">FELIX</span></span>
+      <span>© 2026 Felix</span>
+    </div>
+    <p class="legal">가격 방향 신호와 리포트는 공개 통계·뉴스·제철소 발표를 정해진 규칙으로 종합한 참고 정보입니다. 가격을 보장하지 않으며 거래·투자 권유가 아닙니다. 뉴스는 제목과 원문 링크만 인용합니다.</p>
+    <p class="attr">출처: KOSIS(통계청, 한국은행), 관세청, 한국수출입은행, 중국 국가통계국, 美 BLS, U.S. Census Bureau, 財務省 貿易統計(e-Stat), 인도 상공부 경제자문실, Fuente: INEGI, Source: Eurostat, World Bank(CC BY 4.0), Federal Register, DART.<br>
+    This product uses the Census Bureau Data API but is not endorsed or certified by the Census Bureau.<br>
+    このサービスは、政府統計総合窓口(e-Stat)のAPI機能を使用していますが、サービスの内容は国によって保証されたものではありません。</p>
+  </div>
+</footer>
+
+</body>
+</html>

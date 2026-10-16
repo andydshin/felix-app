@@ -3268,7 +3268,7 @@ class Component extends DCLogic {
     // ===== Pro =====
     var pro = {
       price: '190,000원', priceNote: '첫 1개월 무료 · 언제든 해지 · 부가세 별도', isPro: isPro, notPro: !isPro,
-      rows: [['8개국 시세·환율', '✓', '✓'], ['주간 리포트 최신 호', '✓', '✓'], ['가격 방향 신호 요약', '✓', '✓'], ['시세 공유 카드', '✓', '✓'], ['지난 리포트 전체', '–', '✓'], ['신호 상세 분석·적중률', '–', '✓'], ['철강 라디오 브리핑', '–', '✓'], ['HS 코드 무역 검색', '–', '✓'], ['두 품목 비교', '–', '✓'], ['재고 평가손익·목표가 알림', '–', '✓'], ['가격 급변·발표 직후 알림', '–', '✓']].map(function (r) { return { name: r[0], free: r[1], pro: r[2] }; }),
+      rows: [['8개국 시세·환율', '✓', '✓'], ['주간 리포트 최신 호', '✓', '✓'], ['가격 방향 신호 요약', '✓', '✓'], ['신호 기록·적중률', '✓', '✓'], ['시세 공유 카드', '✓', '✓'], ['지난 리포트 전체', '–', '✓'], ['신호 상세 분석', '–', '✓'], ['무역 규제 타임라인', '–', '✓'], ['철강 라디오 브리핑', '–', '✓'], ['HS 코드 무역 검색', '–', '✓'], ['두 품목 비교', '–', '✓'], ['재고 평가손익·목표가 알림', '–', '✓'], ['가격 급변·발표 직후 알림', '–', '✓']].map(function (r) { return { name: r[0], free: r[1], pro: r[2] }; }),
       buyText: s.proBusy ? '결제 확인 중…' : '1개월 무료로 시작하기',
       buy: function () { if (s.proBusy) return; set({ proBusy: true }); setTimeout(function () { saveAuth(s.auth, 'pro'); self.setState({ tier: 'pro', proBusy: false, sub: null }); toast('Felix Pro가 시작되었습니다.'); }, 900); },
       cancel: function () { saveAuth(s.auth, 'free'); set({ tier: 'free', sub: null }); toast('구독이 해지되었습니다.'); }
