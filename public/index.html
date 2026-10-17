@@ -880,7 +880,7 @@ a{color:#0072F5}a:hover{color:#0058CC}
       <div style="display: flex; flex-direction: column; gap: 12px; padding: 18px 20px 28px">
         <div>
           <h1 style="margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em">리포트</h1>
-          <div style="font-size: 13px; color: #667085">매주 목요일 발행 · 숫자와 세계 이슈를 한 번에</div>
+          <div style="font-size: 13px; color: #667085">매주 목요일 발행 · 숫자로 보는 주간 시황과 글로벌 이슈</div>
         </div>
         <sc-for list="{{ repList }}" as="rl" hint-placeholder-count="3">
           <button onClick="{{ rl.open }}" style="display: block; width: 100%; box-sizing: border-box; text-align: left; background: #FFFFFF; border: 1px solid {{ rl.border }}; border-radius: 16px; padding: 16px">
@@ -1946,7 +1946,7 @@ class Component extends DCLogic {
       : [];
     var repListNote = repOk ? '' : (rd ? '첫 주간 리포트를 준비하고 있습니다. 매주 목요일에 발행합니다.' : '리포트를 불러오고 있습니다.');
     var homeRepTag = repLatest ? 'Weekly Report #' + String(repLatest.no).padStart(2, '0') + ' · ' + repLatest.weekLabel.replace(/^\d+년 /, '') + ' 차' : 'Weekly Report';
-    var homeRepLine = repLatest ? (repLatest.oneLiner || repLatest.title) : '첫 주간 리포트를 준비하고 있습니다. 매주 목요일, 숫자와 세계 이슈를 한 번에 정리해 드립니다.';
+    var homeRepLine = repLatest ? (repLatest.oneLiner || repLatest.title) : '첫 주간 리포트를 준비하고 있습니다. 매주 목요일, 숫자로 보는 주간 시황과 글로벌 이슈를 정리해 드려요.';
 
     var repCur = s.sub === 'report' ? (s.repNo ? (s.repIssues || {})[s.repNo] : repLatest) : null;
     var rp = null;
