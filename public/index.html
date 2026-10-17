@@ -342,12 +342,12 @@ a{color:#0072F5}a:hover{color:#0058CC}
           <div style="margin: 10px 20px 0; background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 16px">
             <div style="font-size: 13px; font-weight: 700; color: #667085">국가별 등락 요약</div>
             <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 4px; font-size: 11px; color: #667085"><span style="display: inline-flex; align-items: center; gap: 4px"><span style="display: inline-block; width: 8px; height: 8px; border-radius: 4px; box-sizing: border-box; background: #F04452"></span>상승</span><span style="display: inline-flex; align-items: center; gap: 4px"><span style="display: inline-block; width: 8px; height: 8px; border-radius: 4px; box-sizing: border-box; background: #1B64DA"></span>하락</span><span style="display: inline-flex; align-items: center; gap: 4px"><span style="display: inline-block; width: 8px; height: 8px; border-radius: 4px; box-sizing: border-box; background: #667085"></span>보합</span><span style="display: inline-flex; align-items: center; gap: 4px"><span style="display: inline-block; width: 8px; height: 8px; border-radius: 4px; box-sizing: border-box; border: 1px solid #C4CAD4"></span>미제공</span></div>
-            <div style="display: grid; grid-template-columns: 64px repeat(8, 1fr); gap: 2px; margin-top: 10px; font-size: 11px; color: #667085; text-align: center">
+            <div style="display: grid; {{ cmpGrid }}; gap: 2px; margin-top: 10px; font-size: 11px; color: #667085; text-align: center">
               <div></div>
               <sc-for list="{{ cmpCols }}" as="hc" hint-placeholder-count="8"><div style="font-size: 10.5px; white-space: nowrap; letter-spacing: -0.04em">{{ hc.name }}</div></sc-for>
             </div>
             <sc-for list="{{ cmpMatrix }}" as="mx" hint-placeholder-count="6">
-              <button onClick="{{ mx.pick }}" style="display: grid; width: 100%; grid-template-columns: 64px repeat(8, 1fr); gap: 2px; align-items: center; min-height: 34px; border-radius: 8px; {{ mx.rowStyle }}">
+              <button onClick="{{ mx.pick }}" style="display: grid; width: 100%; {{ cmpGrid }}; gap: 2px; align-items: center; min-height: 34px; border-radius: 8px; {{ mx.rowStyle }}">
                 <div style="font-size: 13px; font-weight: 600; text-align: left; padding-left: 4px">{{ mx.name }}</div>
                 <sc-for list="{{ mx.dots }}" as="dt" hint-placeholder-count="8"><div style="display: flex; justify-content: center"><span style="width: 10px; height: 10px; border-radius: 5px; box-sizing: border-box; {{ dt }}"></span></div></sc-for>
               </button>
@@ -367,7 +367,7 @@ a{color:#0072F5}a:hover{color:#0058CC}
                 <div><b>멕시코</b> · 미국 수입 통계로 산출한 멕시코산 대미 수출 단가($/t)로, 멕시코 내수 가격과는 다릅니다.</div>
                 <div><b>일본</b> · 재무성 무역통계 단가입니다. 변동률은 엔화(엔/t) 기준으로 계산하고, 단가는 달러로 환산($/t)해 보여드려요. 철강 제품·스크랩·구리는 수출 단가, 그 외 원재료·비철은 수입 단가 기준입니다.</div>
                 <div><b>유럽</b> · EU 역외 수입 단가(€/t) 기준입니다. 수입 물량이 적은 품목은 업종 생산자물가지수로 대신해 ‘생산자물가지수(업종)’로 표시합니다.</div>
-                <div><b>국제</b> · 세계은행 월평균 국제가격(Pink Sheet, CC BY 4.0)입니다.</div>
+                <div><b>국제</b> · 세계은행 월평균 국제가격(Pink Sheet, CC BY 4.0)으로, 원재료·비철에만 있어요. 철강 제품은 공개된 국제 기준가가 없어 표시하지 않아요.</div>
                 <div style="margin-top: 4px; padding-top: 8px; border-top: 1px solid #F2F4F7; font-size: 10.5px; line-height: 1.55; color: #98A2B3">This product uses the Census Bureau Data API but is not endorsed or certified by the Census Bureau.<br>Source: Eurostat.</div>
               </div>
             </sc-if>
@@ -2720,6 +2720,9 @@ class Component extends DCLogic {
       { name: '한국', sub: krSub }, { name: '미국', sub: usSub }, { name: '중국', sub: cnLabel || '9월 중순' }, { name: '인도', sub: idd && idd.status === 'ok' && idd.j.period ? dmon(idd.j.period) + '·전월비' : '도매물가' },
       { name: '멕시코', sub: mxd && mxd.status === 'ok' && mxd.j.month ? dmon(mxd.j.month) + '·대미수출' : '대미 수출' }, { name: '일본', sub: jpSrc0 ? dmon(jpSrc0.month) + '·전월비' : '무역통계' }, { name: '유럽', sub: eud && eud.status === 'ok' && eud.j.month ? dmon(eud.j.month) + '·역외수입' : 'Eurostat' }, { name: '국제', sub: wbMonth ? dmon(wbMonth) + ' 평균' : '8월 평균' }
     ];
+    // 철강 제품은 무료 국제 기준가가 없어(세계은행은 원재료·비철만) 국제 칸을 빼고 7개국만 보여 준다
+    if (tabKey === 'prod') { cmpCols = cmpCols.slice(0, 7); cmpRows.forEach(function (r) { r.cells = r.cells.slice(0, 7); }); }
+    var cmpGrid = 'grid-template-columns: 64px repeat(' + cmpCols.length + ', 1fr)';
 
     // 실데이터 반영 후 다시 계산: 추이(발표처 이력 + Felix 자체 시계열), 크게 움직인 항목, 상세 차트·통계·이유
     var sparkPts = function (h, w, ht, pad) {
@@ -3584,7 +3587,7 @@ class Component extends DCLogic {
       tabMe: s.tab === 'me' ? tabOn : tabOff,
       movers: movers, upcoming: upcoming, watchItems: watchItems, noWatch: watchItems.length === 0,
       radio: radio, spread: spread, rm: rm, kr: kr, ld: ld, isLanded: s.sub === 'landed', openLanded: openLanded, isRemedies: s.sub === 'remedies', tk: tk, isTrack: s.sub === 'track', openTrack: function () { set({ sub: 'track' }); }, openRemedies: openRemedies, shareSummary: shareSummary, shareItem: shareItem, shareView: shareView, tg: tg, groups: groups, cats: cats, isNation: isNation, nats: nats, flows: flows, flowNote: flowNote, hasFlowNote: hasFlowNote, natHint: natHint, hasNatHint: !!natHint, goUsImp: goUsImp, isLive: isLive, lv: lv, isKrDom: isKrDom, sdRows: items.filter(function (it) { return it.group === 'sd'; }), sdNote: '관세청 · 세계철강협회 · 국토부', jpTitle: jpTitle,
-      rows: rows, isDataGroup: !isDom && !isCmp && !isUs && !isJp && !isKr && !isLive, isKrGroup: isKr, krTitle: isNf ? '비철 수입 통관 단가' : '한국 수입 통관 단가', krIsSteel: !isNf, krIsNf: isNf, krRows: krRows, krBanner: krBanner, krBannerStyle: krBannerStyle, krShowRetry: krStatus === 'error', krRetry: krRetry, krMonthLabel: krMonthLabel, isJpGroup: isJp, jpSections: jpSections, jpBanner: jpBanner, jpBannerStyle: jpBannerStyle, jpShowRetry: jpStatus === 'error', jpRetry: jpRetry, jpMonthLabel: jpMonthLabel, isDomGroup: isDom, isCmpGroup: isCmp, cmpShow: cmpNeed, cmpNote: { open: !!s.cmpNoteOpen, arrow: s.cmpNoteOpen ? '접기 ∧' : '보기 ∨', toggle: function () { set({ cmpNoteOpen: !s.cmpNoteOpen }); } }, cmpRows: cmpRows, cmpCols: cmpCols, cmpItems: cmpItems, cmpList: cmpList, cmpMatrix: cmpMatrix, cmpTabs: cmpTabs, cmpTitle: ct.title, isUsGroup: isUs, usStates: usStates, usSections: usSections, usStateName: STATES.at(si)[1], usBanner: usBanner, usBannerStyle: usBannerStyle, usShowRetry: usStatus === 'error', usRetry: usRetry, usMonthLabel: usStatus === 'ok' ? monthLabel(ud.month) : (usStatus === 'error' ? '—' : '확인 중'),
+      rows: rows, isDataGroup: !isDom && !isCmp && !isUs && !isJp && !isKr && !isLive, isKrGroup: isKr, krTitle: isNf ? '비철 수입 통관 단가' : '한국 수입 통관 단가', krIsSteel: !isNf, krIsNf: isNf, krRows: krRows, krBanner: krBanner, krBannerStyle: krBannerStyle, krShowRetry: krStatus === 'error', krRetry: krRetry, krMonthLabel: krMonthLabel, isJpGroup: isJp, jpSections: jpSections, jpBanner: jpBanner, jpBannerStyle: jpBannerStyle, jpShowRetry: jpStatus === 'error', jpRetry: jpRetry, jpMonthLabel: jpMonthLabel, isDomGroup: isDom, isCmpGroup: isCmp, cmpShow: cmpNeed, cmpNote: { open: !!s.cmpNoteOpen, arrow: s.cmpNoteOpen ? '접기 ∧' : '보기 ∨', toggle: function () { set({ cmpNoteOpen: !s.cmpNoteOpen }); } }, cmpRows: cmpRows, cmpCols: cmpCols, cmpGrid: cmpGrid, cmpItems: cmpItems, cmpList: cmpList, cmpMatrix: cmpMatrix, cmpTabs: cmpTabs, cmpTitle: ct.title, isUsGroup: isUs, usStates: usStates, usSections: usSections, usStateName: STATES.at(si)[1], usBanner: usBanner, usBannerStyle: usBannerStyle, usShowRetry: usStatus === 'error', usRetry: usRetry, usMonthLabel: usStatus === 'ok' ? monthLabel(ud.month) : (usStatus === 'error' ? '—' : '확인 중'),
       groupSrc: g.src, groupCycle: g.cycle, groupDate: g.date, groupNote: g.note,
       groupTag: gErr ? '불러오지 못함' : (g.real || s.group === 'sd' ? '공식 발표값' : '확인 중'), groupTagStyle: gErr ? 'color:#B54708' : (g.real || s.group === 'sd' ? 'color:#12B76A' : 'color:#98A2B3'),
       domRows: [{ name: '열연 유통가', status: '패널 모집 중' }, { name: '냉연 유통가', status: '패널 모집 중' }, { name: '도금강판 유통가', status: '패널 모집 중' }, { name: '철근 유통가', status: '패널 모집 중' }],
