@@ -60,7 +60,7 @@ a{color:#0072F5}a:hover{color:#0058CC}
       <div style="display: flex; flex-direction: column; gap: 14px; padding: 18px 20px 28px">
         <div>
           <div style="font-size: 13px; color: #667085">{{ todayLabel }}</div>
-          <h1 style="margin: 2px 0 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.35">이번 주 철강 시장</h1>
+          <h1 style="margin: 2px 0 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.35">철강 시세, 어디로 움직이고 있을까요?</h1>
         </div>
 
         <sc-for list="{{ tg.hits }}" as="th" hint-placeholder-count="0">
@@ -74,28 +74,16 @@ a{color:#0072F5}a:hover{color:#0058CC}
         <div style="border-radius: 20px; padding: 18px; background: linear-gradient(135deg, #0058CC 0%, #0072F5 55%, #3D9BFF 100%); color: #FFFFFF">
           <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
             <div style="min-width: 0">
-              <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; letter-spacing: 0.02em; opacity: 0.9"><sc-if value="{{ radio.locked }}" hint-placeholder-val="{{ false }}"><span style="font-size: 10px; font-weight: 800; border-radius: 6px; padding: 1px 6px; background: #FFFFFF; color: #0058CC; margin-right: 2px">PRO</span></sc-if><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" style="fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round"><path d="M4 12a8 8 0 0 1 16 0"></path><path d="M7.5 12a4.5 4.5 0 0 1 9 0"></path><circle cx="12" cy="12" r="1.6" style="fill: currentColor; stroke: none"></circle></svg>FELIX 철강 라디오</div>
-              <div style="margin-top: 4px; font-size: 18px; font-weight: 700; line-height: 1.35">운전하면서 듣는 오늘의 시세</div>
-              <div style="margin-top: 2px; font-size: 12px; opacity: 0.85">{{ radio.meta }}</div>
+              
+              <div style="display: flex; align-items: flex-start; gap: 8px; font-size: 18px; font-weight: 700; line-height: 1.35"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" style="flex: none; margin-top: 2px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round"><path d="M4 12a8 8 0 0 1 16 0"></path><path d="M7.5 12a4.5 4.5 0 0 1 9 0"></path><circle cx="12" cy="12" r="1.6" style="fill: currentColor; stroke: none"></circle></svg><span>출근길, 귀로 듣는<br>핵심 시황</span></div>
+              <div style="display: flex; align-items: center; gap: 6px; margin-top: 4px; padding-left: 28px; font-size: 12px; opacity: 0.85"><sc-if value="{{ radio.locked }}" hint-placeholder-val="{{ false }}"><span style="font-size: 10px; font-weight: 800; border-radius: 6px; padding: 1px 6px; background: #FFFFFF; color: #0058CC">PRO</span></sc-if><span>{{ radio.meta }}</span></div>
             </div>
             <button onClick="{{ radio.main }}" aria-label="{{ radio.mainLabel }}" style="flex: none; width: 60px; height: 60px; border-radius: 30px; background: #FFFFFF; color: #0072F5; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 16px rgba(0,40,100,0.25)">
               <sc-if value="{{ radio.playing }}" hint-placeholder-val="{{ false }}"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.2" style="fill: currentColor"></rect><rect x="14" y="5" width="4" height="14" rx="1.2" style="fill: currentColor"></rect></svg></sc-if>
               <sc-if value="{{ radio.notPlaying }}" hint-placeholder-val="{{ true }}"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z" style="fill: currentColor"></path></svg></sc-if>
             </button>
           </div>
-          <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px">
-            <sc-for list="{{ radio.segs }}" as="rs" hint-placeholder-count="6"><button onClick="{{ rs.pick }}" style="min-height: 28px; padding: 0 10px; border-radius: 14px; font-size: 12px; font-weight: 600; {{ rs.style }}">{{ rs.label }}</button></sc-for>
-          </div>
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; font-size: 12px">
-            <button onClick="{{ radio.toggleScript }}" style="min-height: 28px; color: #FFFFFF; opacity: 0.9; font-weight: 600">{{ radio.scriptLabel }}</button>
-            <button onClick="{{ radio.toggleRate }}" style="min-height: 28px; padding: 0 10px; border-radius: 14px; background: rgba(255,255,255,0.18); color: #FFFFFF; font-weight: 700">속도 {{ radio.rateText }}</button>
-          </div>
-          <sc-if value="{{ radio.showScript }}" hint-placeholder-val="{{ false }}">
-            <div style="margin-top: 10px; padding: 12px; border-radius: 12px; background: rgba(255,255,255,0.12); font-size: 13px; line-height: 1.6">
-              <sc-for list="{{ radio.script }}" as="sc" hint-placeholder-count="3"><div style="margin-top: 6px"><b>{{ sc.title }}</b> · {{ sc.text }}</div></sc-for>
-            </div>
-          </sc-if>
-          <sc-if value="{{ radio.unsupported }}" hint-placeholder-val="{{ false }}"><div style="margin-top: 10px; font-size: 12px; opacity: 0.9">이 브라우저에서는 음성 재생을 지원하지 않습니다. 대본 보기로 내용을 확인하세요.</div></sc-if>
+          <sc-if value="{{ radio.unsupported }}" hint-placeholder-val="{{ false }}"><div style="margin-top: 10px; font-size: 12px; opacity: 0.9">이 브라우저에서는 음성 재생을 지원하지 않습니다.</div></sc-if>
         </div>
 
         </sc-if>
@@ -107,7 +95,7 @@ a{color:#0072F5}a:hover{color:#0058CC}
 
         <sc-if value="{{ authed }}" hint-placeholder-val="{{ true }}">
         <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 16px">
-          <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px"><div style="font-size: 15px; font-weight: 700">가격 방향 신호 <span style="font-size: 12px; font-weight: 500; color: #98A2B3">향후 1~3개월</span></div><div style="font-size: 11px; color: #98A2B3">{{ sg.meta }}</div></div>
+          <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px"><div style="font-size: 15px; font-weight: 700">앞으로의 가격 흐름 <span style="font-size: 12px; font-weight: 500; color: #98A2B3">1~3개월 전망</span></div><div style="font-size: 11px; color: #98A2B3">{{ sg.meta }}</div></div>
           <sc-if value="{{ sg.hasHead }}" hint-placeholder-val="{{ true }}">
             <div style="margin-top: 10px; background: #F5F8FF; border-radius: 12px; padding: 12px">
               <div style="font-size: 14px; font-weight: 600; line-height: 1.5; color: #0B0D12">{{ sg.head }}</div>
@@ -131,17 +119,17 @@ a{color:#0072F5}a:hover{color:#0058CC}
             </sc-for>
           </div>
           <div style="margin-top: 6px; padding-top: 8px; border-top: 1px solid #F2F4F7; font-size: 11px; line-height: 1.55; color: #98A2B3">{{ sg.note }}</div>
-          <button onClick="{{ openTrack }}" style="align-self: flex-start; min-height: 36px; font-size: 13px; font-weight: 600; color: #0072F5">신호 기록·적중률 보기 →</button>
+          <button onClick="{{ openTrack }}" style="align-self: flex-start; min-height: 36px; font-size: 13px; font-weight: 600; color: #0072F5">지난 전망·예측 정확도 보기 →</button>
         </div>
 
         </sc-if>
         <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
-          <div style="display: flex; justify-content: space-between; align-items: center"><div style="font-size: 13px; font-weight: 700; color: #667085">크게 움직인 항목 · 직전 발표 대비</div><button onClick="{{ shareSummary }}" style="display: flex; align-items: center; gap: 4px; min-height: 30px; padding: 0 10px; border-radius: 15px; background: #EEF6FF; color: #0058CC; font-size: 12px; font-weight: 700"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" style="fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round"><path d="M12 15V3"></path><path d="M7 8l5-5 5 5"></path><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"></path></svg>공유</button></div>
+          <div style="display: flex; justify-content: space-between; align-items: center"><div style="font-size: 13px; font-weight: 700; color: #667085">가장 크게 변한 숫자들 · 직전 대비</div><button onClick="{{ shareSummary }}" style="display: flex; align-items: center; gap: 4px; min-height: 30px; padding: 0 10px; border-radius: 15px; background: #EEF6FF; color: #0058CC; font-size: 12px; font-weight: 700"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" style="fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round"><path d="M12 15V3"></path><path d="M7 8l5-5 5 5"></path><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"></path></svg>공유</button></div>
           <sc-for list="{{ movers }}" as="m" hint-placeholder-count="3">
             <button onClick="{{ m.open }}" style="display: flex; width: 100%; min-height: 60px; align-items: center; gap: 12px; border-top: 1px solid #F2F4F7; margin-top: 8px; padding-top: 8px">
               <div style="flex: 1; min-width: 0">
                 <div style="font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ m.name }}</div>
-                <div style="font-size: 12px; color: #667085; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ m.groupLabel }} · <span style="font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ m.valText }}</span> {{ m.unitShort }}</div>
+                <div style="font-size: 12px; color: #667085; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ m.groupLabel }} · <span style="font-family: 'JetBrains Mono', 'Pretendard Variable', monospace; {{ m.skV }}">{{ m.valText }}</span> {{ m.unitShort }}</div>
                 <sc-if value="{{ m.hasWhy }}" hint-placeholder-val="{{ false }}"><div style="font-size: 12px; font-weight: 600; color: #0058CC; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ m.whyLine }}</div></sc-if>
               </div>
               <sc-if value="{{ m.hasSpark }}" hint-placeholder-val="{{ true }}">
@@ -167,7 +155,7 @@ a{color:#0072F5}a:hover{color:#0058CC}
 
         <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
           <div style="display: flex; justify-content: space-between; align-items: center">
-            <div style="font-size: 13px; font-weight: 700; color: #667085">내 관심 품목</div>
+            <div style="font-size: 13px; font-weight: 700; color: #667085">내가 챙겨보는 지표</div>
             <button onClick="{{ goBoard }}" style="min-height: 44px; font-size: 13px; font-weight: 600; color: #0072F5">전체 시세</button>
           </div>
           <sc-for list="{{ watchItems }}" as="w" hint-placeholder-count="3">
@@ -177,7 +165,7 @@ a{color:#0072F5}a:hover{color:#0058CC}
                 <div style="font-size: 12px; color: #667085">{{ w.groupLabel }}</div>
               </div>
               <div style="text-align: right">
-                <div style="font-size: 15px; font-weight: 700; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ w.valText }}</div>
+                <div style="font-size: 15px; font-weight: 700; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace; {{ w.skV }}">{{ w.valText }}</div>
                 <div style="font-size: 12px; font-weight: 600; {{ w.chgStyle }}; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ w.chgText }}</div>
               </div>
             </button>
@@ -188,10 +176,10 @@ a{color:#0072F5}a:hover{color:#0058CC}
         </div>
 
         <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
-          <div style="font-size: 13px; font-weight: 700; color: #667085">다가오는 발표</div>
+          <div style="font-size: 13px; font-weight: 700; color: #667085">앞으로 나올 주요 지표</div>
           <sc-for list="{{ upcoming }}" as="up" hint-placeholder-count="3">
             <div style="display: grid; grid-template-columns: 52px 1fr; gap: 12px; align-items: baseline; margin-top: 12px">
-              <div style="white-space: nowrap"><span style="font-size: 15px; font-weight: 700; color: #0072F5; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ up.md }}</span><div style="font-size: 11px; color: #98A2B3">{{ up.wd }}요일 경</div></div>
+              <div style="white-space: nowrap"><span style="font-size: 15px; font-weight: 700; color: #0072F5; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ up.md }}</span><div style="font-size: 11px; color: #98A2B3">{{ up.wd }}요일(예정)</div></div>
               <div><div style="font-size: 14px; font-weight: 600">{{ up.title }}</div><div style="font-size: 12px; color: #667085">{{ up.why }}</div></div>
             </div>
           </sc-for>
@@ -230,13 +218,13 @@ a{color:#0072F5}a:hover{color:#0058CC}
           <span style="font-size: 16px; color: #0058CC">→</span>
         </button>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 20px 0">
-          <button onClick="{{ openRemedies }}" style="display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-width: 0; min-height: 64px; border-radius: 14px; border: 1px solid #EAECF0; background: #FFFFFF; padding: 10px 14px; text-align: left">
+          <button onClick="{{ openRemedies }}" style="display: flex; flex-direction: column; align-items: flex-start; gap: 4px; min-width: 0; min-height: 72px; border-radius: 14px; border: 1px solid #EAECF0; background: #FFFFFF; padding: 12px 14px; text-align: left">
             <div style="font-size: 14px; font-weight: 700; color: #0B0D12">무역 규제 <span style="font-size: 10px; font-weight: 800; border-radius: 6px; padding: 1px 6px; background: #0B1F3F; color: #FFFFFF; vertical-align: 2px">PRO</span></div>
-            <div style="font-size: 12px; color: #344054">한국·미국 반덤핑 일정과 세율</div>
+            <div style="font-size: 12px; line-height: 1.45; color: #344054">한국·미국 반덤핑<br>일정과 세율</div>
           </button>
-          <button onClick="{{ openLanded }}" style="display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-width: 0; min-height: 64px; border-radius: 14px; border: 1px solid #EAECF0; background: #FFFFFF; padding: 10px 14px; text-align: left">
+          <button onClick="{{ openLanded }}" style="display: flex; flex-direction: column; align-items: flex-start; gap: 4px; min-width: 0; min-height: 72px; border-radius: 14px; border: 1px solid #EAECF0; background: #FFFFFF; padding: 12px 14px; text-align: left">
             <div style="font-size: 14px; font-weight: 700; color: #0B0D12">도착원가 계산 <span style="font-size: 10px; font-weight: 800; border-radius: 6px; padding: 1px 6px; background: #0B1F3F; color: #FFFFFF; vertical-align: 2px">PRO</span></div>
-            <div style="font-size: 12px; color: #344054">오퍼가 + 환율 + 반덤핑 → 원화</div>
+            <div style="font-size: 12px; line-height: 1.45; color: #344054">오퍼가·환율·반덤핑<br>원화로 한 번에</div>
           </button>
         </div>
         <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 14px 20px 0">
@@ -291,7 +279,7 @@ a{color:#0072F5}a:hover{color:#0058CC}
                   <div style="font-size: 12px; color: #667085">{{ r.unit }}</div>
                 </div>
                 <div style="text-align: right">
-                  <div style="font-size: 16px; font-weight: 700; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ r.valText }}</div>
+                  <div style="font-size: 16px; font-weight: 700; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace; {{ r.skV }}">{{ r.valText }}</div>
                   <div style="font-size: 12px; font-weight: 600; {{ r.chgStyle }}; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ r.chgText }}</div>
                 </div>
               </button>
@@ -306,7 +294,7 @@ a{color:#0072F5}a:hover{color:#0058CC}
             <sc-for list="{{ sdRows }}" as="r" hint-placeholder-count="3">
               <button onClick="{{ r.open }}" style="display: flex; width: 100%; min-height: 56px; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid #F2F4F7; padding: 6px 0">
                 <div><div style="font-size: 15px; font-weight: 600">{{ r.name }}</div><div style="font-size: 12px; color: #667085">{{ r.unit }}</div></div>
-                <div style="text-align: right"><div style="font-size: 16px; font-weight: 700; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ r.valText }}</div><div style="font-size: 12px; font-weight: 600; {{ r.chgStyle }}; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ r.chgText }}</div></div>
+                <div style="text-align: right"><div style="font-size: 16px; font-weight: 700; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace; {{ r.skV }}">{{ r.valText }}</div><div style="font-size: 12px; font-weight: 600; {{ r.chgStyle }}; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ r.chgText }}</div></div>
               </button>
             </sc-for>
           </div>
@@ -530,7 +518,7 @@ a{color:#0072F5}a:hover{color:#0058CC}
         </div>
         <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 16px">
           <div style="display: flex; align-items: baseline; gap: 8px">
-            <div style="font-size: 32px; font-weight: 700; line-height: 1.2; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ d.valText }}</div>
+            <div style="font-size: 32px; font-weight: 700; line-height: 1.2; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace; {{ d.skV }}">{{ d.valText }}</div>
             <div style="font-size: 14px; color: #667085">{{ d.unit }}</div>
           </div>
           <div style="margin-top: 2px; font-size: 15px; font-weight: 600; {{ d.chgStyle }}">{{ d.chgLine }}</div>
@@ -770,7 +758,7 @@ a{color:#0072F5}a:hover{color:#0058CC}
       <div style="display: flex; flex-direction: column; gap: 14px; padding: 8px 20px 28px">
         <button onClick="{{ back }}" style="min-height: 44px; font-size: 14px; font-weight: 600; color: #0072F5">← 뒤로</button>
         <div>
-          <div style="font-size: 13px; color: #667085">가격 방향 신호 · 향후 1~3개월</div>
+          <div style="font-size: 13px; color: #667085">앞으로의 가격 흐름 · 1~3개월 전망</div>
           <h1 style="margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em">{{ sd.name }}</h1>
         </div>
         <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 18px">
@@ -1513,7 +1501,7 @@ a{color:#0072F5}a:hover{color:#0058CC}
           <button onClick="{{ pro.cancel }}" style="min-height: 44px; font-size: 13px; font-weight: 600; color: #667085">구독 해지</button>
         </sc-if>
         <sc-if value="{{ pro.notPro }}" hint-placeholder-val="{{ true }}">
-          <button onClick="{{ pro.buy }}" style="min-height: 54px; border-radius: 27px; background: #0072F5; color: #FFFFFF; font-size: 16px; font-weight: 700">{{ pro.buyText }}</button>
+          <button onClick="{{ pro.buy }}" style="display: flex; align-items: center; justify-content: center; min-height: 54px; border-radius: 27px; background: #0072F5; color: #FFFFFF; font-size: 16px; font-weight: 700; text-align: center">{{ pro.buyText }}</button>
           <div style="font-size: 11.5px; line-height: 1.6; color: #98A2B3; text-align: center">언제든 해지할 수 있습니다. 구독은 앱 스토어 계정으로 결제됩니다.</div>
         </sc-if>
       </div>
@@ -1570,7 +1558,7 @@ a{color:#0072F5}a:hover{color:#0058CC}
 
   <sc-if value="{{ radio.on }}" hint-placeholder-val="{{ false }}">
     <div style="display: flex; align-items: center; gap: 10px; padding: 8px 12px 8px 16px; background: #0B1F3F; color: #FFFFFF">
-      <div style="flex: 1; min-width: 0"><div style="font-size: 11px; font-weight: 700; color: #9CC3FF">FELIX 철강 라디오 · {{ radio.pos }}</div><div style="font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ radio.cur }}</div></div>
+      <div style="flex: 1; min-width: 0"><div style="font-size: 11px; font-weight: 700; color: #9CC3FF">출근길 핵심 시황 · {{ radio.pos }}</div><div style="font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ radio.cur }}</div></div>
       <button onClick="{{ radio.prev }}" aria-label="이전 코너" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: #FFFFFF"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M7 5v14" style="stroke: currentColor; stroke-width: 2.2; stroke-linecap: round"></path><path d="M19 6.2v11.6a.8.8 0 0 1-1.25.66L9.5 12.66a.8.8 0 0 1 0-1.32l8.25-5.8A.8.8 0 0 1 19 6.2z" style="fill: currentColor"></path></svg></button>
       <button onClick="{{ radio.main }}" aria-label="{{ radio.mainLabel }}" style="width: 40px; height: 40px; border-radius: 20px; background: #FFFFFF; color: #0B1F3F; display: flex; align-items: center; justify-content: center">
         <sc-if value="{{ radio.playing }}" hint-placeholder-val="{{ false }}"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1" style="fill: currentColor"></rect><rect x="14" y="5" width="4" height="14" rx="1" style="fill: currentColor"></rect></svg></sc-if>
@@ -1825,6 +1813,9 @@ class Component extends DCLogic {
       ['sd1','sd','중국산 철강재 수입량',62.4,-3.1,1,'만 t'],['sd2','sd','한국 조강 생산량',540,null,0,'만 t',{ real: true, yoy: 2.6 }]
     ];
     var fmt = function (v, d) { return Number(v).toLocaleString('ko-KR', { minimumFractionDigits: d, maximumFractionDigits: d }); };
+    var SKB = 'display:inline-block;vertical-align:middle;border-radius:6px;color:transparent;background:linear-gradient(90deg,#EDF0F4 25%,#F7F8FA 50%,#EDF0F4 75%);background-size:200% 100%;animation:flxSk 1.2s ease-in-out infinite;', SKV = SKB + 'min-width:72px;height:18px;line-height:18px', SKC = SKB + 'min-width:52px;height:12px;line-height:12px;margin-top:4px', SKT = SKB + 'min-width:40px;height:11px;line-height:11px', SP0 = '\u2007';
+    if (!self._skCss && typeof document !== 'undefined') { self._skCss = true; try { var ss = document.createElement('style'); ss.textContent = '#app{word-break:keep-all;overflow-wrap:break-word}@keyframes flxSk{0%{background-position:100% 0}100%{background-position:-100% 0}}@media (prefers-reduced-motion: reduce){[style*=flxSk]{animation:none!important}}'; document.head.appendChild(ss); } catch (e) {} }
+
     var openItem = function (id) { return function () { set({ sub: 'detail', itemId: id }); }; };
     var items = D.map(function (r) {
       var val = r[3], chg = r[4], d = r[5], g = G[r[1]], o = r[7] || {};
@@ -1837,10 +1828,10 @@ class Component extends DCLogic {
       var chgText = none ? '직전 값 미수집' : (o.yoy != null ? pctText + ' 전년 동월 대비' : (chg === 0 ? '변동 없음' : arrow + fmt(Math.abs(chg), d)));
       return {
         id: r[0], group: r[1], groupLabel: g.label, name: r[2], unit: r[6], real: real,
-        valText: real ? fmt(val, d) : '—', pct: pct, rank: (real && !none && o.yoy == null) ? Math.abs(pct) : -1,
-        chgText: real ? chgText : '불러오는 중', pctText: real ? (none ? '—' : pctText) : '—',
-        chgLine: !real ? '불러오는 중' : (none ? '직전 발표값 없음' : (o.yoy != null ? chgText : chgText + ' (' + pctText + ') · 직전 발표 대비')),
-        chgStyle: (none || !real) ? FLAT : (c > 0 ? UP : (c < 0 ? DOWN : FLAT)),
+        valText: real ? fmt(val, d) : SP0, skV: real ? '' : SKV, pct: pct, rank: (real && !none && o.yoy == null) ? Math.abs(pct) : -1,
+        chgText: real ? chgText : SP0, pctText: real ? (none ? '—' : pctText) : SP0,
+        chgLine: !real ? SP0 : (none ? '직전 발표값 없음' : (o.yoy != null ? chgText : chgText + ' (' + pctText + ') · 직전 발표 대비')),
+        chgStyle: !real ? SKC : (none ? FLAT : (c > 0 ? UP : (c < 0 ? DOWN : FLAT))),
         val: val, chg: chg || 0, open: openItem(r[0])
       };
     });
@@ -1907,7 +1898,7 @@ class Component extends DCLogic {
       d = Object.assign({}, it, {
         src: gi.src, cycle: gi.cycle, date: gi.date, grade: gi.grade,
         chartNote: '', chartFrom: '', hasChart: false,
-        realText: it.real ? '공식 발표값' : '불러오는 중',
+        realText: it.real ? '공식 발표값' : '확인 중',
         realStyle: it.real ? 'color:#12B76A' : 'color:#B54708',
         points: pts.join(' '), area: '6,116 ' + pts.join(' ') + ' 320,116',
         endX: 320, endY: pts[11].split(',')[1],
@@ -1952,7 +1943,7 @@ class Component extends DCLogic {
       ? rd.j.list.map(function (x, i) { return { tag: (i === 0 ? '최신 · ' : '') + '제' + x.no + '호 · ' + x.weekLabel, title: x.title, sub: x.date, border: i === 0 ? '#0072F5' : '#EAECF0', tagColor: i === 0 ? '#0072F5' : '#667085', open: i === 0 ? openRep(x.no) : needPro(openRep(x.no)) }; })
       : [];
     var repListNote = repOk ? '' : (rd ? '첫 주간 리포트를 준비하고 있습니다. 매주 목요일에 발행합니다.' : '리포트를 불러오고 있습니다.');
-    var homeRepTag = repLatest ? '주간 리포트 제' + repLatest.no + '호 · ' + repLatest.weekLabel.replace(/^\d+년 /, '') : '주간 리포트';
+    var homeRepTag = repLatest ? 'Weekly Report #' + String(repLatest.no).padStart(2, '0') + ' · ' + repLatest.weekLabel.replace(/^\d+년 /, '') + ' 차' : 'Weekly Report';
     var homeRepLine = repLatest ? (repLatest.oneLiner || repLatest.title) : '첫 주간 리포트를 준비하고 있습니다. 매주 목요일, 숫자와 세계 이슈를 한 번에 정리해 드립니다.';
 
     var repCur = s.sub === 'report' ? (s.repNo ? (s.repIssues || {})[s.repNo] : repLatest) : null;
@@ -1971,7 +1962,7 @@ class Component extends DCLogic {
       var maxAbs = Math.max.apply(null, [3].concat(A.chart.filter(function (c) { return c.pct != null; }).map(function (c) { return Math.abs(c.pct); })));
       var chart = A.chart.map(function (c) {
         var w = c.pct == null ? 0 : Math.min(50, Math.abs(c.pct) / maxAbs * 50);
-        return { name: c.regionName, pct: c.pct == null ? '자료 없음' : pctTxt(c.pct), style: c.pct == null ? 'color:#98A2B3;font-weight:500;font-size:11px' : pctSty(c.pct),
+        return { name: c.regionName, pct: c.pct == null ? '발표 중단' : pctTxt(c.pct), style: c.pct == null ? 'color:#98A2B3;font-weight:500;font-size:11px' : pctSty(c.pct),
           bar: c.pct == null ? 'display:none' : (c.pct >= 0 ? 'left:50%;' : 'right:50%;') + 'width:' + w.toFixed(1) + '%;background:' + (c.pct >= 0 ? '#F04452' : '#1B64DA') };
       });
       var regs = (repCur.regions || []).filter(function (r) { return r.text; });
@@ -2011,7 +2002,7 @@ class Component extends DCLogic {
             sources: (n.sources || []).map(function (x) { return { title: x.title, href: /^https?:\/\//i.test(x.url) ? x.url : '#', meta: (x.source || '') + (x.date ? ' · ' + x.date : '') }; }),
             open: s.repOpen === n.id, toggle: function () { set({ repOpen: s.repOpen === n.id ? null : n.id }); } };
         }),
-        calendar: (repCur.calendar || []).map(function (c) { var d = new Date(c.date + 'T00:00:00Z'); return { md: (d.getUTCMonth() + 1) + '/' + d.getUTCDate(), wd: WD[d.getUTCDay()] + (c.approx ? ' 경' : ''), title: c.title, why: c.why, tag: c.kind === 'release' ? '통계' : '이슈', tagStyle: c.kind === 'release' ? 'background:#F2F4F7;color:#344054' : 'background:#FEF3E2;color:#DC6803' }; }),
+        calendar: (repCur.calendar || []).map(function (c) { var d = new Date(c.date + 'T00:00:00Z'); return { md: (d.getUTCMonth() + 1) + '/' + d.getUTCDate(), wd: WD[d.getUTCDay()] + (c.approx ? '(예정)' : ''), title: c.title, why: c.why, tag: c.kind === 'release' ? '통계' : '이슈', tagStyle: c.kind === 'release' ? 'background:#F2F4F7;color:#344054' : 'background:#FEF3E2;color:#DC6803' }; }),
         pastTitle: repCur.pastCheck ? '지난 전망 점검 (제' + repCur.pastCheck.no + '호)' : '지난 전망 점검', past: past, noPast: !past.length,
         checks: repCur.checks || [], credits: (repCur.credits || []).concat(repCur.trackHead && repCur.trackHead.head ? ['신호 기록 지문 ' + String(repCur.trackHead.head).slice(0, 16) + '… · ' + repCur.trackHead.count + '건 · ' + repCur.trackHead.at + ' 기준'] : [])
       };
@@ -2209,13 +2200,13 @@ class Component extends DCLogic {
               row.chgText = (c > 0 ? '▲' : (c < 0 ? '▼' : '')) + fmt(Math.abs(c), 1) + '% 전월비';
               row.chgStyle = c > 0 ? UP : (c < 0 ? DOWN : FLAT);
             } else { row.chgText = '전월 자료 없음'; }
-          } else { row.valText = '자료 없음'; row.valStyle = MUTED; row.tag = '자료 없음'; row.tagStyle = MUTED; }
+          } else { row.valText = '—'; row.valStyle = MUTED; row.tag = '발표 중단'; row.tagStyle = MUTED; }
         } else if (usStatus === 'error') {
           var f = (((si * 7 + ii * 3) % 13) - 6) / 100, c2 = (((si * 5 + ii * 11) % 9) - 4) / 2;
           row.valText = '—'; row.valStyle = MUTED; row.tag = '불러오지 못함'; row.tagStyle = MUTED;
           row.chgText = ''; c2 = 0;
           row.chgStyle = c2 > 0 ? UP : (c2 < 0 ? DOWN : FLAT);
-        } else { row.valText = '불러오는 중'; row.valStyle = MUTED; row.tag = '조회 중'; row.tagStyle = MUTED; }
+        } else { row.valText = SP0; row.valStyle = SKV; row.tag = SP0; row.tagStyle = SKT; row.chgText = SP0; row.chgStyle = SKC; }
         return row;
       }) };
     });
@@ -2273,13 +2264,13 @@ class Component extends DCLogic {
               row.chgText = (c > 0 ? '▲' : (c < 0 ? '▼' : '')) + fmt(Math.abs(c), 1) + '% 전월비';
               row.chgStyle = c > 0 ? UP : (c < 0 ? DOWN : FLAT);
             } else { row.chgText = '전월 자료 없음'; }
-          } else { row.valText = '자료 없음'; row.valStyle = MUTED; row.tag = '자료 없음'; row.tagStyle = MUTED; }
+          } else { row.valText = '—'; row.valStyle = MUTED; row.tag = '발표 중단'; row.tagStyle = MUTED; }
         } else if (jpStatus === 'error') {
           var f = (((jj * 3) % 13) - 6) / 100, c2 = (((jj * 11) % 9) - 4) / 2;
           row.valText = '—'; row.valStyle = MUTED; row.tag = '불러오지 못함'; row.tagStyle = MUTED;
           row.chgText = ''; c2 = 0;
           row.chgStyle = c2 > 0 ? UP : (c2 < 0 ? DOWN : FLAT);
-        } else { row.valText = '불러오는 중'; row.valStyle = MUTED; row.tag = '조회 중'; row.tagStyle = MUTED; }
+        } else { row.valText = SP0; row.valStyle = SKV; row.tag = SP0; row.tagStyle = SKT; row.chgText = SP0; row.chgStyle = SKC; }
         return row;
       }) };
     });
@@ -2335,10 +2326,10 @@ class Component extends DCLogic {
             var c = pctChg(d.unitPrice, d.prev.unitPrice);
             row.chgText = chgLabel(c); row.chgStyle = c > 0 ? UP : (c < 0 ? DOWN : FLAT);
           } else row.chgText = '전월 자료 없음';
-        } else { row.valText = '자료 없음'; row.valStyle = MUTED; row.tag = '자료 없음'; row.tagStyle = MUTED; }
+        } else { row.valText = '—'; row.valStyle = MUTED; row.tag = '발표 중단'; row.tagStyle = MUTED; }
       } else if (krStatus === 'error') {
         row.valText = '—'; row.valStyle = MUTED; row.tag = '불러오지 못함'; row.tagStyle = MUTED; row.chgText = ''; row.chgStyle = FLAT;
-      } else { row.valText = '불러오는 중'; row.valStyle = MUTED; row.tag = '조회 중'; row.tagStyle = MUTED; }
+      } else { row.valText = SP0; row.valStyle = SKV; row.tag = SP0; row.tagStyle = SKT; row.chgText = SP0; row.chgStyle = SKC; }
       return row;
     });
     var krMonthLabel = krStatus === 'ok' ? monthLabel(kd.month) : (krStatus === 'error' ? '—' : (krStatus === 'nomonth' ? '—' : '확인 중'));
@@ -2352,6 +2343,8 @@ class Component extends DCLogic {
     // 관세청 데이터로 일반 그룹 항목 덮어쓰기: 원료(raw3·raw4), 수급(sd1)
     var liveSet = function (id, val, d, unit, prevVal, chgSuffix, hist) {
       var it = byId[id]; if (!it) return;
+      if (Math.abs(val) >= 100) d = Math.min(d, 1);
+      it.skV = '';
       it.valText = fmt(val, d); it.val = val; it.unit = unit; it.real = true;
       if (prevVal != null && prevVal > 0) {
         var c = val - prevVal, pc = c / prevVal * 100, ar = c > 0 ? '▲' : (c < 0 ? '▼' : '');
@@ -2431,7 +2424,7 @@ class Component extends DCLogic {
     if (pd && pd.status === 'ok') {
       var anyPpi = false;
       (pd.j.items || []).forEach(function (d) {
-        if (d.status !== 'ok') { var it0 = byId[d.id]; if (it0) { it0.valText = '자료 없음'; it0.unit = '지수 2020=100'; it0.chgText = ''; } return; }
+        if (d.status !== 'ok') { var it0 = byId[d.id]; if (it0) { it0.valText = '발표 중단'; it0.unit = '지수 2020=100'; it0.chgText = ''; } return; }
         anyPpi = true;
         liveSet(d.id, d.value, 1, '지수 2020=100 · ' + monthLabel(d.period) + (d.matchedName && byId[d.id] && byId[d.id].name !== d.matchedName ? ' · ' + d.matchedName : ''), d.prev, ' 전월비', d.hist);
       });
@@ -2942,11 +2935,11 @@ class Component extends DCLogic {
       for (var k = 1; k <= 14 && out.length < 4; k++) {
         var dd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + k), day = dd.getDate(), lab = (dd.getMonth() + 1) + '/' + day;
         var wd = ['일', '월', '화', '수', '목', '금', '토'][dd.getDay()];
-        if ([4, 14, 24].indexOf(day) >= 0) out.push({ md: lab, wd: wd, title: '중국 국가통계국 열흘 유통가격', why: '중국 열연·철근·원료탄·코크스' });
+        if ([4, 14, 24].indexOf(day) >= 0) out.push({ md: lab, wd: wd, title: '중국 국가통계국 주요 자재 유통가격 (10일 주기)', why: '중국 열연·철근·원료탄·코크스' });
         if (day === 14) out.push({ md: lab, wd: wd, title: '인도 도매물가(WPI)', why: '인도 철강재·원료' });
         if (day === 15) out.push({ md: lab, wd: wd, title: '관세청 전월 수입 통관 단가', why: '수입 철강재·원료·비철 단가' });
         if (day === 16) out.push({ md: lab, wd: wd, title: '미국 생산자물가', why: '미국 철강재·고철' });
-        if (day === 21) out.push({ md: lab, wd: wd, title: '한국은행 생산자물가', why: '국내 철강재 출고가' });
+        if (day === 21) out.push({ md: lab, wd: wd, title: '한국은행 생산자물가', why: '철강재 국내 출하 가격 동향' });
         if (day === 3) out.push({ md: lab, wd: wd, title: '세계은행 월평균 국제가격', why: '철광석·석탄·비철' });
       }
       return out.slice(0, 4);
@@ -2986,15 +2979,19 @@ class Component extends DCLogic {
     var nm = function (arr) { return arr.map(function (p) { return p.name; }).join('·'); };
     var eun = function (w) { var c = w.charCodeAt(w.length - 1) - 0xAC00; return w + (c >= 0 && c < 11172 && c % 28 ? '은' : '는'); };
     var strongK = order2.filter(function (k) { return RANK[k] <= 1; }), leanK = order2.filter(function (k) { return RANK[k] === 2; }), flatK = order2.filter(function (k) { return k === '보합'; });
-    var head = '';
-    if (strongK.length) head = strongK.map(function (k) { return nm(groups2[k]) + ' ' + k; }).join(', ') + (leanK.length ? '. ' + leanK.map(function (k) { return eun(nm(groups2[k])) + ' ' + k; }).join(', ') + '으로 약하게 기울었습니다.' : '.');
-    else if (leanK.length) head = '뚜렷한 방향은 없습니다. ' + leanK.map(function (k) { return eun(nm(groups2[k])) + ' ' + k; }).join(', ') + '으로 약하게 기울었습니다.';
-    else if (flatK.length) head = '모든 품목이 보합입니다. 지금은 가격을 밀어 올리거나 내리는 힘이 뚜렷하지 않습니다.';
+    var PLATES = ['열연', '냉연', '도금강판', '후판'];
+    var nmG = function (arr) { var ns = arr.map(function (p) { return p.name; }); if (ns.length >= 3 && ns.every(function (n) { return PLATES.indexOf(n) >= 0; })) return ns.slice(0, 2).join('·') + ' 등 판재류'; return ns.length > 2 ? ns.slice(0, 2).join('·') + ' 등' : ns.join('·'); };
+    var PHR = { '강한 상승': ['상승세가 강하고', '상승세가 강합니다'], '상승 우위': ['상승세가 뚜렷하고', '상승세가 뚜렷합니다'], '강한 하락': ['하락세가 강하고', '하락세가 강합니다'], '하락 우위': ['하락세가 뚜렷하고', '하락세가 뚜렷합니다'],
+      '상승 쪽': ['소폭 상승에 무게가 실리고', '소폭 상승에 무게가 실립니다'], '하락 쪽': ['소폭 하락에 무게가 실리고', '소폭 하락에 무게가 실립니다'] };
+    var headKs = strongK.concat(leanK).filter(function (k) { return PHR[k]; });
+    var head = headKs.length ? headKs.map(function (k, ix) { return eun(nmG(groups2[k])) + ' ' + PHR[k][ix === headKs.length - 1 ? 1 : 0]; }).join(', ') + '.' + (headKs.length === 1 && flatK.length ? ' 나머지 품목은 보합세입니다.' : '')
+      : (flatK.length ? '모든 품목이 보합세입니다. 가격을 밀어 올리거나 내리는 힘이 아직 뚜렷하지 않아요.' : '');
     // 주 요인: 가격 지표면 '흐름', 이슈·제철소 발표면 '이슈'. 가격 지표는 '중국 열연 약세(▼0.5%)' 꼴로
-    var drvText = function (c) { var b = briefOf(c), m = (c.id === 'cost' || c.id === 'china') && b.match(/^(.*?)\s*([▲▼])([\d.]+%)(.*)$/); return m ? m[1] + ' ' + (m[2] === '▲' ? '강세' : '약세') + '(' + m[2] + m[3] + ')' + m[4] : b; };
-    var drv = {}, drvKind = {}; SIGP.forEach(function (p) { if (lvOf(p) === '보합' && !leanOf(p)) return; var t = impactOf(p)[0]; if (t && Math.abs(t.m) > 0.05) { var k = drvText(t.c); drv[k] = (drv[k] || 0) + 1; drvKind[k] = (t.c.id === 'issues' || t.c.id === 'mills') ? 'i' : 'f'; } });
+    var drvText = function (c) { var b = briefOf(c), mixed = / 등 (원료 )?혼조$/.test(b); b = b.replace(/ 등 (원료 )?혼조$/, ''); var m = (c.id === 'cost' || c.id === 'china') && b.match(/^(.*?)\s*([▲▼])([\d.]+%)(.*)$/); return { t: m ? m[1] + ' ' + (m[2] === '▲' ? '강세' : '약세') + '(' + m[2] + m[3] + ')' + m[4] : b, mixed: mixed }; };
+    var drv = {}, drvKind = {}, drvMix = {}; SIGP.forEach(function (p) { if (lvOf(p) === '보합' && !leanOf(p)) return; var t = impactOf(p)[0]; if (t && Math.abs(t.m) > 0.05) { var dt = drvText(t.c), k = dt.t; drv[k] = (drv[k] || 0) + 1; drvKind[k] = t.c.id; if (dt.mixed) drvMix[k] = true; } });
     var drvK = Object.keys(drv).sort(function (a, b) { return drv[b] - drv[a]; }).slice(0, 2);
-    var kinds = drvK.map(function (k) { return drvKind[k]; }), why = drvK.length ? (kinds.every(function (x) { return x === 'i'; }) ? '주 요인으로 보이는 이슈: ' : (kinds.every(function (x) { return x === 'f'; }) ? '주 요인으로 보이는 흐름: ' : '주 요인: ')) + drvK.join(', ') : '';
+    var DRVL = { cost: '원가 기준', china: '중국 시황', mills: '제철소 발표', issues: '글로벌 이슈' };
+    var kinds = drvK.map(function (k) { return drvKind[k]; }), why = drvK.length ? '핵심 배경' + (kinds.every(function (x) { return x === kinds[0]; }) && DRVL[kinds[0]] ? ' (' + DRVL[kinds[0]] + ')' : '') + ': ' + drvK.map(function (k) { return k + (drvMix[k] ? ' 등 원재료 가격 혼조세 반영' : ''); }).join(', ') : '';
     // 판단 근거: 쓰인 요소 종류, 3가지 이상이면 가장 뚜렷한 품목에서 같은 방향인 요소 수
     var CNAME = { cost: '원가', china: '중국 가격', mills: '제철소 발표', issues: '세계 이슈', votes: '현장 체감' }, used = [];
     SIGP.forEach(function (p) { (p.comps || []).forEach(function (c) { if (used.indexOf(c.id) < 0) used.push(c.id); }); });
@@ -3011,7 +3008,7 @@ class Component extends DCLogic {
           open: needPro(function () { set({ sub: 'signal', sigId: p.id }); }) }; }),
       hasHead: !!head, head: head, why: why, basis: basis, hasWhy: !!why,
       meta: sgd && sgd.status === 'ok' ? sgd.j.today + ' 기준' : '',
-      note: !sgd ? '신호를 계산하고 있습니다.' : (sgd.status !== 'ok' ? '신호를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.' : (trk && trk.graded ? '지난 신호 ' + trk.graded + '건 중 ' + trk.hits + '건 적중 (' + trk.rate + '%). ' : '') + '원가·중국 가격·제철소 발표·세계 이슈를 종합한 참고 지표입니다.' + (trk && trk.graded ? '' : ' 적중률은 신호 기록 2개월 뒤부터 공개합니다.')) };
+      note: !sgd ? '전망을 계산하고 있어요.' : (sgd.status !== 'ok' ? '전망을 불러오지 못했어요. 잠시 후 다시 시도해 주세요.' : (trk && trk.graded ? '지난 전망 ' + trk.graded + '건 중 ' + trk.hits + '건이 맞았어요 (' + trk.rate + '%). ' : '') + '원가와 중국 시황, 제철소 발표, 글로벌 이슈를 종합해 분석했어요.' + (trk && trk.graded ? '' : ' 전망이 실제 시세와 얼마나 맞았는지는 2개월 뒤부터 확인하실 수 있어요.')) };
     var sd = {};
     if (s.sub === 'signal') {
       var sp = SIGP.filter(function (p) { return p.id === s.sigId; })[0];
@@ -3226,7 +3223,7 @@ class Component extends DCLogic {
       if (repLatest && (repLatest.oneLiner || repLatest.title)) segs.push({ title: '이번 주 리포트', lines: ['이번 주 펠릭스 리포트, 한 줄로 요약하면 이렇습니다.', spk(repLatest.oneLiner || repLatest.title)] });
       if (upcoming && upcoming.length) {
         var ul = ['다음 발표 일정도 챙겨 드릴게요.'];
-        upcoming.slice(0, 2).forEach(function (u) { var p2 = String(u.md).split('/'); ul.push(p2[0] + '월 ' + p2[1] + '일 무렵에는 ' + u.title + ' 발표가 있습니다.'); });
+        upcoming.slice(0, 2).forEach(function (u) { var p2 = String(u.md).split('/'); ul.push(p2[0] + '월 ' + p2[1] + '일 무렵에는 ' + String(u.title).replace(/\s*\(.*\)$/, '') + ' 발표가 있습니다.'); });
         segs.push({ title: '다음 일정', lines: ul });
       }
       segs.push({ title: '클로징', lines: [pick(['오늘 브리핑은 여기까지입니다. 자세한 숫자는 펠릭스 앱에서 확인하시고요, 오늘도 안전 운전하세요.', '여기까지 펠릭스 철강 라디오였습니다. 좋은 거래 되시길 바랄게요. 안전 운전하세요.', '오늘 소식은 여기까지입니다. 다음 브리핑에서 또 뵐게요. 운전 조심하세요.'], 4)] });
@@ -3235,7 +3232,7 @@ class Component extends DCLogic {
     var radioSec = Math.round(radioSegs.reduce(function (a, g2) { return a + g2.lines.join('').length; }, 0) / 6.5 + radioSegs.length * 1.5);
     var radio = {
       supported: FelixRadio.supported(), unsupported: !FelixRadio.supported(), on: !!RS.on, paused: !!RS.paused, playing: !!RS.on && !RS.paused, notPlaying: !(RS.on && !RS.paused),
-      meta: '오늘 브리핑 · 약 ' + Math.max(1, Math.round(radioSec / 60)) + '분 · ' + radioSegs.length + '개 코너',
+      meta: '다 듣는 데 약 ' + Math.max(1, Math.round(radioSec / 60)) + '분 정도 걸려요.',
       cur: RS.on ? ((radioSegs[RS.si] || {}).title || '') : '', pos: RS.on ? (RS.si + 1) + '/' + radioSegs.length : '',
       segs: radioSegs.map(function (g2, k) { var on = RS.on && RS.si === k; return { label: g2.title, style: on ? 'background:#FFFFFF;color:#0058CC' : 'background:rgba(255,255,255,0.18);color:#FFFFFF', pick: isPro ? function () { FelixRadio.start(radioSegs, k); } : openPro }; }),
       rateText: (RS.rate || 1) === 1 ? '1.0×' : '1.2×',
@@ -3253,7 +3250,7 @@ class Component extends DCLogic {
       var rowsS = items.filter(function (it) { return it.real && it.rank >= 0 && it.group !== 'fx'; }).sort(function (a, b) { return b.rank - a.rank; }).slice(0, 4).map(function (it) {
         return { name: niceName(it), sub: it.groupLabel + ' · ' + String(it.unit).split(' ·')[0] + (perOf(it.unit) ? ' · ' + perOf(it.unit) + ' 기준' : ''), val: it.valText, chg: it.pctText, dir: it.pct };
       });
-      openShare('summary', { date: todayDot, title: '이번 주 철강 시세', sub: '직전 발표 대비 크게 움직인 항목', rows: rowsS, note: head || '', noteTitle: '가격 방향 신호 · 향후 1~3개월', src: '출처: 각국 정부·국제기구 공개 통계 · 참고용 정보' }, '이번 주 철강 시세');
+      openShare('summary', { date: todayDot, title: '이번 주 철강 시세', sub: '직전 발표 대비 크게 움직인 항목', rows: rowsS, note: head || '', noteTitle: '앞으로의 가격 흐름 · 1~3개월 전망', src: '출처: 각국 정부·국제기구 공개 통계 · 참고용 정보' }, '이번 주 철강 시세');
     };
     var shareItem = function () {
       var it = byId[s.itemId]; if (!it) return;
@@ -3570,7 +3567,7 @@ class Component extends DCLogic {
       radio: radio, spread: spread, rm: rm, kr: kr, ld: ld, isLanded: s.sub === 'landed', openLanded: openLanded, isRemedies: s.sub === 'remedies', tk: tk, isTrack: s.sub === 'track', openTrack: function () { set({ sub: 'track' }); }, openRemedies: openRemedies, shareSummary: shareSummary, shareItem: shareItem, shareView: shareView, tg: tg, groups: groups, cats: cats, isNation: isNation, nats: nats, flows: flows, flowNote: flowNote, hasFlowNote: hasFlowNote, natHint: natHint, hasNatHint: !!natHint, goUsImp: goUsImp, isLive: isLive, lv: lv, isKrDom: isKrDom, sdRows: items.filter(function (it) { return it.group === 'sd'; }), sdNote: '관세청 · 세계철강협회 · 국토부', jpTitle: jpTitle,
       rows: rows, isDataGroup: !isDom && !isCmp && !isUs && !isJp && !isKr && !isLive, isKrGroup: isKr, krTitle: isNf ? '비철 수입 통관 단가' : '한국 수입 통관 단가', krIsSteel: !isNf, krIsNf: isNf, krRows: krRows, krBanner: krBanner, krBannerStyle: krBannerStyle, krShowRetry: krStatus === 'error', krRetry: krRetry, krMonthLabel: krMonthLabel, isJpGroup: isJp, jpSections: jpSections, jpBanner: jpBanner, jpBannerStyle: jpBannerStyle, jpShowRetry: jpStatus === 'error', jpRetry: jpRetry, jpMonthLabel: jpMonthLabel, isDomGroup: isDom, isCmpGroup: isCmp, cmpRows: cmpRows, cmpCols: cmpCols, cmpItems: cmpItems, cmpList: cmpList, cmpMatrix: cmpMatrix, cmpTabs: cmpTabs, cmpTitle: ct.title, isUsGroup: isUs, usStates: usStates, usSections: usSections, usStateName: STATES.at(si)[1], usBanner: usBanner, usBannerStyle: usBannerStyle, usShowRetry: usStatus === 'error', usRetry: usRetry, usMonthLabel: usStatus === 'ok' ? monthLabel(ud.month) : (usStatus === 'error' ? '—' : '확인 중'),
       groupSrc: g.src, groupCycle: g.cycle, groupDate: g.date, groupNote: g.note,
-      groupTag: gErr ? '불러오지 못함' : (g.real || s.group === 'sd' ? '공식 발표값' : '불러오는 중'), groupTagStyle: gErr ? 'color:#B54708' : (g.real || s.group === 'sd' ? 'color:#12B76A' : 'color:#98A2B3'),
+      groupTag: gErr ? '불러오지 못함' : (g.real || s.group === 'sd' ? '공식 발표값' : '확인 중'), groupTagStyle: gErr ? 'color:#B54708' : (g.real || s.group === 'sd' ? 'color:#12B76A' : 'color:#98A2B3'),
       domRows: [{ name: '열연 유통가', status: '패널 모집 중' }, { name: '냉연 유통가', status: '패널 모집 중' }, { name: '도금강판 유통가', status: '패널 모집 중' }, { name: '철근 유통가', status: '패널 모집 중' }],
       d: d, alertOpts: alertOpts,
       alertMsg: s.alert === 'off' ? '알림이 꺼져 있습니다.' : '±' + s.alert + '% 이상 움직이면 발표 직후 알림을 보냅니다.',
