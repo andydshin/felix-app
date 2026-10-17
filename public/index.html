@@ -1111,21 +1111,21 @@ a{color:#0072F5}a:hover{color:#0058CC}
         <sc-if value="{{ true }}" hint-placeholder-val="{{ true }}">
           <sc-if value="{{ pn.form }}" hint-placeholder-val="{{ true }}">
             <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 16px">
-              <div style="display: flex; justify-content: space-between; align-items: baseline"><div style="font-size: 16px; font-weight: 700">가격 패널 모집 중</div><span style="font-size: 11px; font-weight: 700; border-radius: 6px; padding: 2px 7px; background: #EEF6FF; color: #0058CC">준비 단계</span></div>
+              <div style="display: flex; justify-content: space-between; align-items: baseline"><div style="font-size: 16px; font-weight: 700">가격 패널 모집 중</div><span style="font-size: 11px; font-weight: 700; border-radius: 6px; padding: 2px 7px; background: #EEF6FF; color: #0058CC">사전 모집</span></div>
               <div style="margin-top: 6px; font-size: 13px; line-height: 1.6; color: #344054">{{ pn.intro }}</div>
               <div style="margin-top: 10px; padding: 10px 12px; border-radius: 10px; background: #F7F9FC; font-size: 12px; line-height: 1.7; color: #475467">
-                <div>· 이미 끝난 거래만 받습니다. 앞으로의 가격 계획은 묻지 않습니다.</div>
-                <div>· 개별 회사의 값은 공개하지 않습니다. 3개사 이상 모인 품목만 집계값으로 공개합니다.</div>
-                <div>· 공개는 주 단위로 늦춰서 합니다.</div>
+                <div style="padding-left: 10px; text-indent: -10px">· 이미 완료된 실제 거래 건만 수집하며, 향후 가격 계획은 일체 수집하지 않습니다.</div>
+                <div style="padding-left: 10px; text-indent: -10px">· 개별 회사의 데이터는 절대 공개하지 않으며, 3개사 이상 집계된 품목만 평균값으로 공개합니다.</div>
+                <div style="padding-left: 10px; text-indent: -10px">· 집계 결과는 일정 기간이 지난 뒤 주간 단위로 반영됩니다.</div>
               </div>
               <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 14px">
                 <label for="pn-phone" style="font-size: 13px; font-weight: 600; color: #344054">휴대폰 번호 <span style="color: #D92D3A">*</span></label>
                 <input id="pn-phone" type="tel" inputMode="tel" autocomplete="tel" value="{{ pn.phone }}" onChange="{{ pn.setPhone }}" placeholder="010-1234-5678" style="min-height: 46px; box-sizing: border-box; border: 1px solid #D0D5DD; border-radius: 10px; padding: 0 14px; font-size: 16px; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace; background: #FFFFFF">
-                <div style="font-size: 11.5px; color: #98A2B3">패널을 열 때 문자로 안내합니다.</div>
+                <div style="font-size: 11.5px; color: #98A2B3">서비스 오픈 시 문자로 안내해 드립니다.</div>
               </div>
               <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 10px">
                 <label for="pn-company" style="font-size: 13px; font-weight: 600; color: #344054">회사명 <span style="font-weight: 500; color: #98A2B3">· 선택</span></label>
-                <input id="pn-company" value="{{ pn.company }}" onChange="{{ pn.setCompany }}" placeholder="비워 두셔도 됩니다" style="min-height: 46px; box-sizing: border-box; border: 1px solid #D0D5DD; border-radius: 10px; padding: 0 14px; font-size: 15px; background: #FFFFFF">
+                <input id="pn-company" value="{{ pn.company }}" onChange="{{ pn.setCompany }}" placeholder="선택 입력 · 익명 참여 가능" style="min-height: 46px; box-sizing: border-box; border: 1px solid #D0D5DD; border-radius: 10px; padding: 0 14px; font-size: 15px; background: #FFFFFF">
               </div>
               <div style="margin-top: 12px; font-size: 13px; font-weight: 600; color: #344054">업종 <span style="font-weight: 500; color: #98A2B3">· 선택</span></div>
               <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 6px">
@@ -1137,7 +1137,7 @@ a{color:#0072F5}a:hover{color:#0058CC}
               </div>
               <button onClick="{{ pn.toggleConsent }}" aria-pressed="{{ pn.consent }}" style="display: flex; width: 100%; gap: 10px; align-items: flex-start; margin-top: 14px; text-align: left">
                 <span style="flex: none; width: 20px; height: 20px; margin-top: 1px; border-radius: 6px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; {{ pn.boxStyle }}">{{ pn.check }}</span>
-                <span style="font-size: 12.5px; line-height: 1.55; color: #344054">입력한 휴대폰 번호(와 회사명)를 패널 안내 연락에만 쓰는 데 동의합니다. 언제든 삭제를 요청할 수 있습니다.</span>
+                <span style="font-size: 12.5px; line-height: 1.55; color: #344054">입력하신 연락처(회사명 포함)는 패널 오픈 안내 목적으로만 사용되며, 언제든지 삭제를 요청하실 수 있습니다. 이에 동의합니다.</span>
               </button>
               <sc-if value="{{ pn.hasMsg }}" hint-placeholder-val="{{ false }}"><div style="margin-top: 10px; font-size: 13px; color: #D92D3A">{{ pn.msg }}</div></sc-if>
               <button onClick="{{ pn.submit }}" style="margin-top: 14px; width: 100%; min-height: 50px; border-radius: 25px; font-size: 15px; font-weight: 700; text-align: center; {{ pn.btnStyle }}">{{ pn.btnText }}</button>
@@ -1146,7 +1146,7 @@ a{color:#0072F5}a:hover{color:#0058CC}
           <sc-if value="{{ pn.done }}" hint-placeholder-val="{{ false }}">
             <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 24px 16px 16px; text-align: center">
               <div style="width: 52px; height: 52px; margin: 0 auto; border-radius: 26px; background: #ECFDF3; color: #12B76A; font-size: 26px; font-weight: 700; display: flex; align-items: center; justify-content: center">✓</div>
-              <div style="margin-top: 12px; font-size: 18px; font-weight: 700">패널 등록이 접수됐습니다</div>
+              <div style="margin-top: 12px; font-size: 18px; font-weight: 700">사전 참여 신청이 접수됐습니다</div>
               <div style="margin-top: 6px; font-size: 13px; line-height: 1.6; color: #475467">{{ pn.doneText }}</div>
               <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 8px">
                 <button onClick="{{ goHome }}" style="min-height: 48px; border-radius: 24px; border: 1px solid #D0D5DD; background: #FFFFFF; color: #344054; font-size: 15px; font-weight: 600; text-align: center">홈으로</button>
@@ -2044,12 +2044,12 @@ class Component extends DCLogic {
     var bandRows = BD.map(function (b) { return { label: b[1], count: b[2] + '곳', barStyle: 'width:' + (b[2] / 4 * 100) + '%;background:' + (s.band === b[0] ? '#0072F5' : '#9CC3FF') }; });
 
     // 가격 패널 관심 등록 (/api/panel)
-    var PROLES = ['유통', '실수요', '제조', '기타'], PITEMS = [['hr', '열연'], ['cr', '냉연'], ['gi', '도금'], ['rb', '철근'], ['hb', 'H형강'], ['plate', '후판'], ['sts', 'STS']];
+    var PROLES = ['유통', '실수요', '제조', '기타'], PITEMS = [['hr', '열연'], ['cr', '냉연'], ['gi', '도금'], ['plate', '후판'], ['rb', '철근'], ['hb', '형강'], ['pipe', '강관'], ['sts', 'STS']];
     var pDoneSaved = (function () { try { return localStorage.getItem('felix.panel') === '1'; } catch (e) { return false; } })();
     var pSt = s.panelState || (pDoneSaved ? 'done' : 'idle'), pItems = s.pItems || [], pRole = s.pRole || '';
     var pn = {
       form: pSt !== 'done', done: pSt === 'done',
-      intro: '국내 유통 평가가는 등록한 유통사로 구성한 패널의 체결가로 만듭니다. 지금은 참여할 회사를 먼저 모으고 있습니다. 운영 원칙은 아래와 같습니다.',
+      intro: '국내 유통 평가가는 참여 유통사·실수요사로 구성한 패널의 실거래가로 산출합니다. 지금은 사전 참여 회사를 모집하고 있습니다. 운영 원칙은 아래와 같습니다.',
       company: s.pCompany || '', phone: s.pPhone || '',
       setCompany: function (e) { set({ pCompany: e.target.value, panelMsg: '' }); }, setPhone: function (e) { set({ pPhone: e.target.value, panelMsg: '' }); },
       roles: PROLES.map(function (r) { return { label: r, on: pRole === r, style: chip(pRole === r), pick: function () { set({ pRole: r }); } }; }),
@@ -2057,7 +2057,7 @@ class Component extends DCLogic {
       consent: !!s.pConsent, check: s.pConsent ? '✓' : '', boxStyle: s.pConsent ? 'background:#0072F5;color:#FFFFFF;border:1px solid #0072F5' : 'background:#FFFFFF;border:1.5px solid #98A2B3',
       toggleConsent: function () { set({ pConsent: !s.pConsent, panelMsg: '' }); },
       msg: s.panelMsg || '', hasMsg: !!s.panelMsg,
-      btnText: pSt === 'sending' ? '보내는 중…' : '패널 참여 등록',
+      btnText: pSt === 'sending' ? '보내는 중…' : '사전 참여 신청하기',
       btnStyle: pSt === 'sending' ? 'background:#98A2B3;color:#FFFFFF' : 'background:#0072F5;color:#FFFFFF',
       doneText: '패널을 구성하는 대로 등록한 휴대폰으로 참여 방법을 문자로 안내합니다.',
       goVote: function () { set({ stage: 1 }); },
