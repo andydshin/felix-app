@@ -145,7 +145,7 @@ a{color:#0072F5}a:hover{color:#0058CC}
             <div style="margin-top: 6px; font-size: 13px; line-height: 1.6; color: #475467">무료로 가입하면 아래 기능을 바로 쓸 수 있습니다.</div>
             <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 8px; font-size: 14px; color: #0B0D12">
               <div>✓ 8개국 철강·원료·비철 시세와 환율</div>
-              <div>✓ 가격 방향 신호와 주간 리포트</div>
+              <div>✓ 가격 전망과 주간 리포트</div>
               <div>✓ 관심 품목, 리포트 발행 알림</div>
             </div>
             <button onClick="{{ openLogin }}" style="margin-top: 16px; width: 100%; min-height: 50px; border-radius: 25px; background: #0072F5; color: #FFFFFF; font-size: 15px; font-weight: 700; text-align: center">3초 만에 시작하기</button>
@@ -594,7 +594,7 @@ a{color:#0072F5}a:hover{color:#0058CC}
         </sc-if>
         <sc-if value="{{ d.hasSig }}" hint-placeholder-val="{{ false }}">
           <button onClick="{{ d.openSig }}" style="display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 10px; min-height: 52px; border-radius: 16px; border: 1px solid #EAECF0; background: #FFFFFF; padding: 0 16px">
-            <div style="display: flex; align-items: center; gap: 8px"><span style="font-size: 12px; font-weight: 700; border-radius: 8px; padding: 2px 8px; {{ d.sigChip }}">신호</span><span style="font-size: 14px; font-weight: 600">{{ d.sigText }}</span></div>
+            <div style="display: flex; align-items: center; gap: 8px"><span style="font-size: 12px; font-weight: 700; border-radius: 8px; padding: 2px 8px; {{ d.sigChip }}">전망</span><span style="font-size: 14px; font-weight: 600">{{ d.sigText }}</span></div>
             <span style="font-size: 12px; color: #667085">{{ d.sigConf }} →</span>
           </button>
         </sc-if>
@@ -612,7 +612,7 @@ a{color:#0072F5}a:hover{color:#0058CC}
 
         <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
           <div style="font-size: 15px; font-weight: 700">가격 알림</div>
-          <div style="font-size: 13px; color: #667085">직전 발표 대비 이만큼 움직이면 알려 드립니다.</div>
+          <div style="font-size: 13px; color: #667085">직전 발표 대비 설정한 등락률에 도달하면 알려드립니다.</div>
           <div style="display: flex; gap: 8px; margin-top: 10px">
             <sc-for list="{{ alertOpts }}" as="a" hint-placeholder-count="4">
               <button onClick="{{ a.pick }}" aria-pressed="{{ a.on }}" style="flex: 1; min-height: 44px; border-radius: 10px; font-size: 14px; font-weight: 600; text-align: center; {{ a.style }}">{{ a.label }}</button>
@@ -770,7 +770,7 @@ a{color:#0072F5}a:hover{color:#0058CC}
           <div style="margin-top: 8px; font-size: 12px; color: #667085">종합 점수 <b style="font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ sd.score }}</b> (−2~+2 · ±0.35 이상 우위, ±1 이상 강함)</div>
         </div>
         <div style="background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 16px; padding: 14px 16px">
-          <div style="font-size: 13px; font-weight: 700; color: #667085">무엇이 이 신호를 만들었나</div>
+          <div style="font-size: 13px; font-weight: 700; color: #667085">무엇이 이 전망을 만들었나</div>
           <div style="margin-top: 2px; font-size: 12px; color: #98A2B3">가격 지표는 평소 변동폭 대비 움직임으로 점수를 매깁니다.</div>
           <sc-for list="{{ sd.comps }}" as="cm" hint-placeholder-count="5">
             <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #F2F4F7">
@@ -790,11 +790,11 @@ a{color:#0072F5}a:hover{color:#0058CC}
           </div>
         </sc-if>
         <div style="background: #F5F7FA; border-radius: 16px; padding: 14px 16px">
-          <div style="font-size: 13px; font-weight: 700">지난 신호 적중률</div>
+          <div style="font-size: 13px; font-weight: 700">지난 전망 적중률</div>
           <div style="margin-top: 4px; font-size: 13px; line-height: 1.6; color: #344054">{{ sd.track }}</div>
-          <button onClick="{{ openTrack }}" style="margin-top: 6px; min-height: 36px; font-size: 13px; font-weight: 600; color: #0072F5">전체 신호 기록 보기 →</button>
+          <button onClick="{{ openTrack }}" style="margin-top: 6px; min-height: 36px; font-size: 13px; font-weight: 600; color: #0072F5">전체 전망 기록 보기 →</button>
         </div>
-        <div style="font-size: 12px; line-height: 1.6; color: #667085">방향 신호는 공개 통계·뉴스·제철소 발표를 정해진 규칙으로 종합한 참고 지표로, 가격을 보장하지 않으며 거래·투자 권유가 아닙니다. 적중 여부는 신호 시점과 2개월 뒤의 한국은행 생산자물가를 비교해 판정합니다(±0.5% 이내는 보합).</div>
+        <div style="font-size: 12px; line-height: 1.6; color: #667085">가격 전망은 공개 통계·뉴스·제철소 발표를 정해진 규칙으로 종합한 참고 지표로, 가격을 보장하지 않으며 거래·투자 권유가 아닙니다. 적중 여부는 전망 시점과 2개월 뒤의 한국은행 생산자물가를 비교해 판정합니다(±0.5% 이내는 보합).</div>
       </div>
     </sc-if>
 
@@ -1264,7 +1264,7 @@ a{color:#0072F5}a:hover{color:#0058CC}
     <sc-if value="{{ isTrack }}" hint-placeholder-val="{{ false }}">
       <div style="display: flex; flex-direction: column; gap: 12px; padding: 8px 20px 28px">
         <button onClick="{{ back }}" style="align-self: flex-start; min-height: 44px; font-size: 14px; font-weight: 600; color: #0072F5">← 뒤로</button>
-        <div><h1 style="margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em">신호 기록</h1><div style="font-size: 13px; color: #667085">모든 방향 신호를 그날 기록하고, 2개월 뒤 실제 가격으로 채점합니다</div></div>
+        <div><h1 style="margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em">전망 기록</h1><div style="font-size: 13px; color: #667085">모든 가격 전망을 그날 기록하고, 2개월 뒤 실제 가격으로 채점합니다</div></div>
         <sc-if value="{{ tk.loading }}" hint-placeholder-val="{{ false }}"><div style="padding: 24px; text-align: center; font-size: 14px; color: #667085">기록을 불러오고 있습니다.</div></sc-if>
         <sc-if value="{{ tk.error }}" hint-placeholder-val="{{ false }}"><div style="padding: 12px; border-radius: 12px; background: #FEF3E2; color: #B54708; font-size: 13px">기록을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</div></sc-if>
         <sc-if value="{{ tk.ok }}" hint-placeholder-val="{{ true }}">
@@ -1280,7 +1280,7 @@ a{color:#0072F5}a:hover{color:#0058CC}
             </sc-if>
           </div>
           <div style="font-size: 13px; font-weight: 700; color: #667085; margin-top: 4px">기록 목록</div>
-          <sc-if value="{{ tk.empty }}" hint-placeholder-val="{{ false }}"><div style="padding: 16px; border-radius: 14px; background: #F7F9FC; font-size: 13px; color: #667085">첫 신호가 기록되면 이곳에 쌓입니다.</div></sc-if>
+          <sc-if value="{{ tk.empty }}" hint-placeholder-val="{{ false }}"><div style="padding: 16px; border-radius: 14px; background: #F7F9FC; font-size: 13px; color: #667085">첫 전망이 기록되면 이곳에 쌓입니다.</div></sc-if>
           <sc-for list="{{ tk.rows }}" as="tr" hint-placeholder-count="6">
             <div style="display: grid; grid-template-columns: 44px 1fr auto; gap: 10px; align-items: center; background: #FFFFFF; border: 1px solid #EAECF0; border-radius: 12px; padding: 10px 12px">
               <div style="font-size: 13px; font-weight: 700; color: #475467; font-family: 'JetBrains Mono', 'Pretendard Variable', monospace">{{ tr.md }}</div>
@@ -1457,7 +1457,7 @@ a{color:#0072F5}a:hover{color:#0058CC}
         <div style="margin-top: 24px">
           <svg viewBox="0 0 24 24" width="44" height="44" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="6" style="fill: #EEF6FF; stroke: #0072F5; stroke-opacity: 0.5"></rect><path d="M6 16 L10 11 L13 13.5 L18 7" style="fill: none; stroke: #0072F5; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"></path></svg>
           <h1 style="margin: 16px 0 0; font-size: 26px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.35">세계 철강 시세,<br>Felix에서 한 번에</h1>
-          <div style="margin-top: 8px; font-size: 14px; line-height: 1.6; color: #475467">8개국 시세와 주간 리포트, 가격 방향 신호를 무료로 받아 보세요.</div>
+          <div style="margin-top: 8px; font-size: 14px; line-height: 1.6; color: #475467">8개국 시세와 주간 리포트, 가격 전망을 무료로 받아 보세요.</div>
         </div>
         <sc-if value="{{ lg.methods }}" hint-placeholder-val="{{ true }}">
           <div style="margin-top: 36px; display: flex; flex-direction: column; gap: 10px">
@@ -1737,7 +1737,7 @@ var FelixCard = (function () {
     if (o.note) {
       var ny = Math.max(y + 30, 1030);
       c.fillStyle = '#EEF6FF'; rr(c, 72, ny - 20, W - 144, 140, 24); c.fill();
-      c.fillStyle = '#0058CC'; c.font = '700 26px ' + F; c.fillText(o.noteTitle || '가격 방향 신호', 108, ny + 22);
+      c.fillStyle = '#0058CC'; c.font = '700 26px ' + F; c.fillText(o.noteTitle || '앞으로의 가격 흐름', 108, ny + 22);
       c.fillStyle = '#0B0D12'; c.font = '600 30px ' + F; wrap(c, o.note, W - 216, 2).forEach(function (l, i) { c.fillText(l, 108, ny + 66 + i * 40); });
     }
     foot(c, o.src); return cv;
@@ -1790,14 +1790,14 @@ class Component extends DCLogic {
     var chip = function (on) { return on ? onChip : offChip; };
 
     var G = {
-      kr:  { label: '국내 방향', src: '한국은행 생산자물가지수 (KOSIS)', cycle: '월 1회', date: '최근 발표 월', grade: '출처 표시', real: false, note: '가격이 아닌 지수(2020=100)입니다. 전월 대비 변동입니다.' },
+      kr:  { label: '국내 지표', src: '한국은행 생산자물가지수 (KOSIS)', cycle: '월 1회', date: '최근 확정 월', grade: '출처 표시', real: false, note: '가격이 아닌 지수(2020=100)입니다. 전월 대비 변동입니다.' },
       imp: { label: '수입 통관', src: '관세청 품목별 수출입실적', cycle: '월 1회', date: '최근 통관 월', grade: '공공누리 제1유형', real: false, note: '수입 금액을 중량으로 나눈 통관 단가입니다.' },
       cn:  { label: '중국 내수', src: '중국 국가통계국', cycle: '열흘', date: '최근 발표', grade: '출처 표시', real: false, note: '직전 열흘 대비 변동입니다.' },
-      raw: { label: '원료', src: '세계은행 · 관세청 · 중국 국가통계국 · 미국 노동통계국', cycle: '월 1회', date: '최근 발표', grade: 'CC BY 4.0 외', real: true, note: '출처마다 기준(국제 월평균가, 수입 통관 단가, 유통가, 물가지수)이 다릅니다. 각 항목의 직전 발표 대비 변동입니다.' },
+      raw: { label: '원재료', src: '세계은행 · 관세청 · 중국 국가통계국 · 미국 노동통계국', cycle: '월 1회', date: '최근 발표', grade: 'CC BY 4.0 외', real: true, note: '출처마다 기준(국제 월평균가, 수입 통관 단가, 유통가, 물가지수)이 다릅니다. 각 항목의 직전 발표 대비 변동입니다.' },
       nf:  { label: '비철', src: '관세청 품목별 수출입실적', cycle: '월 1회', date: '최근 통관 월', grade: '공공누리 제1유형', real: false, note: '비철 1차 금속의 한국 수입 통관 단가입니다.' },
-      gl:  { label: '미국 방향', src: '미국 노동통계국 생산자물가지수', cycle: '월 1회', date: '최근 발표 월', grade: '퍼블릭 도메인', real: false, note: '가격이 아닌 지수(1982=100)입니다. 전월 대비 변동입니다.' },
+      gl:  { label: '미국 지표', src: '미국 노동통계국 생산자물가지수', cycle: '월 1회', date: '최근 확정 월', grade: '퍼블릭 도메인', real: false, note: '가격이 아닌 지수(1982=100)입니다. 전월 대비 변동입니다.' },
       fx:  { label: '환율', src: '관세청 관세환율(수입)', cycle: '주 1회', date: '최근 고시 주', grade: '공공누리 제1유형', real: false, note: '관세청이 주 단위로 고시하는 수입 과세환율입니다. 은행 매매기준율과 다를 수 있습니다. 전주 대비 변동입니다.' },
-      sd:  { label: '수급', src: '관세청 · 세계철강협회', cycle: '월 1회', date: '최근 발표 월', grade: '출처 표시', real: false, note: '중국산 철강재 수입량은 관세청, 조강 생산량은 세계철강협회 발표값입니다.' }
+      sd:  { label: '수급', src: '관세청 · 세계철강협회', cycle: '월 1회', date: '최근 확정 월', grade: '출처 표시', real: false, note: '중국산 철강재 수입량은 관세청, 조강 생산량은 세계철강협회 발표값입니다.' }
     };
     var ORDER = ['cmp', 'us', 'jp', 'cn', 'imp', 'kr', 'raw', 'nf', 'gl', 'fx', 'sd', 'dom'];
 
@@ -1900,7 +1900,7 @@ class Component extends DCLogic {
       d = Object.assign({}, it, {
         src: gi.src, cycle: gi.cycle, date: gi.date, grade: gi.grade,
         chartNote: '', chartFrom: '', hasChart: false,
-        realText: it.real ? '공식 발표값' : '확인 중',
+        realText: it.real ? '정상 연동' : '확인중',
         realStyle: it.real ? 'color:#12B76A' : 'color:#B54708',
         points: pts.join(' '), area: '6,116 ' + pts.join(' ') + ' 320,116',
         endX: 320, endY: pts[11].split(',')[1],
@@ -2006,7 +2006,7 @@ class Component extends DCLogic {
         }),
         calendar: (repCur.calendar || []).map(function (c) { var d = new Date(c.date + 'T00:00:00Z'); return { md: (d.getUTCMonth() + 1) + '/' + d.getUTCDate(), wd: WD[d.getUTCDay()] + (c.approx ? '(예정)' : ''), title: c.title, why: c.why, tag: c.kind === 'release' ? '통계' : '이슈', tagStyle: c.kind === 'release' ? 'background:#F2F4F7;color:#344054' : 'background:#FEF3E2;color:#DC6803' }; }),
         pastTitle: repCur.pastCheck ? '지난 전망 점검 (제' + repCur.pastCheck.no + '호)' : '지난 전망 점검', past: past, noPast: !past.length,
-        checks: repCur.checks || [], credits: (repCur.credits || []).concat(repCur.trackHead && repCur.trackHead.head ? ['신호 기록 지문 ' + String(repCur.trackHead.head).slice(0, 16) + '… · ' + repCur.trackHead.count + '건 · ' + repCur.trackHead.at + ' 기준'] : [])
+        checks: repCur.checks || [], credits: (repCur.credits || []).concat(repCur.trackHead && repCur.trackHead.head ? ['전망 기록 지문 ' + String(repCur.trackHead.head).slice(0, 16) + '… · ' + repCur.trackHead.count + '건 · ' + repCur.trackHead.at + ' 기준'] : [])
       };
       var art = repCur.article && repCur.article.lede ? repCur.article : null;
       rp.hasArticle = !!art && rp.secNum;
@@ -2075,7 +2075,7 @@ class Component extends DCLogic {
       }
     };
     var SIGOF = { hr: 'hr', cr: 'cr', gi: 'coated', rb: 'rebar', hb: 'section' };
-    var vd2 = { sigLabel: tipLabel + ' 가격 방향 신호 보기 →', openSig: function () { set({ sub: 'signal', sigId: SIGOF[s.tipItem] || 'hr' }); }, goPanel: function () { set({ stage: 2 }); } };
+    var vd2 = { sigLabel: tipLabel + ' 가격 전망 보기 →', openSig: function () { set({ sub: 'signal', sigId: SIGOF[s.tipItem] || 'hr' }); }, goPanel: function () { set({ stage: 2 }); } };
 
     var priceNum = parseFloat(s.price), tonNum = parseFloat(s.ton);
     var priceOk = priceNum >= 60 && priceNum <= 150 && tonNum > 0;
@@ -2085,7 +2085,7 @@ class Component extends DCLogic {
     var myPosText = !priceOk ? '' : (Math.abs(diff) < 0.05 ? '내 가격은 평가가와 같습니다.' : '내 가격 ' + fmt(priceNum, 1) + '은 평가가보다 ' + fmt(Math.abs(diff), 1) + '만원 ' + (diff > 0 ? '높습니다.' : '낮습니다.'));
     var pos = Math.max(0, Math.min(1, (priceNum - 88) / 4.5));
 
-    var NT = [['report', '리포트 발행', 0], ['policy', '발표 일정·신호 갱신', 0], ['price', '관심 품목 가격 급변', 1], ['target', '목표가 도달', 1]];
+    var NT = [['report', '리포트 발행', 0], ['policy', '발표 일정·전망 업데이트', 0], ['price', '관심 품목 가격 급변', 1], ['target', '목표가 도달', 1]];
     var notis = NT.map(function (n) {
       var locked = n[2] && !isPro, on = !locked && !!s.noti[n[0]];
       return { label: n[1], pro: !!n[2], on: on, text: locked ? '잠김' : (on ? '켜짐' : '꺼짐'), style: on ? onChip : 'background:#F2F4F7;color:#344054;border:1px solid #D0D5DD', toggle: locked ? openPro : function () { var o = Object.assign({}, s.noti); o[n[0]] = !on; set({ noti: o }); } };
@@ -2182,6 +2182,7 @@ class Component extends DCLogic {
       }, 0);
     }
     var usStatus = ud ? ud.status : 'loading';
+    var monLbl = function (ym) { var m = Number(String(ym || '').slice(5, 7)); return m ? m + '월 기준' : '최근 발표'; };
     var monthLabel = function (ym) { return ym ? ym.slice(0, 4) + '년 ' + Number(ym.slice(5, 7)) + '월' : ''; };
     var US_ITEMS = [
       ['원재료', [['iron_ore', '철광석', '2601', 120], ['scrap', '철스크랩 (탄소강)', '7204.41·7204.49 합산', 420], ['coal', '원료탄 (역청탄)', '2701.12', 230]]],
@@ -2431,7 +2432,7 @@ class Component extends DCLogic {
       (pd.j.items || []).forEach(function (d) {
         if (d.status !== 'ok') { var it0 = byId[d.id]; if (it0) { it0.valText = '발표 중단'; it0.unit = '지수 2020=100'; it0.chgText = ''; } return; }
         anyPpi = true;
-        liveSet(d.id, d.value, 1, '지수 2020=100 · ' + monthLabel(d.period) + (d.matchedName && byId[d.id] && byId[d.id].name !== d.matchedName ? ' · ' + d.matchedName : ''), d.prev, ' 전월비', d.hist);
+        liveSet(d.id, d.value, 1, '지수 2020=100 · ' + monLbl(d.period || pd.j.period) + (d.matchedName && byId[d.id] && byId[d.id].name !== d.matchedName ? ' · ' + d.matchedName : ''), d.prev, ' 전월비', d.hist);
       });
       if (anyPpi) { G.kr.real = true; G.kr.date = monthLabel(pd.j.period); G.kr.note = '가격이 아닌 지수(2020=100)입니다. 전월 대비 변동입니다. 출처: 한국은행 「생산자물가조사」, KOSIS.'; }
     }
@@ -2453,7 +2454,7 @@ class Component extends DCLogic {
       (ud2.j.items || []).forEach(function (d) {
         if (d.status !== 'ok') return;
         anyUs = true; usPeriod = d.period;
-        liveSet(d.id, d.value, 3, '지수 1982=100 · ' + monthLabel(d.period) + (d.preliminary ? ' (예비)' : '') + ' · ' + d.seriesId, d.prev, ' 전월비', d.hist);
+        liveSet(d.id, d.value, 3, '지수 1982=100 · ' + monLbl(d.period) + (d.preliminary ? ' (예비)' : '') + ' · ' + d.seriesId, d.prev, ' 전월비', d.hist);
       });
       if (anyUs) { G.gl.real = true; G.gl.date = monthLabel(usPeriod); G.gl.note = '가격이 아닌 지수(1982=100)입니다. 최근 4개월은 잠정치로 수정될 수 있습니다. 출처: U.S. Bureau of Labor Statistics.'; }
     }
@@ -2771,7 +2772,8 @@ class Component extends DCLogic {
 
     if (s.sub === 'detail' && byId[s.itemId]) {
       var itd = byId[s.itemId], ser = itd.series || [];
-      Object.assign(d, { valText: itd.valText, unit: itd.unit, chgLine: itd.chgLine, chgStyle: itd.chgStyle, real: itd.real });
+      var gd = G[itd.group] || {};
+      Object.assign(d, { valText: itd.valText, unit: itd.unit, chgLine: itd.chgLine, chgStyle: itd.chgStyle, real: itd.real, skV: itd.skV || '', groupLabel: gd.label || d.groupLabel, src: gd.src || d.src, date: gd.date || d.date, realText: itd.real ? '정상 연동' : '확인중', realStyle: itd.real ? 'color:#12B76A' : 'color:#B54708' });
       var nAll = ser.length, RN = [['6', 6], ['12', 12], ['36', 36], ['all', 9999]].filter(function (r) { return r[0] === 'all' ? nAll > 12 : r[1] < nAll || (r[1] === 12 && nAll >= 3 && nAll <= 12); });
       var rsel = s.histN && RN.some(function (r) { return r[0] === s.histN; }) ? s.histN : (RN.some(function (r) { return r[0] === '12'; }) ? '12' : (RN[0] ? RN[0][0] : '12'));
       var win = ser.slice(-(rsel === 'all' ? 9999 : Number(rsel)));
@@ -2805,7 +2807,7 @@ class Component extends DCLogic {
       d.hasWhy = d.why.length > 0;
       d.whySrc = repLatest ? '주간 리포트 제' + repLatest.no + '호 · ' + repLatest.date : '';
       d.whyEmpty = !d.hasWhy && !!rd;
-      d.whyEmptyText = repLatest ? '이번 주 리포트에는 이 품목과 직접 연결된 이슈가 없습니다.' : '주간 리포트가 발행되면 관련 이슈를 함께 보여 드립니다.';
+      d.whyEmptyText = repLatest ? '이번 주 리포트에는 이 품목과 관련된 내용이 포함되지 않았어요.' : '주간 리포트가 발행되면 관련 내용을 함께 보여드려요.';
       d.openCompare = needPro(function () { set({ sub: 'compare' }); });
       d.canCalc = /달러\/t/.test(itd.unit || '');
       d.openCalc = function () { set({ sub: 'calc', calc: { price: String(Math.round(itd.val)), fx: null, duty: '0', ad: '0', freight: '0', other: '15000', from: itd.id } }); };
@@ -3030,7 +3032,7 @@ class Component extends DCLogic {
           comps: sp.comps.map(function (c) { return { name: c.name, weight: c.weight, text: c.text, scoreText: (c.score > 0 ? '+' : '') + c.score, style: c.score > 0 ? UP : (c.score < 0 ? DOWN : FLAT), bar: barOf(c.score) }; }),
           missing: miss.length > 0, missingText: miss.join(', '),
           hasMills: ms2.length > 0, mills: ms2.map(millView),
-          track: pt && pt.graded ? sp.name + ' 신호 ' + pt.graded + '건 중 ' + pt.hits + '건 적중 (' + Math.round(pt.hits / pt.graded * 100) + '%). 전체 ' + trk.graded + '건 중 ' + trk.hits + '건.' : '아직 채점된 신호가 없습니다. 매주 신호를 기록하고, 2개월 뒤 한국은행 생산자물가와 비교해 적중률을 공개합니다.' };
+          track: pt && pt.graded ? sp.name + ' 전망 ' + pt.graded + '건 중 ' + pt.hits + '건 적중 (' + Math.round(pt.hits / pt.graded * 100) + '%). 전체 ' + trk.graded + '건 중 ' + trk.hits + '건.' : '아직 채점된 전망이 없어요. 매주 전망을 기록하고, 2개월 뒤 한국은행 생산자물가와 비교해 적중률을 공개합니다.' };
       }
     }
     // 상세 화면에서 해당 제품 신호로 가는 칩
@@ -3038,7 +3040,7 @@ class Component extends DCLogic {
       var kk = String(ITEM2KEY[s.itemId] || '').split(':')[1];
       var sp2 = SIGP.filter(function (p) { return p.id === kk; })[0];
       d.hasSig = !!(sp2 && sp2.dir);
-      if (d.hasSig) Object.assign(d, { sigText: sp2.name + ' 방향 신호 · ' + lvOf(sp2), sigConf: '확실성 ' + sp2.conf, sigChip: LVSTY[lvOf(sp2)] || dirChip(sp2.dir), openSig: needPro(function () { set({ sub: 'signal', sigId: sp2.id }); }) });
+      if (d.hasSig) Object.assign(d, { sigText: sp2.name + ' 가격 전망 · ' + lvOf(sp2), sigConf: '확실성 ' + sp2.conf, sigChip: LVSTY[lvOf(sp2)] || dirChip(sp2.dir), openSig: needPro(function () { set({ sub: 'signal', sigId: sp2.id }); }) });
     }
     // 리포트의 제철소 발표
     if (rp) { rp.mills = (repCur.mills || []).map(millView); rp.hasMills = rp.mills.length > 0 && rp.secIssue; }
@@ -3226,14 +3228,14 @@ class Component extends DCLogic {
         segs.push({ title: '환율', lines: fl });
       }
       if (typeof head !== 'undefined' && head) {
-        var sl = [pick(['펠릭스 가격 방향 신호도 짚어 볼게요.', '앞으로 한두 달 가격 방향, 신호로 보면 이렇습니다.'], 3)];
+        var sl = [pick(['펠릭스 가격 전망도 짚어 볼게요.', '앞으로 한두 달 가격 흐름은 이렇습니다.'], 3)];
         var SAY = { '강한 상승': '상승 압력이 강하고요', '상승 우위': '상승 쪽이 우세하고요', '강한 하락': '하락 압력이 강하고요', '하락 우위': '하락 쪽이 우세하고요', '상승 쪽': '상승 쪽으로 살짝 기울었고요', '하락 쪽': '하락 쪽으로 살짝 기울었고요' };
         var parts = order2.filter(function (k) { return SAY[k]; }).map(function (k) { return groups2[k].map(function (p3) { return p3.name; }).join(', ') + (jong(groups2[k][groups2[k].length - 1].name) ? '은 ' : '는 ') + SAY[k]; });
         if (parts.length) { var lastP = parts.pop().replace(/고요$/, '습니다.'); sl.push(parts.length ? parts.join(', ') + ', ' + lastP : lastP); }
         else sl.push('지금은 모든 품목이 보합권입니다. 가격을 크게 움직일 힘이 아직 보이지 않네요.');
         if (drvK && drvK.length) { var dn = drvK.map(function (x) { return x.replace(/\s*\([^)]*\)/g, ''); }); var dj = dn.length > 1 ? dn[0] + (jong(dn[0]) ? '과 ' : '와 ') + dn[1] : dn[0]; sl.push('주 요인으로는 ' + ga(dj) + ' 꼽힙니다.'); }
         sl.push('참고 지표인 만큼, 실제 거래 판단은 현장 상황과 함께 보시면 좋겠습니다.');
-        segs.push({ title: '가격 방향 신호', lines: sl });
+        segs.push({ title: '가격 전망', lines: sl });
       }
       if (repLatest && (repLatest.oneLiner || repLatest.title)) segs.push({ title: '이번 주 리포트', lines: ['이번 주 펠릭스 리포트, 한 줄로 요약하면 이렇습니다.', spk(repLatest.oneLiner || repLatest.title)] });
       if (upcoming && upcoming.length) {
@@ -3338,7 +3340,7 @@ class Component extends DCLogic {
       var ym = function (p) { var a = String(p || '').split('-'); return a.length > 1 ? Number(a[0]) + '년 ' + Number(a[1]) + '월' : '—'; };
       o.stats = [{ k: '기록', v: String(j.count || 0), style: '' }, { k: '채점', v: String(j.graded || 0), style: '' }, { k: '적중률', v: j.rate == null ? '—' : j.rate + '%', style: j.rate == null ? 'color:#98A2B3' : 'color:#0072F5' }];
       o.summary = j.graded ? ('채점된 ' + j.graded + '건 중 ' + j.hits + '건이 맞았습니다. 채점 대기 ' + (j.pending || 0) + '건.') :
-        (j.count ? ((j.since ? Number(j.since.slice(5, 7)) + '월 ' + Number(j.since.slice(8, 10)) + '일부터 ' : '') + j.count + '건을 기록했습니다. 첫 채점은 ' + ym(j.nextDue) + ' 생산자물가가 나오면 시작합니다.') : '아직 기록된 신호가 없습니다.');
+        (j.count ? ((j.since ? Number(j.since.slice(5, 7)) + '월 ' + Number(j.since.slice(8, 10)) + '일부터 ' : '') + j.count + '건을 기록했습니다. 첫 채점은 ' + ym(j.nextDue) + ' 생산자물가가 나오면 시작합니다.') : '아직 기록된 전망이 없습니다.');
       var names = {}; (j.entries || []).forEach(function (e) { names[e.id] = e.name; });
       o.per = Object.keys(j.per || {}).map(function (k) { var x = j.per[k]; return { name: names[k] || k, v: x.hits + '/' + x.graded }; });
       o.hasPer = o.per.length > 0;
@@ -3508,7 +3510,7 @@ class Component extends DCLogic {
     // ===== Pro =====
     var pro = {
       price: '190,000원', priceNote: '첫 1개월 무료 · 언제든 해지 · 부가세 별도', isPro: isPro, notPro: !isPro,
-      rows: [['8개국 시세·환율', '✓', '✓'], ['주간 리포트 최신 호', '✓', '✓'], ['가격 방향 신호 요약', '✓', '✓'], ['신호 기록·적중률', '✓', '✓'], ['시세 공유 카드', '✓', '✓'], ['지난 리포트 전체', '–', '✓'], ['신호 상세 분석', '–', '✓'], ['무역 규제 타임라인', '–', '✓'], ['수입 도착원가 계산기', '–', '✓'], ['철강 라디오 브리핑', '–', '✓'], ['HS 코드 무역 검색', '–', '✓'], ['두 품목 비교', '–', '✓'], ['재고 평가손익·목표가 알림', '–', '✓'], ['가격 급변·발표 직후 알림', '–', '✓']].map(function (r) { return { name: r[0], free: r[1], pro: r[2] }; }),
+      rows: [['8개국 시세·환율', '✓', '✓'], ['주간 리포트 최신 호', '✓', '✓'], ['가격 전망 요약', '✓', '✓'], ['전망 기록·적중률', '✓', '✓'], ['시세 공유 카드', '✓', '✓'], ['지난 리포트 전체', '–', '✓'], ['전망 상세 분석', '–', '✓'], ['무역 규제 타임라인', '–', '✓'], ['수입 도착원가 계산기', '–', '✓'], ['철강 라디오 브리핑', '–', '✓'], ['HS 코드 무역 검색', '–', '✓'], ['두 품목 비교', '–', '✓'], ['재고 평가손익·목표가 알림', '–', '✓'], ['가격 급변·발표 직후 알림', '–', '✓']].map(function (r) { return { name: r[0], free: r[1], pro: r[2] }; }),
       buyText: s.proBusy ? '결제 확인 중…' : '1개월 무료로 시작하기',
       buy: function () { if (s.proBusy) return; set({ proBusy: true }); setTimeout(function () { saveAuth(s.auth, 'pro'); self.setState({ tier: 'pro', proBusy: false, sub: null }); toast('Felix Pro가 시작되었습니다.'); }, 900); },
       cancel: function () { saveAuth(s.auth, 'free'); set({ tier: 'free', sub: null }); toast('구독이 해지되었습니다.'); }
@@ -3525,7 +3527,7 @@ class Component extends DCLogic {
     });
     if (isPro && rmd && rmd.status === 'ok') (rmd.j.items || []).filter(function (x) { return x.korea; }).slice(0, 1).forEach(function (x) { NI.push({ id: 'rm' + x.id, g: 0, ic: 'cal', kind: '무역 규제 · 한국', time: Number(String(x.date).slice(5, 7)) + '/' + Number(String(x.date).slice(8, 10)), title: '미국, ' + x.productKo + ' ' + x.stageKo, body: x.title, open: function () { set({ sub: 'remedies' }); } }); });
     if (repLatest) NI.push({ id: 'rep' + repLatest.no, g: 0, ic: 'report', kind: '주간 리포트', time: repLatest.date || '이번 주', title: '주간 리포트 제' + repLatest.no + '호가 발행됐습니다', body: repLatest.oneLiner || repLatest.title, open: openRep(repLatest.no) });
-    if (head) NI.push({ id: 'sig' + (sgd && sgd.j ? sgd.j.today : ''), g: 0, ic: 'sig', kind: '가격 방향 신호', time: '오늘', title: '이번 주 방향 신호가 갱신됐습니다', body: head, open: function () { set({ tab: 'home', sub: null }); } });
+    if (head) NI.push({ id: 'sig' + (sgd && sgd.j ? sgd.j.today : ''), g: 0, ic: 'sig', kind: '가격 전망', time: '오늘', title: '이번 주 가격 전망이 업데이트됐어요', body: head, open: function () { set({ tab: 'home', sub: null }); } });
     if (upcoming && upcoming[0]) NI.push({ id: 'cal' + upcoming[0].md + upcoming[0].title, g: 0, ic: 'cal', kind: '발표 일정', time: '오늘', title: upcoming[0].md.replace('/', '월 ') + '일 ' + upcoming[0].title + ' 발표 예정', body: upcoming[0].why + ' 가격이 새로 나옵니다.', open: function () { set({ tab: 'home', sub: null }); } });
     if (!repLatest) NI.push({ id: 'rep0', g: 1, ic: 'report', kind: '주간 리포트', time: '이번 주', title: '첫 주간 리포트를 준비하고 있습니다', body: '매주 목요일 발행되면 바로 알려 드립니다.', open: openRep(null) });
     NI.push({ id: 'welcome', g: 1, ic: 'hi', kind: 'Felix', time: '이번 주', title: 'Felix에 오신 것을 환영합니다', body: '관심 품목을 추가하면 그 품목 소식을 먼저 알려 드립니다.', open: function () { set({ tab: 'board', sub: null }); } });
@@ -3556,7 +3558,7 @@ class Component extends DCLogic {
       name: s.auth.name, initial: String(s.auth.name || 'F').charAt(0).toUpperCase(), sub: ({ kakao: '카카오', google: 'Google', apple: 'Apple', email: '이메일' }[s.auth.method] || '') + ' 계정' + (s.auth.email ? ' · ' + s.auth.email : ''),
       logout: function () { saveAuth(null); FelixRadio.stop(); set({ auth: null, tier: 'free', tab: 'home', sub: null }); toast('로그아웃되었습니다.'); },
       planTag: isPro ? 'PRO' : 'FREE', planTitle: isPro ? 'Felix Pro 이용 중' : 'Felix Pro로 업그레이드',
-      planSub: isPro ? '구독 관리 · 모든 기능 사용 중' : '라디오 브리핑, 신호 상세, 재고 손익, 급변 알림까지',
+      planSub: isPro ? '구독 관리 · 모든 기능 사용 중' : '라디오 브리핑, 전망 상세, 재고 손익, 급변 알림까지',
       planStyle: isPro ? 'background:linear-gradient(140deg,#0B1F3F 0%,#0058CC 100%);color:#FFFFFF' : 'background:#EEF6FF;color:#0B0D12;border:1px solid #CFE3FF'
     } : {};
     var GSRC = { kr: pd, gl: ud2, cn: cd, raw: wd, fx: dd, sd: kd }[s.group], gErr = !!(GSRC && GSRC.status === 'error') && !g.real;
@@ -3585,7 +3587,7 @@ class Component extends DCLogic {
       groupTag: gErr ? '불러오지 못함' : (g.real || s.group === 'sd' ? '공식 발표값' : '확인 중'), groupTagStyle: gErr ? 'color:#B54708' : (g.real || s.group === 'sd' ? 'color:#12B76A' : 'color:#98A2B3'),
       domRows: [{ name: '열연 유통가', status: '패널 모집 중' }, { name: '냉연 유통가', status: '패널 모집 중' }, { name: '도금강판 유통가', status: '패널 모집 중' }, { name: '철근 유통가', status: '패널 모집 중' }],
       d: d, alertOpts: alertOpts,
-      alertMsg: s.alert === 'off' ? '알림이 꺼져 있습니다.' : '±' + s.alert + '% 이상 움직이면 발표 직후 알림을 보냅니다.',
+      alertMsg: s.alert === 'off' ? '원하는 변동 폭을 선택해 알림을 받아보세요.' : '±' + s.alert + '% 이상 움직이면 발표 직후 알려드려요.',
       news: news,
       stages: stages, stageNote: stageNote, tipItems: tipItems, tipItemLabel: tipLabel,
       isStage1: s.stage === 1, isStage2: s.stage === 2, isStage3: s.stage === 3, isPanelStage: s.stage === 2 || s.stage === 3, pn: pn, vd2: vd2,
